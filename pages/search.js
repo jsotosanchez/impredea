@@ -14,31 +14,35 @@ import {
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
-  Center,
-  Heading,
-  HStack,
+  UnorderedList,
 } from '@chakra-ui/react';
-import { ArrowDownIcon, ArrowUpIcon, StarIcon } from '@chakra-ui/icons';
+import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
 import Layout from '../components/Layout';
 import { useRouter } from 'next/router';
 import { gql } from '@apollo/client';
 import client from '../apollo-client';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
+import MakerCard from '../components/makerCard';
 
-const Search = ({ quantities, categories }) => {
+const Search = ({ quantities, categories, makers }) => {
   const router = useRouter();
 
   const { search, quantity, category } = router.query;
   const {
     handleSubmit,
     register,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm();
 
   const onSubmit = (formData) => {
     console.log(formData);
   };
+
+  const handleOnClick = (id) => {
+    router.push({ pathname: `/maker/${id}` });
+  };
+
   const [minRep, setMinRep] = useState(3);
 
   const handlePriceOrder = () => {};
@@ -136,28 +140,19 @@ const Search = ({ quantities, categories }) => {
             <SliderThumb />
           </Slider>
         </Stack>
-        <Stack w="75%" bg="white">
-          <Flex bg="brandGray.100" h="auto" w="70%" borderRadius="30px" m="5rem" p="1rem">
-            <Center h="140px" w="20%" mr="2rem" bg="whatsapp.300">
-              Picture goes here
-            </Center>
-            <Stack w="50%">
-              <Heading as="h2" color="brandBlue" size="md" fontWeight="black">
-                Maker name
-              </Heading>
-              <Text color="black">Esta es la descripcion de la compania idealmente seria un texto mas largo</Text>
-            </Stack>
-            <Stack w="auto" pl="5%">
-              <HStack color="brandBlue">
-                <StarIcon />
-                <StarIcon />
-                <StarIcon />
-                <StarIcon />
-                <StarIcon />
-              </HStack>
-              <Text color="black">Ventas: 123</Text>
-            </Stack>
-          </Flex>
+        <Stack w="75%" bg="white" h="100%" overflow="scroll">
+          <UnorderedList m="3rem">
+            {makers.map(({ name, description, rating, sales, id }) => (
+              <MakerCard
+                name={name}
+                description={description}
+                rating={rating}
+                sales={sales}
+                handleOnClick={() => handleOnClick(id)}
+                key={id}
+              />
+            ))}
+          </UnorderedList>
         </Stack>
       </Flex>
     </Layout>
@@ -178,6 +173,14 @@ export async function getServerSideProps() {
           id
           label
         }
+        maker {
+          category_id
+          description
+          name
+          rating
+          sales
+          id
+        }
       }
     `,
   });
@@ -186,6 +189,7 @@ export async function getServerSideProps() {
     props: {
       quantities: data.order_quantity,
       categories: data.maker_category,
+      makers: data.maker,
     },
   };
 }
