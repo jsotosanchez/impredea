@@ -23,7 +23,7 @@ import { gql } from '@apollo/client';
 import client from '../graphql/apollo-client';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import MakerCard from '../components/makerCard';
+import MakerCard from '../components/MakerCard';
 
 const Search = ({ quantities, categories, makers }) => {
   const router = useRouter();
