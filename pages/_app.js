@@ -1,5 +1,7 @@
 import '../styles/globals.css';
-import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import { ChakraProvider, extendTheme, ColorModeProvider } from '@chakra-ui/react';
+import { ApolloProvider } from '@apollo/client';
+import client from '../graphql/apollo-client';
 
 const colors = {
   brandBlue: '#3D5A80',
@@ -14,9 +16,11 @@ const theme = extendTheme({ colors });
 
 function MyApp({ Component, pageProps }) {
   return (
-    <ChakraProvider theme={theme}>
-      <Component {...pageProps} />
-    </ChakraProvider>
+    <ApolloProvider client={client}>
+      <ChakraProvider theme={theme}>
+        <Component {...pageProps} />
+      </ChakraProvider>
+    </ApolloProvider>
   );
 }
 

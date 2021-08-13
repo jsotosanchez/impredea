@@ -1,19 +1,5 @@
-import { Flex, Stack, Text, Center, Heading, HStack } from '@chakra-ui/react';
-import { StarIcon } from '@chakra-ui/icons';
-
-const RenderRating = ({ rating }) => {
-  const stars = [];
-  for (let i = 0; i < rating; i++) {
-    stars.push(0);
-  }
-  return (
-    <HStack color="brandBlue">
-      {stars.map(() => (
-        <StarIcon />
-      ))}
-    </HStack>
-  );
-};
+import { Flex, Stack, Text, Center, Heading } from '@chakra-ui/react';
+import { RenderRating } from './renderRating';
 
 const MakerCard = ({ name, description, rating, sales, handleOnClick, id }) => {
   return (

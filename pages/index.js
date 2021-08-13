@@ -16,7 +16,7 @@ import {
 import Layout from '../components/Layout';
 import { useRouter } from 'next/router';
 import { gql } from '@apollo/client';
-import client from '../apollo-client';
+import client from '../graphql/apollo-client';
 import { useForm } from 'react-hook-form';
 
 const SearchForm = ({ quantities, categories }) => {
@@ -133,7 +133,7 @@ export default function Home({ quantities, categories }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const { data } = await client.query({
     query: gql`
       query MyQuery {

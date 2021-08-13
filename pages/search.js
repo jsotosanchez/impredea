@@ -20,7 +20,7 @@ import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
 import Layout from '../components/Layout';
 import { useRouter } from 'next/router';
 import { gql } from '@apollo/client';
-import client from '../apollo-client';
+import client from '../graphql/apollo-client';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
 import MakerCard from '../components/makerCard';
