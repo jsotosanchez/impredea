@@ -1,5 +1,5 @@
 import { Flex, Stack, Text, Center, Heading } from '@chakra-ui/react';
-import { RenderRating } from './renderRating';
+import { RenderRating } from './RenderRating';
 
 const MakerCard = ({ name, description, rating, sales, handleOnClick, id }) => {
   return (

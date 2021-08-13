@@ -20,7 +20,7 @@ import { ArrowLeftIcon } from '@chakra-ui/icons';
 import Layout from '../../components/Layout';
 import { useRouter } from 'next/router';
 import { useGetMaker } from '../../graphql/hooks';
-import { RenderRating } from '../../components/renderRating';
+import { RenderRating } from '../../components/RenderRating';
 import { MAKER_SECTIONS } from '../../utils/constants';
 import QuestionCard from '../../components/QuestionCard';
 import ReviewCard from '../../components/ReviewCard';
