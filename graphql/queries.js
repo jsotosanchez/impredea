@@ -44,3 +44,13 @@ export const GET_MAKER_BY_ID = gql`
     }
   }
 `;
+
+export const GET_PRODUCT_BY_ID = gql`
+  query getProductById($id: Int!) {
+    product_by_pk(id: $id) {
+      description
+      instructions
+      name
+    }
+  }
+`;

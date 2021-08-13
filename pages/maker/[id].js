@@ -27,14 +27,13 @@ import ReviewCard from '../../components/ReviewCard';
 import { useMutation } from '@apollo/client';
 import { MAKE_QUESTION_TO_MAKER } from '../../graphql/mutations';
 import MakeQuestionModal from '../../components/MakeQuestionModal';
+import ProductCard from '../../components/ProductCard';
 
 const Catalog = ({ products }) => {
   return (
     <SimpleGrid columns={3} spacing={10}>
-      {products.map((product) => (
-        <Center bg="tomato" height="80px" key={product.id}>
-          {product.name}
-        </Center>
+      {products.map(({ name, id }) => (
+        <ProductCard name={name} id={id} key={id} />
       ))}
     </SimpleGrid>
   );
@@ -92,7 +91,7 @@ export default function MakerProfile() {
         variables: { ...newQuestion },
         onError: () => {
           toast({
-            title: 'No se pudo hacer la pregunta.',
+            title: 'No se pudo hacer la pregunta',
             description: 'Por favor intenta mas tarde.',
             status: 'error',
             duration: 3000,
