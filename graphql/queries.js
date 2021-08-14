@@ -31,12 +31,12 @@ export const GET_MAKER_BY_ID = gql`
       response
       answered_at
       user {
-        name
+        fullname
       }
     }
     reviews(where: { maker_id: { _eq: $id } }) {
       user {
-        name
+        fullname
       }
       rating
       id

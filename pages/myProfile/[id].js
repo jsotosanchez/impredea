@@ -17,6 +17,7 @@ import {
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import Layout from '../../components/Layout';
+import LoadingPage from '../../components/LoadingPage';
 import { useGetUser } from '../../graphql/hooks';
 import { UPDATE_USER_BY_PK } from '../../graphql/mutations';
 
@@ -63,9 +64,7 @@ const MyProfile = () => {
   return (
     <Layout>
       {loading ? (
-        <Center h="100%" mt="20%">
-          <Spinner />
-        </Center>
+        <LoadingPage />
       ) : (
         <Center mt="10%">
           <Box w="700px" bg="gray.100" borderRadius="10px" p="20px">
