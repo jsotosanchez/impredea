@@ -1,6 +1,8 @@
 import { Box, Spacer, Flex, Heading, Button } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 
 export default function Layout({ children, ...rest }) {
+  const router = useRouter();
   return (
     <>
       <Flex
@@ -19,16 +21,34 @@ export default function Layout({ children, ...rest }) {
         {...rest}
       >
         <Box p="4" color="black">
-          <Heading as="h1" size="md" color="white">
+          <Heading as="h1" size="md" color="white" onClick={() => router.push('/')} cursor="pointer">
             Impredea
           </Heading>
         </Box>
         <Spacer />
-        <Box pt="3">
-          <Button variant="solid" bg="white" color="brandBlue" mr="5">
+        <Box pt="4">
+          <Button
+            variant="link"
+            colorScheme="white"
+            color="white"
+            mr="5"
+            onClick={() => router.push(`/mybusiness/${1}`)}
+          >
+            Mi negocio
+          </Button>
+          <Button
+            variant="link"
+            colorScheme="white"
+            color="white"
+            mr="5"
+            onClick={() => router.push(`/myProfile/${1}`)}
+          >
+            Mi perfil
+          </Button>
+          <Button variant="link" colorScheme="white" color="white" mr="5">
             Registrarse
           </Button>
-          <Button variant="solid" bg="white" color="brandBlue">
+          <Button variant="link" colorScheme="white" color="white" mr="5">
             Ingresar
           </Button>
         </Box>

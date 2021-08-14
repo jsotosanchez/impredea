@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {
   Box,
   Button,
-  Center,
   Flex,
   Heading,
   HStack,
@@ -27,14 +26,14 @@ import ReviewCard from '../../components/ReviewCard';
 import { useMutation } from '@apollo/client';
 import { MAKE_QUESTION_TO_MAKER } from '../../graphql/mutations';
 import MakeQuestionModal from '../../components/MakeQuestionModal';
+import ProductCard from '../../components/ProductCard';
+import LoadingPage from '../../components/LoadingPage';
 
 const Catalog = ({ products }) => {
   return (
     <SimpleGrid columns={3} spacing={10}>
-      {products.map((product) => (
-        <Center bg="tomato" height="80px" key={product.id}>
-          {product.name}
-        </Center>
+      {products.map(({ name, id }) => (
+        <ProductCard name={name} id={id} key={id} />
       ))}
     </SimpleGrid>
   );
@@ -69,10 +68,29 @@ export default function MakerProfile() {
   const [questionText, setQuestionText] = useState('');
   const toast = useToast();
 
-  const [createQuestion] = useMutation(MAKE_QUESTION_TO_MAKER);
+  const [createQuestion] = useMutation(MAKE_QUESTION_TO_MAKER, {
+    onError: () => {
+      toast({
+        title: 'No se pudo hacer la pregunta',
+        description: 'Por favor intenta mas tarde.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+    onCompleted: () => {
+      toast({
+        title: 'Se realizo tu pregunta con exito',
+        description: 'Seras notificado cuando el Maker te responda.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+  });
 
   if (!data) {
-    return <></>;
+    return <LoadingPage></LoadingPage>;
   }
   const renderSection = {
     [MAKER_SECTIONS.PRODUCTS]: <Catalog products={data.products} />,
@@ -87,21 +105,9 @@ export default function MakerProfile() {
       question: questionText,
     };
 
-    try {
-      createQuestion({
-        variables: { ...newQuestion },
-        onError: () => {
-          toast({
-            title: 'No se pudo hacer la pregunta.',
-            description: 'Por favor intenta mas tarde.',
-            status: 'error',
-            duration: 3000,
-            isClosable: true,
-          });
-          onClose();
-        },
-      });
-    } catch (e) {}
+    createQuestion({
+      variables: { ...newQuestion },
+    });
   };
 
   return (
