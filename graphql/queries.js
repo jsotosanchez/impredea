@@ -54,3 +54,15 @@ export const GET_PRODUCT_BY_ID = gql`
     }
   }
 `;
+
+export const GET_USER_BY_ID = gql`
+  query getProductById($id: Int!) {
+    user_by_pk(id: $id) {
+      email
+      address
+      name
+      zip_code
+      document
+    }
+  }
+`;

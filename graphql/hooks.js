@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/react-hooks';
-import { GET_SEARCHFORM_QUERY, GET_MAKER_BY_ID, GET_PRODUCT_BY_ID } from './queries';
+import { GET_SEARCHFORM_QUERY, GET_MAKER_BY_ID, GET_PRODUCT_BY_ID, GET_USER_BY_ID } from './queries';
 
 export const useSearchFormData = () => {
   const { loading, error, data } = useQuery(GET_SEARCHFORM_QUERY);
@@ -54,6 +54,26 @@ export const useGetProduct = (id) => {
       error,
       data: {
         product: data.product_by_pk,
+      },
+    };
+  }
+
+  return {
+    loading,
+    error,
+    data,
+  };
+};
+
+export const useGetUser = (id) => {
+  const { loading, error, data } = useQuery(GET_USER_BY_ID, { variables: { id } });
+
+  if (!loading && data) {
+    return {
+      loading,
+      error,
+      data: {
+        user: data.user_by_pk,
       },
     };
   }

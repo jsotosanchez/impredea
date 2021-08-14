@@ -1,6 +1,8 @@
 import { Box, Spacer, Flex, Heading, Button } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 
 export default function Layout({ children, ...rest }) {
+  const router = useRouter();
   return (
     <>
       <Flex
@@ -25,6 +27,9 @@ export default function Layout({ children, ...rest }) {
         </Box>
         <Spacer />
         <Box pt="3">
+          <Button variant="solid" bg="white" color="brandBlue" mr="5" onClick={() => router.push(`/myProfile/${1}`)}>
+            Mi perfil
+          </Button>
           <Button variant="solid" bg="white" color="brandBlue" mr="5">
             Registrarse
           </Button>
