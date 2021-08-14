@@ -6,7 +6,7 @@ const ReviewCard = ({ review }) => {
     <Box w="100%" bg="brandGray.100" borderRadius="10px" p="5px 15px" mt="5px">
       <Flex>
         <Heading as="h2" size="md" p="5px" color="brandBlue">
-          {review.user.name}
+          {review.user.fullname}
         </Heading>
         <Spacer />
         <RenderRating rating={review.rating} />

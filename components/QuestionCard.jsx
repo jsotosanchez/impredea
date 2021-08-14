@@ -6,7 +6,7 @@ const QuestionCard = ({ question }) => {
       <Box w="100%" bg="brandGray.100" borderRadius="10px" p="5px 15px" mt="5px">
         <Stack p="5px">
           <Heading as="h3" size="md" color="brandBlue">
-            {question.user.name}:
+            {question.user.fullname}:
           </Heading>
           <Text noOfLines="4">{question.question}</Text>
         </Stack>
