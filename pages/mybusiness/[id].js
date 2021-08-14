@@ -19,7 +19,7 @@ const QuestionsAdmin = ({ id }) => {
   if (loading) return <LoadingPage />;
 
   return (
-    <Box mt="10%">
+    <Box>
       <Table variant="striped" colorScheme="gray">
         <TableCaption placement="top">Preguntas pendientes:</TableCaption>
         <Thead>
