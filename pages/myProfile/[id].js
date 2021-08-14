@@ -10,7 +10,6 @@ import {
   Heading,
   Input,
   Spacer,
-  Spinner,
   Stack,
   useToast,
 } from '@chakra-ui/react';
