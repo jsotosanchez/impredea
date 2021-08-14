@@ -35,3 +35,32 @@ export const UPDATE_USER_BY_PK = gql`
     }
   }
 `;
+
+export const INSERT_PRODUCT = gql`
+  mutation insertUser($makerId: Int!, $description: String!, $instructions: String!, $name: String!) {
+    insert_product_one(
+      object: { description: $description, instructions: $instructions, maker_id: $makerId, name: $name }
+    ) {
+      id
+    }
+  }
+`;
+
+export const DELETE_PRODUCT_BY_ID = gql`
+  mutation deleteById($id: Int!) {
+    delete_product_by_pk(id: $id) {
+      id
+    }
+  }
+`;
+
+export const EDIT_PRODUCT_BY_ID = gql`
+  mutation editById($id: Int!, $name: String!, $instructions: String!, $description: String!) {
+    update_product_by_pk(
+      pk_columns: { id: $id }
+      _set: { name: $name, instructions: $instructions, description: $description }
+    ) {
+      id
+    }
+  }
+`;

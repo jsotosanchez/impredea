@@ -68,3 +68,26 @@ export const GET_USER_BY_ID = gql`
     }
   }
 `;
+
+export const GET_PRODUCTS_BY_MAKER_ID = gql`
+  query getProductsByMakerId($id: Int!) {
+    product(where: { maker_id: { _eq: $id } }) {
+      name
+      updated_at
+      id
+    }
+  }
+`;
+
+export const GET_QUESTIONS_BY_MAKER_ID = gql`
+  query getProductsByMakerId($id: Int!) {
+    questions(where: { maker_id: { _eq: $id }, response: { _is_null: false } }) {
+      id
+      question
+      user {
+        fullname
+      }
+      created_at
+    }
+  }
+`;
