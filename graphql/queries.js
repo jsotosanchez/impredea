@@ -59,8 +59,10 @@ export const GET_USER_BY_ID = gql`
   query getProductById($id: Int!) {
     user_by_pk(id: $id) {
       email
-      address
-      name
+      fullname
+      location
+      province
+      street
       zip_code
       document
     }
