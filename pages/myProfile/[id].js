@@ -48,8 +48,6 @@ const MyProfile = () => {
     },
   });
 
-  console.log(data);
-
   const {
     handleSubmit,
     register,
@@ -61,6 +59,7 @@ const MyProfile = () => {
       variables: { id, ...formData },
     });
   };
+
   return (
     <Layout>
       {loading ? (
