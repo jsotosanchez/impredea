@@ -26,14 +26,29 @@ export default function Layout({ children, ...rest }) {
           </Heading>
         </Box>
         <Spacer />
-        <Box pt="3">
-          <Button variant="solid" bg="white" color="brandBlue" mr="5" onClick={() => router.push(`/myProfile/${1}`)}>
+        <Box pt="4">
+          <Button
+            variant="link"
+            colorScheme="white"
+            color="white"
+            mr="5"
+            onClick={() => router.push(`/mybusiness/${1}`)}
+          >
+            Mi negocio
+          </Button>
+          <Button
+            variant="link"
+            colorScheme="white"
+            color="white"
+            mr="5"
+            onClick={() => router.push(`/myProfile/${1}`)}
+          >
             Mi perfil
           </Button>
-          <Button variant="solid" bg="white" color="brandBlue" mr="5">
+          <Button variant="link" colorScheme="white" color="white" mr="5">
             Registrarse
           </Button>
-          <Button variant="solid" bg="white" color="brandBlue">
+          <Button variant="link" colorScheme="white" color="white" mr="5">
             Ingresar
           </Button>
         </Box>
