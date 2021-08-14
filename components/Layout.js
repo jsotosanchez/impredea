@@ -21,7 +21,7 @@ export default function Layout({ children, ...rest }) {
         {...rest}
       >
         <Box p="4" color="black">
-          <Heading as="h1" size="md" color="white">
+          <Heading as="h1" size="md" color="white" onClick={() => router.push('/')} cursor="pointer">
             Impredea
           </Heading>
         </Box>
