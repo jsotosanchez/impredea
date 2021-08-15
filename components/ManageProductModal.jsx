@@ -81,6 +81,12 @@ const ManageProductModal = ({ isOpen, handleOnClose, onSubmit, product, errors, 
                   />
                   <FormErrorMessage>{errors.instructions && errors.instructions.message}</FormErrorMessage>
                 </FormControl>
+                <FormControl>
+                  <FormLabel color="brandBlue" htmlFor="logo">
+                    Imagen del producto:
+                  </FormLabel>
+                  <input type="file"></input>
+                </FormControl>
               </Box>
             </ModalBody>
             <ModalFooter>

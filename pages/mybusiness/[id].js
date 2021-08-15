@@ -1,53 +1,35 @@
 import { useState } from 'react';
-import { Box, Heading, HStack, Table, Thead, Tbody, Tr, Th, Td, TableCaption } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Checkbox,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Heading,
+  HStack,
+  Input,
+  Spacer,
+  Stack,
+  Textarea,
+  useToast,
+} from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import LoadingPage from '../../components/LoadingPage';
 import { MY_BUSINESS_SECTIONS } from '../../utils/constants';
-import { useGetQuestionsByMakerId } from '../../graphql/hooks';
-import { CloseIcon, ViewIcon } from '@chakra-ui/icons';
 import CatalogAdmin from '../../components/CatalogAdmin';
 import Layout from '../../components/Layout';
+import QuestionsAdmin from '../../components/QuestionsAdmin';
+import { useForm } from 'react-hook-form';
+import { useGetMakerAdmin } from '../../graphql/hooks';
+import { useMutation } from '@apollo/client';
+import { UPDATE_MAKER_INFO } from '../../graphql/mutations';
+import MakerInfoAdmin from '../../components/MakerInfoAdmin';
 
 const QuotationsAdmin = ({ id }) => {
   console.log('quotations');
   return <>quotation admin</>;
-};
-
-const QuestionsAdmin = ({ id }) => {
-  const { data, loading } = useGetQuestionsByMakerId(id);
-
-  if (loading) return <LoadingPage />;
-
-  return (
-    <Box>
-      <Table variant="striped" colorScheme="gray">
-        <TableCaption placement="top">Preguntas pendientes:</TableCaption>
-        <Thead>
-          <Tr>
-            <Th>Cliente</Th>
-            <Th>Realizada el:</Th>
-            <Th>Acciones</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {data.questions.map((question) => (
-            <Tr key={question.id}>
-              <Td>{question.user.fullname}</Td>
-              <Td>{question.created_at}</Td>
-              <Td>
-                <ViewIcon color="facebook" mr="20px" cursor="pointer" />
-                <CloseIcon color="red" cursor="pointer" />
-              </Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
-    </Box>
-  );
-};
-
-const InfoAdmin = () => {
-  return <>Info admin</>;
 };
 
 const SalesAdmin = () => {
@@ -64,7 +46,7 @@ const MyBusiness = () => {
     [MY_BUSINESS_SECTIONS.PRODUCTS]: <CatalogAdmin id={id} />,
     [MY_BUSINESS_SECTIONS.QUOTATIONS]: <QuotationsAdmin id={id} />,
     [MY_BUSINESS_SECTIONS.QUESTIONS]: <QuestionsAdmin id={id} />,
-    [MY_BUSINESS_SECTIONS.INFO]: <InfoAdmin id={id} />,
+    [MY_BUSINESS_SECTIONS.INFO]: <MakerInfoAdmin id={id} />,
     [MY_BUSINESS_SECTIONS.SALES]: <SalesAdmin id={id} />,
   };
 

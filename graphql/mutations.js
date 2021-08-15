@@ -64,3 +64,19 @@ export const EDIT_PRODUCT_BY_ID = gql`
     }
   }
 `;
+
+export const UPDATE_QUESTION_BY_ID = gql`
+  mutation editById($id: Int!, $response: String!, $answered_at: date!) {
+    update_questions_by_pk(pk_columns: { id: $id }, _set: { response: $response, answered_at: $answered_at }) {
+      id
+    }
+  }
+`;
+
+export const UPDATE_MAKER_INFO = gql`
+  mutation updateMakerInfo($id: Int!, $description: String!, $name: String!) {
+    update_maker_by_pk(pk_columns: { id: $id }, _set: { description: $description, name: $name }) {
+      id
+    }
+  }
+`;
