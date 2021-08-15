@@ -46,10 +46,10 @@ export default function Layout({ children, ...rest }) {
             Mi perfil
           </Button>
           <Button variant="link" colorScheme="white" color="white" mr="5">
-            Registrarse
+            <a href="/api/auth/login">Registrarse</a>
           </Button>
           <Button variant="link" colorScheme="white" color="white" mr="5">
-            Ingresar
+            <a href="/api/auth/logout">Desconectarse</a>
           </Button>
         </Box>
       </Flex>
