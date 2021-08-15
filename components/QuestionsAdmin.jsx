@@ -28,13 +28,14 @@ import {
 } from '@chakra-ui/react';
 import LoadingPage from './LoadingPage';
 import { useGetQuestionsByMakerId } from '../graphql/hooks';
-import { CloseIcon, ViewIcon } from '@chakra-ui/icons';
+import { ViewIcon } from '@chakra-ui/icons';
 import { GET_QUESTION_BY_ID } from '../graphql/queries';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import { UPDATE_QUESTION_BY_ID } from '../graphql/mutations';
+
 const QuestionsAdmin = ({ id }) => {
-  const { data, loading } = useGetQuestionsByMakerId(id);
+  const { data, loading, refetch } = useGetQuestionsByMakerId(id);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
@@ -67,6 +68,7 @@ const QuestionsAdmin = ({ id }) => {
         duration: 3000,
         isClosable: true,
       });
+      refetch();
     },
   });
 
@@ -84,8 +86,12 @@ const QuestionsAdmin = ({ id }) => {
     onClose();
   };
 
+  // const handleOnDelete = () => {
+  //   refetch()
+  // };
+
   const onSubmit = (formData) => {
-    const now = new Date();
+    const now = new Date().toISOString();
     updateQuestion({
       variables: { id: currentQuestionId, ...formData, answered_at: now },
     });
@@ -147,7 +153,7 @@ const QuestionsAdmin = ({ id }) => {
               <Td>{question.created_at}</Td>
               <Td>
                 <ViewIcon color="facebook" mr="20px" cursor="pointer" onClick={() => handleViewQuestion(question.id)} />
-                <CloseIcon color="red" cursor="pointer" />
+                {/* <CloseIcon color="red" cursor="pointer" onClick={() => handleOnDelete(question.id)} /> */}
               </Td>
             </Tr>
           ))}

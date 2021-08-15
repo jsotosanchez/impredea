@@ -134,13 +134,14 @@ export const useGetProductsByMakerId = (id) => {
 };
 
 export const useGetQuestionsByMakerId = (id) => {
-  const { loading, error, data } = useQuery(GET_QUESTIONS_BY_MAKER_ID, { variables: { id } });
+  const { loading, error, data, refetch } = useQuery(GET_QUESTIONS_BY_MAKER_ID, { variables: { id } });
 
   if (!loading && data) {
     return {
       loading,
       error,
       data,
+      refetch,
     };
   }
 
@@ -148,5 +149,6 @@ export const useGetQuestionsByMakerId = (id) => {
     loading,
     error,
     data,
+    refetch,
   };
 };

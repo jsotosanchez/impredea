@@ -66,7 +66,7 @@ export const EDIT_PRODUCT_BY_ID = gql`
 `;
 
 export const UPDATE_QUESTION_BY_ID = gql`
-  mutation editById($id: Int!, $response: String!, $answered_at: Date!) {
+  mutation editById($id: Int!, $response: String!, $answered_at: date!) {
     update_questions_by_pk(pk_columns: { id: $id }, _set: { response: $response, answered_at: $answered_at }) {
       id
     }
