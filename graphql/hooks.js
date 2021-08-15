@@ -6,6 +6,7 @@ import {
   GET_USER_BY_ID,
   GET_PRODUCTS_BY_MAKER_ID,
   GET_QUESTIONS_BY_MAKER_ID,
+  GET_MAKER_INFO_BY_ID,
 } from './queries';
 
 export const useSearchFormData = () => {
@@ -93,14 +94,14 @@ export const useGetUser = (id) => {
 };
 
 export const useGetMakerAdmin = (id) => {
-  const { loading, error, data } = useQuery(GET_USER_BY_ID, { variables: { id } });
+  const { loading, error, data } = useQuery(GET_MAKER_INFO_BY_ID, { variables: { id } });
 
   if (!loading && data) {
     return {
       loading,
       error,
       data: {
-        user: data.user_by_pk,
+        maker: data.maker_by_pk,
       },
     };
   }

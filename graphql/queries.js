@@ -102,3 +102,15 @@ export const GET_QUESTION_BY_ID = gql`
     }
   }
 `;
+
+export const GET_MAKER_INFO_BY_ID = gql`
+  query getMakerById($id: Int!) {
+    maker_by_pk(id: $id) {
+      description
+      name
+      rating
+      sales
+      active
+    }
+  }
+`;
