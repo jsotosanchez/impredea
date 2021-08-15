@@ -1,5 +1,33 @@
-import { useState } from 'react';
-import { Box, Heading, HStack, Table, Thead, Tbody, Tr, Th, Td, TableCaption } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import {
+  Box,
+  Heading,
+  HStack,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  useDisclosure,
+  Spinner,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Center,
+  Textarea,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  Text,
+  useToast,
+} from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import LoadingPage from '../../components/LoadingPage';
 import { MY_BUSINESS_SECTIONS } from '../../utils/constants';
@@ -7,43 +35,15 @@ import { useGetQuestionsByMakerId } from '../../graphql/hooks';
 import { CloseIcon, ViewIcon } from '@chakra-ui/icons';
 import CatalogAdmin from '../../components/CatalogAdmin';
 import Layout from '../../components/Layout';
+import { GET_QUESTION_BY_ID } from '../../graphql/queries';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { useForm } from 'react-hook-form';
+import { UPDATE_QUESTION_BY_ID } from '../../graphql/mutations';
+import QuestionsAdmin from '../../components/QuestionsAdmin';
 
 const QuotationsAdmin = ({ id }) => {
   console.log('quotations');
   return <>quotation admin</>;
-};
-
-const QuestionsAdmin = ({ id }) => {
-  const { data, loading } = useGetQuestionsByMakerId(id);
-
-  if (loading) return <LoadingPage />;
-
-  return (
-    <Box>
-      <Table variant="striped" colorScheme="gray">
-        <TableCaption placement="top">Preguntas pendientes:</TableCaption>
-        <Thead>
-          <Tr>
-            <Th>Cliente</Th>
-            <Th>Realizada el:</Th>
-            <Th>Acciones</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {data.questions.map((question) => (
-            <Tr key={question.id}>
-              <Td>{question.user.fullname}</Td>
-              <Td>{question.created_at}</Td>
-              <Td>
-                <ViewIcon color="facebook" mr="20px" cursor="pointer" />
-                <CloseIcon color="red" cursor="pointer" />
-              </Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
-    </Box>
-  );
 };
 
 const InfoAdmin = () => {

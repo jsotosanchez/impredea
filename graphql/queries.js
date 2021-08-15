@@ -91,3 +91,14 @@ export const GET_QUESTIONS_BY_MAKER_ID = gql`
     }
   }
 `;
+
+export const GET_QUESTION_BY_ID = gql`
+  query getQuestionById($id: Int!) {
+    questions_by_pk(id: $id) {
+      user {
+        fullname
+      }
+      question
+    }
+  }
+`;
