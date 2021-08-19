@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
 export const MAKE_QUESTION_TO_MAKER = gql`
-  mutation createDeal($maker_id: Int!, $user_id: Int!, $question: String!) {
+  mutation makeQuestion($maker_id: Int!, $user_id: Int!, $question: String!) {
     insert_questions_one(object: { client_id: $user_id, maker_id: $maker_id, question: $question }) {
       id
     }
@@ -37,7 +37,7 @@ export const UPDATE_USER_BY_PK = gql`
 `;
 
 export const INSERT_PRODUCT = gql`
-  mutation insertUser($makerId: Int!, $description: String!, $instructions: String!, $name: String!) {
+  mutation insertProduct($makerId: Int!, $description: String!, $instructions: String!, $name: String!) {
     insert_product_one(
       object: { description: $description, instructions: $instructions, maker_id: $makerId, name: $name }
     ) {
@@ -75,7 +75,7 @@ export const UPDATE_QUESTION_BY_ID = gql`
 
 export const UPDATE_MAKER_INFO = gql`
   mutation updateMakerInfo($id: Int!, $description: String!, $name: String!) {
-    update_maker_by_pk(pk_columns: { id: $id }, _set: { description: $description, name: $name }) {
+    update_user_by_pk(pk_columns: { id: $id }, _set: { maker_description: $description, maker_name: $name }) {
       id
     }
   }

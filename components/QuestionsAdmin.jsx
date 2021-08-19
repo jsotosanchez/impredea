@@ -51,6 +51,12 @@ const QuestionsAdmin = ({ id }) => {
     variables: { id: currentQuestionId },
   });
 
+  const handleOnClose = () => {
+    reset();
+    onClose();
+    refetch();
+  };
+
   const [updateQuestion] = useMutation(UPDATE_QUESTION_BY_ID, {
     onError: () => {
       toast({
@@ -68,7 +74,7 @@ const QuestionsAdmin = ({ id }) => {
         duration: 3000,
         isClosable: true,
       });
-      refetch();
+      handleOnClose();
     },
   });
 
@@ -80,15 +86,6 @@ const QuestionsAdmin = ({ id }) => {
     setCurrentQuestionId(id);
     onOpen();
   };
-
-  const handleOnClose = () => {
-    reset();
-    onClose();
-  };
-
-  // const handleOnDelete = () => {
-  //   refetch()
-  // };
 
   const onSubmit = (formData) => {
     const now = new Date().toISOString();
@@ -104,7 +101,7 @@ const QuestionsAdmin = ({ id }) => {
       <Modal isOpen={isOpen} onClose={handleOnClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>{loadingQuestion ? '' : `${question?.questions_by_pk?.user?.fullname} pregunta:`}</ModalHeader>
+          <ModalHeader>{loadingQuestion ? '' : `${question?.questions_by_pk?.client?.fullname} pregunta:`}</ModalHeader>
           {loadingQuestion ? (
             <Center>
               <Spinner />
@@ -149,7 +146,7 @@ const QuestionsAdmin = ({ id }) => {
         <Tbody>
           {data.questions.map((question) => (
             <Tr key={question.id}>
-              <Td>{question.user.fullname}</Td>
+              <Td>{question.client.fullname}</Td>
               <Td>{question.created_at}</Td>
               <Td>
                 <ViewIcon color="facebook" mr="20px" cursor="pointer" onClick={() => handleViewQuestion(question.id)} />

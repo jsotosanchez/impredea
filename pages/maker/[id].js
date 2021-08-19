@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import {
   Box,
   Button,
@@ -28,6 +28,7 @@ import { MAKE_QUESTION_TO_MAKER } from '../../graphql/mutations';
 import MakeQuestionModal from '../../components/MakeQuestionModal';
 import ProductCard from '../../components/ProductCard';
 import LoadingPage from '../../components/LoadingPage';
+import { SessionContext } from '../../context/sessionContext';
 
 const Catalog = ({ products }) => {
   return (
@@ -67,6 +68,8 @@ export default function MakerProfile() {
   const [activeSection, setActiveSection] = useState(MAKER_SECTIONS.PRODUCTS);
   const [questionText, setQuestionText] = useState('');
   const toast = useToast();
+  const context = useContext(SessionContext);
+  const { id: currentUserId } = context.getUser();
 
   const [createQuestion] = useMutation(MAKE_QUESTION_TO_MAKER, {
     onError: () => {
@@ -101,13 +104,16 @@ export default function MakerProfile() {
   const handleSubmit = () => {
     const newQuestion = {
       maker_id: id,
-      user_id: 2,
+      user_id: currentUserId,
       question: questionText,
     };
 
     createQuestion({
       variables: { ...newQuestion },
     });
+    // add react-hook-form and reset
+    setQuestionText('');
+    onClose();
   };
 
   return (
@@ -137,15 +143,13 @@ export default function MakerProfile() {
               </Flex>
               <Square h="200px" w="200px" bg="whatsapp.300"></Square>
               <Flex>
-                <Heading as="h1" color="brandBlue">
-                  {data && data.maker.name}
+                <Heading as="h1" color="brandBlue" size="md">
+                  {data && data.maker.maker_name}
                 </Heading>
                 <Spacer />
-                {data && <RenderRating rating={data.maker.rating} />}
+                {data && <RenderRating rating={data.maker.maker_rating} />}
               </Flex>
-              <Text color="black" noOfLines={15} overflow="scroll">
-                {data && data.maker.description}
-              </Text>
+              <Text color="black">{data && data.maker.maker_description}</Text>
             </>
           )}
         </Stack>

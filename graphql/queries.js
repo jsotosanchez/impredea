@@ -15,11 +15,11 @@ export const GET_SEARCHFORM_QUERY = gql`
 
 export const GET_MAKER_BY_ID = gql`
   query getMakerById($id: Int!) {
-    maker_by_pk(id: $id) {
-      description
-      name
-      rating
-      sales
+    user_by_pk(id: $id) {
+      maker_description
+      maker_name
+      maker_rating
+      maker_sales
     }
     product(where: { maker_id: { _eq: $id } }) {
       name
@@ -81,10 +81,10 @@ export const GET_PRODUCTS_BY_MAKER_ID = gql`
 
 export const GET_QUESTIONS_BY_MAKER_ID = gql`
   query getProductsByMakerId($id: Int!) {
-    questions(where: { maker_id: { _eq: $id }, response: { _is_null: false } }) {
+    questions(where: { maker_id: { _eq: $id }, response: { _is_null: true } }) {
       id
       question
-      user {
+      client {
         fullname
       }
       created_at
@@ -95,7 +95,7 @@ export const GET_QUESTIONS_BY_MAKER_ID = gql`
 export const GET_QUESTION_BY_ID = gql`
   query getQuestionById($id: Int!) {
     questions_by_pk(id: $id) {
-      user {
+      client {
         fullname
       }
       question
@@ -105,12 +105,12 @@ export const GET_QUESTION_BY_ID = gql`
 
 export const GET_MAKER_INFO_BY_ID = gql`
   query getMakerById($id: Int!) {
-    maker_by_pk(id: $id) {
-      description
-      name
-      rating
-      sales
-      active
+    user_by_pk(id: $id) {
+      maker_description
+      maker_name
+      maker_rating
+      maker_sales
+      maker_active
     }
   }
 `;
