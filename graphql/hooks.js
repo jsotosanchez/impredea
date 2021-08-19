@@ -9,6 +9,7 @@ import {
   GET_QUESTIONS_BY_MAKER_ID,
   GET_MAKER_INFO_BY_ID,
   GET_USER_IDENTITY_BY_EMAIL,
+  GET_QUOTATIONS_BY_MAKER_ID,
 } from './queries';
 
 export const useSearchFormData = () => {
@@ -176,5 +177,16 @@ export const useGetUserIdentity = () => {
     loading,
     error,
     data: emptyData,
+  };
+};
+
+export const useGetQuotationsByMakerId = (id) => {
+  const { loading, error, data, refetch } = useQuery(GET_QUOTATIONS_BY_MAKER_ID, { variables: { id } });
+
+  return {
+    loading,
+    error,
+    data,
+    refetch,
   };
 };

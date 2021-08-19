@@ -125,3 +125,17 @@ export const GET_USER_IDENTITY_BY_EMAIL = gql`
     }
   }
 `;
+
+export const GET_QUOTATIONS_BY_MAKER_ID = gql`
+  query getQuotationsByMakerId($id: Int!) {
+    quotations(where: { maker_id: { _eq: $id } }) {
+      id
+      updated_at
+      created_at
+      status_id
+      product {
+        name
+      }
+    }
+  }
+`;

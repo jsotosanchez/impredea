@@ -1,35 +1,12 @@
 import { useState } from 'react';
-import {
-  Box,
-  Button,
-  Checkbox,
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Heading,
-  HStack,
-  Input,
-  Spacer,
-  Stack,
-  Textarea,
-  useToast,
-} from '@chakra-ui/react';
+import { Box, Heading, HStack } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import LoadingPage from '../../components/LoadingPage';
 import { MY_BUSINESS_SECTIONS } from '../../utils/constants';
 import CatalogAdmin from '../../components/CatalogAdmin';
 import Layout from '../../components/Layout';
 import QuestionsAdmin from '../../components/QuestionsAdmin';
-import { useForm } from 'react-hook-form';
-import { useGetMakerAdmin } from '../../graphql/hooks';
-import { useMutation } from '@apollo/client';
-import { UPDATE_MAKER_INFO } from '../../graphql/mutations';
 import MakerInfoAdmin from '../../components/MakerInfoAdmin';
-
-const QuotationsAdmin = ({ id }) => {
-  return <>quotation admin</>;
-};
+import QuotationsAdmin from '../../components/QuotationAdmin';
 
 const SalesAdmin = () => {
   return <>Sales admin</>;
@@ -38,7 +15,6 @@ const SalesAdmin = () => {
 const MyBusiness = () => {
   const router = useRouter();
   const { id } = router.query;
-  const loading = false;
   const [activeSection, setActiveSection] = useState(MY_BUSINESS_SECTIONS.PRODUCTS);
 
   const renderSection = {
@@ -48,8 +24,6 @@ const MyBusiness = () => {
     [MY_BUSINESS_SECTIONS.INFO]: <MakerInfoAdmin id={id} />,
     [MY_BUSINESS_SECTIONS.SALES]: <SalesAdmin id={id} />,
   };
-
-  if (loading) return <LoadingPage />;
 
   return (
     <Layout>
