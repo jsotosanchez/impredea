@@ -114,3 +114,14 @@ export const GET_MAKER_INFO_BY_ID = gql`
     }
   }
 `;
+
+export const GET_USER_IDENTITY_BY_EMAIL = gql`
+  query getUserIdentityByEmail($email: String!) {
+    user(where: { email: { _eq: $email } }) {
+      email
+      fullname
+      id
+      maker_active
+    }
+  }
+`;

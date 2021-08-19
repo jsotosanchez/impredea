@@ -1,8 +1,14 @@
+import { useContext } from 'react';
 import { Box, Spacer, Flex, Heading, Button } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import { SessionContext } from '../context/sessionContext';
 
 export default function Layout({ children, ...rest }) {
   const router = useRouter();
+  const context = useContext(SessionContext);
+
+  const { id, maker_active } = context.getUser();
+
   return (
     <>
       <Flex
@@ -27,30 +33,38 @@ export default function Layout({ children, ...rest }) {
         </Box>
         <Spacer />
         <Box pt="4">
-          <Button
-            variant="link"
-            colorScheme="white"
-            color="white"
-            mr="5"
-            onClick={() => router.push(`/mybusiness/${1}`)}
-          >
-            Mi negocio
-          </Button>
-          <Button
-            variant="link"
-            colorScheme="white"
-            color="white"
-            mr="5"
-            onClick={() => router.push(`/myProfile/${1}`)}
-          >
-            Mi perfil
-          </Button>
-          <Button variant="link" colorScheme="white" color="white" mr="5">
-            <a href="/api/auth/login">Registrarse</a>
-          </Button>
-          <Button variant="link" colorScheme="white" color="white" mr="5">
-            <a href="/api/auth/logout">Desconectarse</a>
-          </Button>
+          {maker_active && (
+            <Button
+              variant="link"
+              colorScheme="white"
+              color="white"
+              mr="5"
+              onClick={() => router.push(`/mybusiness/${id}`)}
+            >
+              Mi negocio
+            </Button>
+          )}
+          {id && (
+            <Button
+              variant="link"
+              colorScheme="white"
+              color="white"
+              mr="5"
+              onClick={() => router.push(`/myProfile/${id}`)}
+            >
+              Mi perfil
+            </Button>
+          )}
+          {!id && (
+            <Button variant="link" colorScheme="white" color="white" mr="5">
+              <a href="/api/auth/login">Contectarse</a>
+            </Button>
+          )}
+          {id && (
+            <Button variant="link" colorScheme="white" color="white" mr="5">
+              <a href="/api/auth/logout">Desconectarse</a>
+            </Button>
+          )}
         </Box>
       </Flex>
       {children}

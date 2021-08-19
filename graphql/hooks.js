@@ -1,4 +1,5 @@
-import { useQuery } from '@apollo/react-hooks';
+import { useLazyQuery, useQuery } from '@apollo/react-hooks';
+import { useCallback } from 'react';
 import {
   GET_SEARCHFORM_QUERY,
   GET_MAKER_BY_ID,
@@ -7,6 +8,7 @@ import {
   GET_PRODUCTS_BY_MAKER_ID,
   GET_QUESTIONS_BY_MAKER_ID,
   GET_MAKER_INFO_BY_ID,
+  GET_USER_IDENTITY_BY_EMAIL,
 } from './queries';
 
 export const useSearchFormData = () => {
@@ -150,5 +152,29 @@ export const useGetQuestionsByMakerId = (id) => {
     error,
     data,
     refetch,
+  };
+};
+
+const emptyData = {};
+
+export const useGetUserIdentity = () => {
+  const [lazyQuery, { loading, error, data }] = useLazyQuery(GET_USER_IDENTITY_BY_EMAIL);
+
+  const getIdentity = useCallback((user) => lazyQuery({ variables: { email: user.email } }), [lazyQuery]);
+
+  if (!loading && data) {
+    return {
+      getIdentity,
+      loading,
+      error,
+      data: data.user[0],
+    };
+  }
+
+  return {
+    getIdentity,
+    loading,
+    error,
+    data: emptyData,
   };
 };

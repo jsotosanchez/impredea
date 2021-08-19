@@ -3,6 +3,7 @@ import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { ApolloProvider } from '@apollo/client';
 import client from '../graphql/apollo-client';
 import { UserProvider } from '@auth0/nextjs-auth0';
+import { SessionProvider } from '../context/sessionContext';
 
 const colors = {
   brandBlue: '#3D5A80',
@@ -17,13 +18,15 @@ const theme = extendTheme({ colors });
 
 function MyApp({ Component, pageProps }) {
   return (
-    <UserProvider>
-      <ApolloProvider client={client}>
-        <ChakraProvider theme={theme}>
-          <Component {...pageProps} />
-        </ChakraProvider>
-      </ApolloProvider>
-    </UserProvider>
+    <SessionProvider>
+      <UserProvider>
+        <ApolloProvider client={client}>
+          <ChakraProvider theme={theme}>
+            <Component {...pageProps} />
+          </ChakraProvider>
+        </ApolloProvider>
+      </UserProvider>
+    </SessionProvider>
   );
 }
 

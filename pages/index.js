@@ -18,6 +18,7 @@ import { useRouter } from 'next/router';
 import { gql } from '@apollo/client';
 import client from '../graphql/apollo-client';
 import { useForm } from 'react-hook-form';
+import Authorization from '../components/Authorization';
 
 const SearchForm = ({ quantities, categories }) => {
   const router = useRouter();
@@ -106,30 +107,32 @@ const SearchForm = ({ quantities, categories }) => {
 
 export default function Home({ quantities, categories }) {
   return (
-    <Layout>
-      <Head>
-        <title>Impredea</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Flex bg="white" h="100vh">
-        <Center w="50%" ml="auto" mr="auto">
-          <Stack>
-            <Heading color="brandBlue" size="3xl">
-              Converti tus <br />
-              ideas en realidad
-            </Heading>
-            <Text color="brandLightBlue" fontWeight="semibold">
-              Todo lo que buscas en un solo lugar
-            </Text>
-          </Stack>
-        </Center>
-        <Center w="50%">
-          <Box bg="brandGray.100" h="auto" w="80%" borderRadius="30px">
-            <SearchForm quantities={quantities} categories={categories}></SearchForm>
-          </Box>
-        </Center>
-      </Flex>
-    </Layout>
+    <Authorization>
+      <Layout>
+        <Head>
+          <title>Impredea</title>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <Flex bg="white" h="100vh">
+          <Center w="50%" ml="auto" mr="auto">
+            <Stack>
+              <Heading color="brandBlue" size="3xl">
+                Converti tus <br />
+                ideas en realidad
+              </Heading>
+              <Text color="brandLightBlue" fontWeight="semibold">
+                Todo lo que buscas en un solo lugar
+              </Text>
+            </Stack>
+          </Center>
+          <Center w="50%">
+            <Box bg="brandGray.100" h="auto" w="80%" borderRadius="30px">
+              <SearchForm quantities={quantities} categories={categories}></SearchForm>
+            </Box>
+          </Center>
+        </Flex>
+      </Layout>
+    </Authorization>
   );
 }
 
