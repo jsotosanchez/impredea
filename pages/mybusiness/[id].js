@@ -28,7 +28,6 @@ import { UPDATE_MAKER_INFO } from '../../graphql/mutations';
 import MakerInfoAdmin from '../../components/MakerInfoAdmin';
 
 const QuotationsAdmin = ({ id }) => {
-  console.log('quotations');
   return <>quotation admin</>;
 };
 

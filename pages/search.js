@@ -35,9 +35,7 @@ const Search = ({ quantities, categories, makers }) => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (formData) => {
-    console.log(formData);
-  };
+  const onSubmit = (formData) => {};
 
   const handleOnClick = (id) => {
     router.push({ pathname: `/maker/${id}` });
