@@ -40,7 +40,7 @@ export const useGetMaker = (id) => {
       loading,
       error,
       data: {
-        maker: data.maker_by_pk,
+        maker: data.user_by_pk,
         products: data.product,
         questions: data.questions,
         reviews: data.reviews,
@@ -103,7 +103,7 @@ export const useGetMakerAdmin = (id) => {
       loading,
       error,
       data: {
-        maker: data.maker_by_pk,
+        user: data.user_by_pk,
       },
     };
   }

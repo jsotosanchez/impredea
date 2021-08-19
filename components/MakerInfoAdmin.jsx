@@ -65,7 +65,7 @@ const MakerInfoAdmin = ({ id }) => {
             <Input
               id="name"
               placeholder="Impresiones 3D"
-              defaultValue={data.maker?.name}
+              defaultValue={data.user?.maker_name}
               {...register('name', {
                 required: 'Este campo es requerido',
               })}
@@ -78,7 +78,7 @@ const MakerInfoAdmin = ({ id }) => {
             </FormLabel>
             <Textarea
               id="description"
-              defaultValue={data.maker?.description}
+              defaultValue={data.user?.maker_description}
               placeholder="Imprimiendo desde..."
               {...register('description', {
                 required: 'Este campo es requerido',
@@ -98,19 +98,19 @@ const MakerInfoAdmin = ({ id }) => {
             <FormLabel color="brandBlue" htmlFor="rating">
               Rating:
             </FormLabel>
-            <Input readOnly id="rating" bg="gray.100" value={data.maker?.rating} />
+            <Input readOnly id="rating" bg="gray.100" value={data.user?.maker_rating} />
           </FormControl>
           <FormControl>
             <FormLabel color="brandBlue" htmlFor="Sales">
               Ventas Realizadas:
             </FormLabel>
-            <Input readOnly id="Sales" bg="gray.100" value={data.maker?.sales} />
+            <Input readOnly id="Sales" bg="gray.100" value={data.user?.maker_sales} />
           </FormControl>
           <FormControl>
             <FormLabel color="brandBlue" htmlFor="active">
-              Quieres activar tu perfil como maker?
+              Quieres activar tu perfil como Maker?
             </FormLabel>
-            <Checkbox size="lg" isChecked={data.maker.active} id="active" {...register('active')}></Checkbox>
+            <Checkbox size="lg" isChecked={data.user.active} id="active" {...register('active')}></Checkbox>
           </FormControl>
           <Flex direction="row-reverse">
             <Button

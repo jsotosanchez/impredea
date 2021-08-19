@@ -142,12 +142,12 @@ const Search = ({ quantities, categories, makers }) => {
         </Stack>
         <Stack w="75%" bg="white" h="100%" overflow="scroll">
           <UnorderedList m="3rem">
-            {makers.map(({ name, description, rating, sales, id }) => (
+            {makers.map(({ maker_name, maker_description, maker_rating, maker_sales, id }) => (
               <MakerCard
-                name={name}
-                description={description}
-                rating={rating}
-                sales={sales}
+                name={maker_name}
+                description={maker_description}
+                rating={maker_rating}
+                sales={maker_sales}
                 handleOnClick={() => handleOnClick(id)}
                 key={id}
               />
@@ -173,12 +173,12 @@ export async function getServerSideProps() {
           id
           label
         }
-        maker {
-          category_id
-          description
-          name
-          rating
-          sales
+        user(where: { maker_active: { _eq: true } }) {
+          maker_category_id
+          maker_description
+          maker_name
+          maker_rating
+          maker_sales
           id
         }
       }
@@ -189,7 +189,7 @@ export async function getServerSideProps() {
     props: {
       quantities: data.order_quantity,
       categories: data.maker_category,
-      makers: data.maker,
+      makers: data.user,
     },
   };
 }
