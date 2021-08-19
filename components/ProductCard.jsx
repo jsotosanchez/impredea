@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client';
 import {
   Box,
   Text,
@@ -20,12 +21,43 @@ import {
   FormErrorMessage,
   Select,
   Textarea,
+  useToast,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
+import { SessionContext } from '../context/sessionContext';
 import { useGetProduct } from '../graphql/hooks';
+import { REQUEST_QUOTATION } from '../graphql/mutations';
 
 const BuyProductModal = ({ isOpen, onClose, id, name }) => {
+  const router = useRouter();
+  const { id: makerId } = router.query;
+  const toast = useToast();
   const { data, loading } = useGetProduct(id);
+  const context = useContext(SessionContext);
+  const user = context.getUser();
+
+  const [requestQuotation, { loadingRequestQuotation }] = useMutation(REQUEST_QUOTATION, {
+    onCompleted: () => {
+      toast({
+        title: 'Se ha enviado tu solicitud al Maker',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+    onError: () => {
+      toast({
+        title: 'Ha ocurrido un error',
+        description: 'Por favor intenta mas tarde',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+  });
+
   const qualities = [{ id: 1, label: 'Baja' }, { id: 2, label: 'Media' }, , { id: 3, label: 'Alta' }];
 
   const materials = [
@@ -37,14 +69,21 @@ const BuyProductModal = ({ isOpen, onClose, id, name }) => {
     handleSubmit,
     register,
     formState: { errors },
+    reset,
   } = useForm();
 
   const onSubmit = (formData) => {
-    console.log(formData);
+    requestQuotation({ variables: { ...formData, productId: id, clientId: user.id, makerId } });
+    handleOnClose();
+  };
+
+  const handleOnClose = () => {
+    reset();
+    onClose();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="4xl">
+    <Modal isOpen={isOpen} onClose={handleOnClose} size="4xl">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{name}</ModalHeader>
@@ -77,13 +116,13 @@ const BuyProductModal = ({ isOpen, onClose, id, name }) => {
                     />
                     <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
                   </FormControl>
-                  <FormControl isInvalid={errors.quality}>
+                  <FormControl isInvalid={errors.qualityId}>
                     <FormLabel color="brandBlue">Calidad</FormLabel>
                     <Select
                       bg="white"
                       color="black"
-                      id="quality"
-                      {...register('quality', {
+                      id="qualityId"
+                      {...register('qualityId', {
                         required: 'Este campo es requerido',
                       })}
                     >
@@ -93,15 +132,15 @@ const BuyProductModal = ({ isOpen, onClose, id, name }) => {
                         </option>
                       ))}
                     </Select>
-                    <FormErrorMessage>{errors.quality && errors.quality.message}</FormErrorMessage>
+                    <FormErrorMessage>{errors.qualityId && errors.qualityId.message}</FormErrorMessage>
                   </FormControl>
-                  <FormControl isInvalid={errors.material}>
+                  <FormControl isInvalid={errors.materialId}>
                     <FormLabel color="brandBlue">Material</FormLabel>
                     <Select
                       bg="white"
                       color="black"
-                      id="material"
-                      {...register('material', {
+                      id="materialId"
+                      {...register('materialId', {
                         required: 'Este campo es requerido',
                       })}
                     >
@@ -111,7 +150,7 @@ const BuyProductModal = ({ isOpen, onClose, id, name }) => {
                         </option>
                       ))}
                     </Select>
-                    <FormErrorMessage>{errors.material && errors.material.message}</FormErrorMessage>
+                    <FormErrorMessage>{errors.materialId && errors.materialId.message}</FormErrorMessage>
                   </FormControl>
                 </Stack>
                 <Stack w="45%">
@@ -121,20 +160,22 @@ const BuyProductModal = ({ isOpen, onClose, id, name }) => {
                     Indicaciones:
                   </Text>
                   <Text>{data && data.product.instructions}</Text>
-                  <FormControl isInvalid={errors.clientIndications}>
-                    <FormLabel color="brandBlue" htmlFor="clientIndications">
+                  <FormControl isInvalid={errors.clientInstructions}>
+                    <FormLabel color="brandBlue" htmlFor="clientInstructions">
                       Informacion para el Maker:
                     </FormLabel>
                     <Textarea
                       bg="white"
                       color="black"
-                      id="clientIndications"
+                      id="clientInstructions"
                       placeholder="Por favor ingresa lo indicado por el Maker para tener un producto acorde a tus necesidades"
-                      {...register('clientIndications', {
+                      {...register('clientInstructions', {
                         required: 'Este campo es requerido',
                       })}
                     />
-                    <FormErrorMessage>{errors.clientIndications && errors.clientIndications.message}</FormErrorMessage>
+                    <FormErrorMessage>
+                      {errors.clientInstructions && errors.clientInstructions.message}
+                    </FormErrorMessage>
                   </FormControl>
                 </Stack>
               </Flex>

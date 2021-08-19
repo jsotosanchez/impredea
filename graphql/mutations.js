@@ -80,3 +80,29 @@ export const UPDATE_MAKER_INFO = gql`
     }
   }
 `;
+
+export const REQUEST_QUOTATION = gql`
+  mutation requestQuotation(
+    $clientId: Int!
+    $clientInstructions: String!
+    $materialId: Int!
+    $qualityId: Int!
+    $quantity: Int!
+    $makerId: Int!
+    $productId: Int!
+  ) {
+    insert_quotations_one(
+      object: {
+        client_id: $clientId
+        client_instructions: $clientInstructions
+        material_id: $materialId
+        quality_id: $qualityId
+        quantity: $quantity
+        maker_id: $makerId
+        product_id: $productId
+      }
+    ) {
+      id
+    }
+  }
+`;
