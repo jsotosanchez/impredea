@@ -42,7 +42,7 @@ import { ACCEPT_QUOTATION, DECLINE_QUOTATION } from '../../graphql/mutations';
 const Purchases = () => <>purchases</>;
 
 const ClientQuotations = ({ id }) => {
-  const { data, loading } = useGetQuotationsByClientId(id);
+  const { data, loading, refetch } = useGetQuotationsByClientId(id);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
@@ -70,6 +70,7 @@ const ClientQuotations = ({ id }) => {
         duration: 3000,
         isClosable: true,
       });
+      handleOnClose();
     },
   });
 
@@ -90,7 +91,7 @@ const ClientQuotations = ({ id }) => {
         duration: 3000,
         isClosable: true,
       });
-      //   handleOnClose();
+      handleOnClose();
     },
   });
 
@@ -104,11 +105,16 @@ const ClientQuotations = ({ id }) => {
     declineQuotation({ variables: { id: quotationId } });
   };
 
+  const handleOnClose = () => {
+    onClose();
+    refetch();
+  };
+
   if (loading) return <LoadingPage />;
 
   return (
     <Box>
-      <Modal isOpen={isOpen} onClose={onClose} size="4xl">
+      <Modal isOpen={isOpen} onClose={handleOnClose} size="4xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Cotización</ModalHeader>
