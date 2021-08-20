@@ -50,6 +50,17 @@ export default function Layout({ children, ...rest }) {
               colorScheme="white"
               color="white"
               mr="5"
+              onClick={() => router.push(`/myPurchases/${id}`)}
+            >
+              Mis Compras
+            </Button>
+          )}
+          {id && (
+            <Button
+              variant="link"
+              colorScheme="white"
+              color="white"
+              mr="5"
               onClick={() => router.push(`/myProfile/${id}`)}
             >
               Mi perfil
