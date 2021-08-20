@@ -117,3 +117,18 @@ export const SEND_QUOTATION = gql`
     }
   }
 `;
+export const ACCEPT_QUOTATION = gql`
+  mutation acceptQuotation($id: uuid!) {
+    update_quotations_by_pk(pk_columns: { id: $id }, _set: { status_id: 3 }) {
+      id
+    }
+  }
+`;
+
+export const DECLINE_QUOTATION = gql`
+  mutation declineQuotation($id: uuid!) {
+    update_quotations_by_pk(pk_columns: { id: $id }, _set: { status_id: 4 }) {
+      id
+    }
+  }
+`;

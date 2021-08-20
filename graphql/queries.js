@@ -128,7 +128,7 @@ export const GET_USER_IDENTITY_BY_EMAIL = gql`
 
 export const GET_QUOTATIONS_BY_MAKER_ID = gql`
   query getQuotationsByMakerId($id: Int!) {
-    quotations(where: { maker_id: { _eq: $id } }) {
+    quotations(where: { maker_id: { _eq: $id }, status_id: { _eq: 1 } }) {
       id
       updated_at
       created_at
@@ -143,6 +143,24 @@ export const GET_QUOTATIONS_BY_MAKER_ID = gql`
   }
 `;
 
+export const GET_QUOTATIONS_BY_CLIENT_ID = gql`
+  query getQuotationsByMakerId($id: Int!) {
+    quotations(where: { client_id: { _eq: $id }, status_id: { _eq: 2 } }) {
+      id
+      updated_at
+      product {
+        name
+      }
+      quotation_status {
+        label
+      }
+      maker {
+        maker_name
+      }
+    }
+  }
+`;
+
 export const GET_QUOTATION_BY_PK = gql`
   query getQuotationByPK($id: uuid!) {
     quotations_by_pk(id: $id) {
@@ -150,6 +168,9 @@ export const GET_QUOTATION_BY_PK = gql`
       id
       status_id
       quantity
+      price
+      information
+      estimated_date
       material {
         label
       }
