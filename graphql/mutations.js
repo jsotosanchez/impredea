@@ -106,3 +106,14 @@ export const REQUEST_QUOTATION = gql`
     }
   }
 `;
+
+export const SEND_QUOTATION = gql`
+  mutation updateQuotation($id: uuid!, $estimated_date: date, $information: String, $price: numeric) {
+    update_quotations_by_pk(
+      pk_columns: { id: $id }
+      _set: { estimated_date: $estimated_date, information: $information, price: $price, status_id: 2 }
+    ) {
+      id
+    }
+  }
+`;

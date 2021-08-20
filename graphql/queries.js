@@ -136,6 +136,33 @@ export const GET_QUOTATIONS_BY_MAKER_ID = gql`
       product {
         name
       }
+      quotation_status {
+        label
+      }
+    }
+  }
+`;
+
+export const GET_QUOTATION_BY_PK = gql`
+  query getQuotationByPK($id: uuid!) {
+    quotations_by_pk(id: $id) {
+      client_instructions
+      id
+      status_id
+      quantity
+      material {
+        label
+      }
+      product {
+        main_photo
+        name
+      }
+      product_quality {
+        label
+      }
+      client {
+        fullname
+      }
     }
   }
 `;
