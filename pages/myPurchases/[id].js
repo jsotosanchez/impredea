@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -37,7 +37,7 @@ import { EditIcon } from '@chakra-ui/icons';
 import LoadingPage from '../../components/LoadingPage';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_QUOTATION_BY_PK } from '../../graphql/queries';
-import { ACCEPT_QUOTATION, DECLINE_QUOTATION } from '../../graphql/mutations';
+import { ACCEPT_QUOTATION, CREATE_SALE, DECLINE_QUOTATION } from '../../graphql/mutations';
 
 const Purchases = () => <>purchases</>;
 
@@ -53,7 +53,7 @@ const ClientQuotations = ({ id }) => {
     onOpen();
   };
 
-  const [acceptQuotation] = useMutation(ACCEPT_QUOTATION, {
+  const [acceptQuotation, { data: acceptQuotationResponse }] = useMutation(ACCEPT_QUOTATION, {
     onError: () => {
       toast({
         title: 'No se pudo aceptar la cotización',
@@ -94,6 +94,15 @@ const ClientQuotations = ({ id }) => {
       handleOnClose();
     },
   });
+
+  const [createSale] = useMutation(CREATE_SALE);
+
+  useEffect(() => {
+    if (acceptQuotationResponse) {
+      const { client_id, maker_id, id } = acceptQuotationResponse.update_quotations_by_pk;
+      createSale({ variables: { client_id, maker_id, id } });
+    }
+  }, [acceptQuotationResponse]);
 
   const handleComprar = () => {
     const quotationId = quotation.quotations_by_pk.id;
