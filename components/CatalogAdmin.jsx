@@ -55,7 +55,7 @@ const CatalogAdmin = ({ id }) => {
     getProduct();
   }, [currentProductId]);
 
-  const [inserProduct] = useMutation(INSERT_PRODUCT, {
+  const [insertProduct] = useMutation(INSERT_PRODUCT, {
     onError: () => {
       toast({
         title: 'No se pudo guardar tu producto',
@@ -121,7 +121,7 @@ const CatalogAdmin = ({ id }) => {
 
   const handleOnChange = (e) => setFilter(e.target.value);
   const onAddSubmit = (formData) => {
-    inserProduct({
+    insertProduct({
       variables: { makerId: id, ...formData },
     });
     handleAddOnClose();
