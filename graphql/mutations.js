@@ -121,6 +121,8 @@ export const ACCEPT_QUOTATION = gql`
   mutation acceptQuotation($id: uuid!) {
     update_quotations_by_pk(pk_columns: { id: $id }, _set: { status_id: 3 }) {
       id
+      maker_id
+      client_id
     }
   }
 `;
@@ -128,6 +130,16 @@ export const ACCEPT_QUOTATION = gql`
 export const DECLINE_QUOTATION = gql`
   mutation declineQuotation($id: uuid!) {
     update_quotations_by_pk(pk_columns: { id: $id }, _set: { status_id: 4 }) {
+      id
+      maker_id
+      client_id
+    }
+  }
+`;
+
+export const CREATE_SALE = gql`
+  mutation createSale($client_id: Int!, $maker_id: Int!, $id: uuid!) {
+    insert_sales_one(object: { client_id: $client_id, quotation_id: $id, maker_id: $maker_id }) {
       id
     }
   }
