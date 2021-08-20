@@ -60,7 +60,7 @@ const QuestionsAdmin = ({ id }) => {
   const [updateQuestion] = useMutation(UPDATE_QUESTION_BY_ID, {
     onError: () => {
       toast({
-        title: 'No se responder la pregunta',
+        title: 'No se pudo responder la pregunta',
         description: 'Por favor intenta mas tarde.',
         status: 'error',
         duration: 3000,
