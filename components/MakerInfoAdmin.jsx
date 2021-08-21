@@ -106,12 +106,6 @@ const MakerInfoAdmin = ({ id }) => {
             </FormLabel>
             <Input readOnly id="Sales" bg="gray.100" value={data.user?.maker_sales} />
           </FormControl>
-          <FormControl>
-            <FormLabel color="brandBlue" htmlFor="active">
-              Quieres activar tu perfil como Maker?
-            </FormLabel>
-            <Checkbox size="lg" isChecked={data.user.active} id="active" {...register('active')}></Checkbox>
-          </FormControl>
           <Flex direction="row-reverse">
             <Button
               w="30%"

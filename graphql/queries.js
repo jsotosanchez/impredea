@@ -206,3 +206,22 @@ export const GET_SALES_BY_CLIENT_ID = gql`
     }
   }
 `;
+
+export const GET_SALES_BY_MAKER_ID = gql`
+  query getSalesByMakerId($id: Int!) {
+    sales(where: { maker_id: { _eq: $id } }) {
+      id
+      quotation {
+        price
+        quantity
+        estimated_date
+        product {
+          name
+        }
+        maker {
+          maker_name
+        }
+      }
+    }
+  }
+`;
