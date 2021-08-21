@@ -28,6 +28,7 @@ import {
   useDisclosure,
   useToast,
   Text,
+  Tooltip,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { MY_PURCHASES_SECTIONS } from '../../utils/constants';
@@ -38,7 +39,6 @@ import LoadingPage from '../../components/LoadingPage';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_QUOTATION_BY_PK } from '../../graphql/queries';
 import { ACCEPT_QUOTATION, CREATE_SALE, DECLINE_QUOTATION } from '../../graphql/mutations';
-
 const Purchases = ({ id }) => {
   const { data, loading, refetch } = useGetSalesByClientId(id);
 
@@ -64,12 +64,20 @@ const Purchases = ({ id }) => {
             <Td>{sale.quotation.maker.maker_name}</Td>
             <Td>{sale.quotation.price}</Td>
             <Td>
-              <Stack>
-                <ChatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
-                <ViewIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
-                <RepeatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
-                <WarningIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
-              </Stack>
+              <Center>
+                <Tooltip hasArrow label="Ver Conversación">
+                  <ChatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                </Tooltip>
+                <Tooltip hasArrow label="Ver Compra">
+                  <ViewIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                </Tooltip>
+                <Tooltip hasArrow label="Repetir Compra">
+                  <RepeatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                </Tooltip>
+                <Tooltip hasArrow label="Reportar un problema">
+                  <WarningIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                </Tooltip>
+              </Center>
             </Td>
           </Tr>
         ))}
