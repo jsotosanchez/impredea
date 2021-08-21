@@ -35,12 +35,12 @@ export const GET_MAKER_BY_ID = gql`
       }
     }
     reviews(where: { maker_id: { _eq: $id } }) {
+      id
+      text
+      rating
       client {
         fullname
       }
-      rating
-      id
-      text
     }
   }
 `;
