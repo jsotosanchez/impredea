@@ -120,7 +120,7 @@ export const useGetMakerAdmin = (id) => {
 };
 
 export const useGetProductsByMakerId = (id) => {
-  const { loading, error, data } = useQuery(GET_PRODUCTS_BY_MAKER_ID, { variables: { id } });
+  const { loading, error, data, refetch } = useQuery(GET_PRODUCTS_BY_MAKER_ID, { variables: { id } });
 
   if (!loading && data) {
     return {
@@ -129,6 +129,7 @@ export const useGetProductsByMakerId = (id) => {
       data: {
         products: data.product,
       },
+      refetch,
     };
   }
 
@@ -136,6 +137,7 @@ export const useGetProductsByMakerId = (id) => {
     loading,
     error,
     data,
+    refetch,
   };
 };
 

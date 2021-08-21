@@ -27,7 +27,7 @@ import { GET_PRODUCT_BY_ID } from '../graphql/queries';
 import ManageProductModal from './ManageProductModal';
 
 const CatalogAdmin = ({ id }) => {
-  const { data: productsByMakerId, loading } = useGetProductsByMakerId(id);
+  const { data: productsByMakerId, loading, refetch } = useGetProductsByMakerId(id);
   const [filter, setFilter] = useState('');
   const toast = useToast();
   const { isOpen: addModalIsOpen, onOpen: addModalOnOpen, onClose: addModalOnClose } = useDisclosure();
@@ -125,6 +125,7 @@ const CatalogAdmin = ({ id }) => {
       variables: { makerId: id, ...formData },
     });
     handleAddOnClose();
+    refetch();
   };
 
   const onEditSubmit = (formData) => {
