@@ -72,6 +72,7 @@ const CatalogAdmin = ({ id }) => {
         duration: 3000,
         isClosable: true,
       });
+      refetch();
     },
   });
 
@@ -92,6 +93,7 @@ const CatalogAdmin = ({ id }) => {
         duration: 3000,
         isClosable: true,
       });
+      refetch();
     },
   });
   const [deleteProduct] = useMutation(DELETE_PRODUCT_BY_ID, {
@@ -111,6 +113,7 @@ const CatalogAdmin = ({ id }) => {
         duration: 3000,
         isClosable: true,
       });
+      refetch();
     },
   });
 
@@ -120,12 +123,12 @@ const CatalogAdmin = ({ id }) => {
   };
 
   const handleOnChange = (e) => setFilter(e.target.value);
+
   const onAddSubmit = (formData) => {
     insertProduct({
       variables: { makerId: id, ...formData },
     });
     handleAddOnClose();
-    refetch();
   };
 
   const onEditSubmit = (formData) => {
@@ -134,6 +137,7 @@ const CatalogAdmin = ({ id }) => {
     });
     editModalOnClose();
   };
+
   const handleAddOnClose = () => {
     resetAddModal();
     addModalOnClose();
@@ -144,6 +148,10 @@ const CatalogAdmin = ({ id }) => {
     editModalOnClose();
   };
 
+  const handleDelete = (id) => {
+    deleteProduct({ variables: { id } });
+    refetch();
+  };
   if (loading) return <LoadingPage />;
 
   return (
@@ -190,11 +198,7 @@ const CatalogAdmin = ({ id }) => {
               <Td>{product.updated_at}</Td>
               <Td>
                 <EditIcon color="facebook" mr="20px" cursor="pointer" onClick={() => handleEdit(product.id)} />
-                <CloseIcon
-                  color="red"
-                  cursor="pointer"
-                  onClick={() => deleteProduct({ variables: { id: product.id } })}
-                />
+                <CloseIcon color="red" cursor="pointer" onClick={() => handleDelete(product.id)} />
               </Td>
             </Tr>
           ))}
