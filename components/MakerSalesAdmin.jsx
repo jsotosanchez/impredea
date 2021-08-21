@@ -15,7 +15,7 @@ const SalesAdmin = ({ id }) => {
         <Tr>
           <Th>Producto</Th>
           <Th>Fecha de Entrega</Th>
-          <Th>Maker</Th>
+          <Th>Cliente</Th>
           <Th>Precio</Th>
           <Th>Acciones</Th>
         </Tr>
@@ -25,7 +25,7 @@ const SalesAdmin = ({ id }) => {
           <Tr key={sale.id}>
             <Td>{sale.quotation.product.name}</Td>
             <Td>{sale.quotation.estimated_date.slice(0, 10)}</Td>
-            <Td>{sale.quotation.maker.maker_name}</Td>
+            <Td>{sale.quotation.client.fullname}</Td>
             <Td>{sale.quotation.price}</Td>
             <Td>
               <Center>

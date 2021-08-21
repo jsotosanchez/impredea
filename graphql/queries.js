@@ -218,8 +218,8 @@ export const GET_SALES_BY_MAKER_ID = gql`
         product {
           name
         }
-        maker {
-          maker_name
+        client {
+          fullname
         }
       }
     }
