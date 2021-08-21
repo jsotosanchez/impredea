@@ -32,14 +32,51 @@ import {
 import { useRouter } from 'next/router';
 import { MY_PURCHASES_SECTIONS } from '../../utils/constants';
 import Layout from '../../components/Layout';
-import { useGetQuotationsByClientId } from '../../graphql/hooks';
-import { EditIcon } from '@chakra-ui/icons';
+import { useGetQuotationsByClientId, useGetSalesByClientId } from '../../graphql/hooks';
+import { ChatIcon, RepeatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
 import LoadingPage from '../../components/LoadingPage';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_QUOTATION_BY_PK } from '../../graphql/queries';
 import { ACCEPT_QUOTATION, CREATE_SALE, DECLINE_QUOTATION } from '../../graphql/mutations';
 
-const Purchases = () => <>purchases</>;
+const Purchases = ({ id }) => {
+  const { data, loading, refetch } = useGetSalesByClientId(id);
+
+  if (loading) return <LoadingPage />;
+
+  return (
+    <Table variant="striped" colorScheme="gray">
+      <TableCaption placement="top">Mis Compras</TableCaption>
+      <Thead>
+        <Tr>
+          <Th>Producto</Th>
+          <Th>Fecha de Entrega</Th>
+          <Th>Maker</Th>
+          <Th>Precio</Th>
+          <Th>Acciones</Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+        {data?.sales.map((sale) => (
+          <Tr key={sale.id}>
+            <Td>{sale.quotation.product.name}</Td>
+            <Td>{sale.quotation.estimated_date.slice(0, 10)}</Td>
+            <Td>{sale.quotation.maker.maker_name}</Td>
+            <Td>{sale.quotation.price}</Td>
+            <Td>
+              <Stack>
+                <ChatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                <ViewIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                <RepeatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                <WarningIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+              </Stack>
+            </Td>
+          </Tr>
+        ))}
+      </Tbody>
+    </Table>
+  );
+};
 
 const ClientQuotations = ({ id }) => {
   const { data, loading, refetch } = useGetQuotationsByClientId(id);
@@ -220,7 +257,6 @@ const ClientQuotations = ({ id }) => {
                       color="black"
                       bg="gray.100"
                       id="information"
-                      placeholder="Hay algo que tu cliente necesite saber? Escribelo aqui."
                       readOnly
                       defaultValue={quotation?.quotations_by_pk.information}
                     />
@@ -258,14 +294,17 @@ const ClientQuotations = ({ id }) => {
               <Td>{quotation.maker.maker_name}</Td>
               <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
               <Td>
-                <EditIcon
-                  color="facebook"
-                  mr="20px"
-                  cursor="pointer"
-                  onClick={() => {
-                    handleOnEdit(quotation.id);
-                  }}
-                />
+                <Stack>
+                  <ChatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                  <ViewIcon
+                    color="facebook"
+                    mr="20px"
+                    cursor="pointer"
+                    onClick={() => {
+                      handleOnEdit(quotation.id);
+                    }}
+                  />
+                </Stack>
               </Td>
             </Tr>
           ))}

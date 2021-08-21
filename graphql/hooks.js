@@ -11,6 +11,7 @@ import {
   GET_USER_IDENTITY_BY_EMAIL,
   GET_QUOTATIONS_BY_MAKER_ID,
   GET_QUOTATIONS_BY_CLIENT_ID,
+  GET_SALES_BY_CLIENT_ID,
 } from './queries';
 
 export const useSearchFormData = () => {
@@ -195,6 +196,18 @@ export const useGetQuotationsByMakerId = (id) => {
 export const useGetQuotationsByClientId = (id) => {
   const { loading, error, data, refetch } = useQuery(GET_QUOTATIONS_BY_CLIENT_ID, { variables: { id } });
 
+  return {
+    loading,
+    error,
+    data,
+    refetch,
+  };
+};
+
+export const useGetSalesByClientId = (id) => {
+  const { loading, error, data, refetch } = useQuery(GET_SALES_BY_CLIENT_ID, { variables: { id } });
+
+  console.log(data);
   return {
     loading,
     error,

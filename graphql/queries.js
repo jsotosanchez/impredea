@@ -187,3 +187,22 @@ export const GET_QUOTATION_BY_PK = gql`
     }
   }
 `;
+
+export const GET_SALES_BY_CLIENT_ID = gql`
+  query getSalesByClientId($id: Int!) {
+    sales(where: { client_id: { _eq: $id } }) {
+      id
+      quotation {
+        price
+        quantity
+        estimated_date
+        product {
+          name
+        }
+        maker {
+          maker_name
+        }
+      }
+    }
+  }
+`;
