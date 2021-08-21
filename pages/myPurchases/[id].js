@@ -75,7 +75,7 @@ const Purchases = ({ id }) => {
                   <RepeatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
                 </Tooltip>
                 <Tooltip hasArrow label="Reportar un problema">
-                  <WarningIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                  <WarningIcon color="red" mr="20px" cursor="pointer" onClick={() => {}} />
                 </Tooltip>
               </Center>
             </Td>
