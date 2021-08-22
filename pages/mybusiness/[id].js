@@ -1,13 +1,8 @@
 import { useState } from 'react';
-import { Box, Heading, HStack } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import { Box, Heading, HStack } from '@chakra-ui/react';
+import { CatalogAdmin, Layout, QuestionsAdmin, MakerInfoAdmin, QuotationsAdmin, SalesAdmin } from '../../components';
 import { MY_BUSINESS_SECTIONS } from '../../utils/constants';
-import CatalogAdmin from '../../components/CatalogAdmin';
-import Layout from '../../components/Layout';
-import QuestionsAdmin from '../../components/QuestionsAdmin';
-import MakerInfoAdmin from '../../components/MakerInfoAdmin';
-import QuotationsAdmin from '../../components/QuotationAdmin';
-import SalesAdmin from '../../components/MakerSalesAdmin';
 
 const MyBusiness = () => {
   const router = useRouter();
