@@ -1,4 +1,4 @@
-import { Center, Heading, Spinner } from '@chakra-ui/react';
+import { Center, Heading } from '@chakra-ui/react';
 
 const ErrorPage = () => {
   return (
