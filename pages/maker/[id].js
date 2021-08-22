@@ -1,4 +1,5 @@
 import { useContext, useState } from 'react';
+import { useRouter } from 'next/router';
 import {
   Box,
   Button,
@@ -17,18 +18,12 @@ import {
 } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 import Layout from '../../components/Layout';
-import { useRouter } from 'next/router';
 import { useGetMaker } from '../../graphql/hooks';
-import { RenderRating } from '../../components/RenderRating';
-import { MAKER_SECTIONS } from '../../utils/constants';
-import QuestionCard from '../../components/QuestionCard';
-import ReviewCard from '../../components/ReviewCard';
+import { RenderRating, QuestionCard, ReviewCard, MakeQuestionModal, ProductCard, LoadingPage } from '../../components';
 import { useMutation } from '@apollo/client';
 import { MAKE_QUESTION_TO_MAKER } from '../../graphql/mutations';
-import MakeQuestionModal from '../../components/MakeQuestionModal';
-import ProductCard from '../../components/ProductCard';
-import LoadingPage from '../../components/LoadingPage';
 import { SessionContext } from '../../context/sessionContext';
+import { MAKER_SECTIONS } from '../../utils/constants';
 
 const Catalog = ({ products }) => {
   return (

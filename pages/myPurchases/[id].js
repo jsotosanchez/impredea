@@ -33,16 +33,19 @@ import {
 import { useRouter } from 'next/router';
 import { MY_PURCHASES_SECTIONS } from '../../utils/constants';
 import Layout from '../../components/Layout';
-import { useGetQuotationsByClientId, useGetSalesByClientId } from '../../graphql/hooks';
+import { useGetQuotationsByClientId } from '../../graphql/hooks';
 import { ChatIcon, RepeatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
 import LoadingPage from '../../components/LoadingPage';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import ErrorPage from '../../components/ErrorPage';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_QUOTATION_BY_PK } from '../../graphql/queries';
 import { ACCEPT_QUOTATION, CREATE_SALE, DECLINE_QUOTATION } from '../../graphql/mutations';
+
 const Purchases = ({ id }) => {
-  const { data, loading, refetch } = useGetSalesByClientId(id);
+  const { data, loading, error } = useQuery(GET_SALES_BY_CLIENT_ID, { variables: { id } });
 
   if (loading) return <LoadingPage />;
+  if (error) return <ErrorPage />;
 
   return (
     <Table variant="striped" colorScheme="gray">

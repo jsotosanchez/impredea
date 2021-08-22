@@ -98,7 +98,7 @@ const BuyProductModal = ({ isOpen, onClose, id, name }) => {
               <Flex w="100%">
                 <Stack w="40%" mr="5%">
                   <Center>
-                    <Box bg="tomato" height="300px" w="250px"></Box>
+                    <Box bg="red.100" height="250px" w="250px"></Box>
                   </Center>
                   <FormControl isInvalid={errors.quantity}>
                     <FormLabel color="brandBlue" htmlFor="quantity">

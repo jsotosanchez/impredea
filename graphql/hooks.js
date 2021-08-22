@@ -18,7 +18,7 @@ import {
 export const useSearchFormData = () => {
   const { loading, error, data } = useQuery(GET_SEARCHFORM_QUERY);
 
-  if (!loading && data.deals) {
+  if (!loading && data) {
     return {
       loading,
       error,
@@ -142,23 +142,7 @@ export const useGetProductsByMakerId = (id) => {
 };
 
 export const useGetQuestionsByMakerId = (id) => {
-  const { loading, error, data, refetch } = useQuery(GET_QUESTIONS_BY_MAKER_ID, { variables: { id } });
-
-  if (!loading && data) {
-    return {
-      loading,
-      error,
-      data,
-      refetch,
-    };
-  }
-
-  return {
-    loading,
-    error,
-    data,
-    refetch,
-  };
+  return useQuery(GET_QUESTIONS_BY_MAKER_ID, { variables: { id } });
 };
 
 const emptyData = {};
@@ -197,36 +181,13 @@ export const useGetQuotationsByMakerId = (id) => {
 };
 
 export const useGetQuotationsByClientId = (id) => {
-  const { loading, error, data, refetch } = useQuery(GET_QUOTATIONS_BY_CLIENT_ID, { variables: { id } });
-
-  return {
-    loading,
-    error,
-    data,
-    refetch,
-  };
+  return useQuery(GET_QUOTATIONS_BY_CLIENT_ID, { variables: { id } });
 };
 
 export const useGetSalesByClientId = (id) => {
-  const { loading, error, data, refetch } = useQuery(GET_SALES_BY_CLIENT_ID, { variables: { id } });
-
-  console.log(data);
-  return {
-    loading,
-    error,
-    data,
-    refetch,
-  };
+  return useQuery(GET_SALES_BY_CLIENT_ID, { variables: { id } });
 };
 
 export const useGetSalesByMakerId = (id) => {
-  const { loading, error, data, refetch } = useQuery(GET_SALES_BY_MAKER_ID, { variables: { id } });
-
-  console.log(data);
-  return {
-    loading,
-    error,
-    data,
-    refetch,
-  };
+  return useQuery(GET_SALES_BY_MAKER_ID, { variables: { id } });
 };
