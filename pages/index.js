@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import {
   Box,
   Center,
@@ -13,12 +14,10 @@ import {
   Select,
   FormErrorMessage,
 } from '@chakra-ui/react';
-import Layout from '../components/Layout';
-import { useRouter } from 'next/router';
 import { gql } from '@apollo/client';
-import client from '../graphql/apollo-client';
 import { useForm } from 'react-hook-form';
-import Authorization from '../components/Authorization';
+import client from '../graphql/apollo-client';
+import { Layout, Authorization } from '../../components';
 
 const SearchForm = ({ quantities, categories }) => {
   const router = useRouter();
