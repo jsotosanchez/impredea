@@ -17,7 +17,7 @@ import {
 import { gql } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import client from '../graphql/apollo-client';
-import { Layout, Authorization } from '../../components';
+import { Layout, Authorization } from '../components';
 
 const SearchForm = ({ quantities, categories }) => {
   const router = useRouter();

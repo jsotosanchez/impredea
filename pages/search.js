@@ -35,7 +35,9 @@ const Search = ({ quantities, categories, makers }) => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (formData) => {};
+  const onSubmit = (formData) => {
+    console.log(formData);
+  };
 
   const handleOnClick = (id) => {
     router.push({ pathname: `/maker/${id}` });
@@ -50,7 +52,7 @@ const Search = ({ quantities, categories, makers }) => {
       <Flex w="100%" h="100vh" pt="4rem">
         <Stack w="25%" bg="brandGray.100" v="100vh" p="2rem 3rem">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl isInvalid={errors.search}>
+            <FormControl isInvalid={errors.search} pb="5px">
               <FormLabel color="brandBlue" htmlFor="search">
                 Que buscas?
               </FormLabel>
@@ -95,6 +97,7 @@ const Search = ({ quantities, categories, makers }) => {
                   required: 'Este campo es requerido',
                 })}
               >
+                <option value={null}>Cualquiera</option>
                 {categories.map((category) => (
                   <option value={category.id} key={category.id}>
                     {category.label}
@@ -103,40 +106,40 @@ const Search = ({ quantities, categories, makers }) => {
               </Select>
               <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
             </FormControl>
+            <Divider colorScheme="white" color="white" />
+            <Text color="brandBlue" fontWeight="bold" fontSize="xl">
+              Ordenar por:
+            </Text>
+            <Flex>
+              <FormLabel color="brandBlue">Precio</FormLabel>
+              <ArrowDownIcon color="brandBlue" onClick={handlePriceOrder} />
+              <ArrowUpIcon color="brandBlue" onClick={handlePriceOrder} />
+            </Flex>
+            <Flex>
+              <FormLabel color="brandBlue">Ventas</FormLabel>
+              <ArrowDownIcon color="brandBlue" onClick={handlePriceOrder} />
+              <ArrowUpIcon color="brandBlue" onClick={handlePriceOrder} />
+            </Flex>
+            <FormLabel color="brandBlue">Reputacion minima: {minRep}</FormLabel>
+            <Slider
+              min={1}
+              max={5}
+              aria-label="slider-ex-1"
+              defaultValue={minRep}
+              name="reputacion"
+              onChange={(v) => setMinRep(v)}
+            >
+              <SliderTrack bg="white">
+                <SliderFilledTrack />
+              </SliderTrack>
+              <SliderThumb />
+            </Slider>
             <Box pt="27px">
               <Button variant="solid" bg="brandBlue" colorScheme="brandBlue" color="white" type="submit">
                 Buscar
               </Button>
             </Box>
           </form>
-          <Divider colorScheme="white" color="white" />
-          <Text color="brandBlue" fontWeight="bold" fontSize="xl">
-            Ordenar por:
-          </Text>
-          <Flex>
-            <FormLabel color="brandBlue">Precio</FormLabel>
-            <ArrowDownIcon color="brandBlue" onClick={handlePriceOrder} />
-            <ArrowUpIcon color="brandBlue" onClick={handlePriceOrder} />
-          </Flex>
-          <Flex>
-            <FormLabel color="brandBlue">Ventas</FormLabel>
-            <ArrowDownIcon color="brandBlue" onClick={handlePriceOrder} />
-            <ArrowUpIcon color="brandBlue" onClick={handlePriceOrder} />
-          </Flex>
-          <FormLabel color="brandBlue">Reputacion minima: {minRep}</FormLabel>
-          <Slider
-            min={1}
-            max={5}
-            aria-label="slider-ex-1"
-            defaultValue={minRep}
-            name="reputacion"
-            onChange={(v) => setMinRep(v)}
-          >
-            <SliderTrack bg="white">
-              <SliderFilledTrack />
-            </SliderTrack>
-            <SliderThumb />
-          </Slider>
         </Stack>
         <Stack w="75%" bg="white" h="100%" overflow="scroll">
           <UnorderedList m="3rem">
