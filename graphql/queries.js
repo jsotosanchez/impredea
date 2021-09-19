@@ -10,6 +10,10 @@ export const GET_SEARCHFORM_QUERY = gql`
       id
       label
     }
+    provinces {
+      name
+      id
+    }
   }
 `;
 
