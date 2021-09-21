@@ -17,3 +17,8 @@ export const MY_PURCHASES_SECTIONS = {
   PURCHASES: 'PURCHASES',
   QUOTATIONS: 'QUOTATIONS',
 };
+
+export const GRAPHQL_SORT_ENUMS = {
+  ASC: 'ASC',
+  DESC: 'DESC',
+};

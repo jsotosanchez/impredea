@@ -33,37 +33,30 @@ const SearchProductForm = ({ quantities, categories }) => {
   } = useForm();
 
   const onSubmit = (formData) => {
+    // console.log(formData);
     router.push({ pathname: '/searchProduct', query: formData });
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Stack direction="row" spacing="10%">
-        <FormControl w="40%" ml="5%" isInvalid={errors.search}>
-          <FormLabel color="brandBlue" htmlFor="search">
+        <FormControl w="40%" ml="5%" isInvalid={errors.productName}>
+          <FormLabel color="brandBlue" htmlFor="productName">
             Que buscas?
           </FormLabel>
           <Input
             bg="white"
             color="black"
-            id="search"
-            {...register('search', {
+            id="productName"
+            {...register('productName', {
               required: 'Este campo es requerido',
             })}
           />
-          <FormErrorMessage>{errors.search && errors.search.message}</FormErrorMessage>
+          <FormErrorMessage>{errors.productName && errors.productName.message}</FormErrorMessage>
         </FormControl>
         <FormControl w="40%" isInvalid={errors.quantity}>
           <FormLabel color="brandBlue">Cantidad:</FormLabel>
-          <Select
-            bg="white"
-            color="black"
-            defaultValue="1"
-            id="quantity"
-            {...register('quantity', {
-              required: 'Este campo es requerido',
-            })}
-          >
+          <Select bg="white" color="black" defaultValue="1" id="quantity" {...register('quantity')}>
             {quantities.map((option) => (
               <option value={option.id} key={option.id}>
                 {option.label}
@@ -76,15 +69,7 @@ const SearchProductForm = ({ quantities, categories }) => {
       <Stack direction="row" spacing="10%" mt="25px" pb="20px">
         <FormControl ml="5%" w="40%" isInvalid={errors.category}>
           <FormLabel color="brandBlue">Categoria:</FormLabel>
-          <Select
-            bg="white"
-            color="black"
-            defaultValue={null}
-            id="category"
-            {...register('category', {
-              required: 'Este campo es requerido',
-            })}
-          >
+          <Select bg="white" color="black" defaultValue={null} id="category">
             <option value={null}>Cualquiera</option>
             {categories.map((category) => (
               <option value={category.id} key={category.id}>
@@ -135,15 +120,7 @@ const SearchMakerForm = ({ categories, provinces }) => {
         </FormControl>
         <FormControl ml="5%" w="40%" isInvalid={errors.makerLocation}>
           <FormLabel color="brandBlue">Localidad:</FormLabel>
-          <Select
-            bg="white"
-            color="black"
-            defaultValue={null}
-            id="makerLocation"
-            {...register('makerLocation', {
-              required: 'Este campo es requerido',
-            })}
-          >
+          <Select bg="white" color="black" defaultValue={null} id="makerLocation" {...register('makerLocation')}>
             <option value={null}>Cualquiera</option>
             {provinces.map((province) => (
               <option value={province.id} key={province.id}>
@@ -157,15 +134,7 @@ const SearchMakerForm = ({ categories, provinces }) => {
       <Stack direction="row" spacing="10%" mt="25px" pb="20px">
         <FormControl ml="5%" w="40%" isInvalid={errors.category}>
           <FormLabel color="brandBlue">Categoria:</FormLabel>
-          <Select
-            bg="white"
-            color="black"
-            defaultValue={null}
-            id="category"
-            {...register('category', {
-              required: 'Este campo es requerido',
-            })}
-          >
+          <Select bg="white" color="black" defaultValue={null} id="category" {...register('category')}>
             <option value={null}>Cualquiera</option>
             {categories.map((category) => (
               <option value={category.id} key={category.id}>

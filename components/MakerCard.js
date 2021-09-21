@@ -1,7 +1,7 @@
 import { Flex, Stack, Text, Center, Heading } from '@chakra-ui/react';
 import RenderRating from './RenderRating';
 
-const MakerCard = ({ name, description, rating, sales, handleOnClick, id }) => {
+const MakerCard = ({ name, description, rating, sales, handleOnClick }) => {
   return (
     <Flex
       bg="brandGray.100"
@@ -27,7 +27,7 @@ const MakerCard = ({ name, description, rating, sales, handleOnClick, id }) => {
       </Stack>
       <Stack w="auto" pl="5%">
         <RenderRating rating={rating} />
-        <Text color="black">Ventas: {sales}</Text>
+        {/* <Text color="black">Ventas: {sales}</Text> */}
       </Stack>
     </Flex>
   );

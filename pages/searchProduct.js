@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useRouter } from 'next/router';
 import {
   Box,
   Flex,
@@ -17,67 +19,62 @@ import {
   UnorderedList,
 } from '@chakra-ui/react';
 import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
-import Layout from '../components/Layout';
-import { useRouter } from 'next/router';
-import { gql } from '@apollo/client';
-import client from '../graphql/apollo-client';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
-import MakerCard from '../components/MakerCard';
+import Layout from '../components/Layout';
+import client from '../graphql/apollo-client';
+import { GRAPHQL_SORT_ENUMS } from '../utils/constants';
+import { GET_PRODUCTS } from '../graphql/queries';
+import ProductSearchCard from '../components/ProductSearchCard';
+import SideBarLayout from '../components/SideBarLayout';
 
-const Search = ({ quantities, categories, makers }) => {
+const Search = ({ quantities, categories, products }) => {
+  console.log(products);
   const router = useRouter();
-
-  const { search, quantity, category } = router.query;
+  const { productName, quantity, category } = router.query;
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm();
+  const [minRep, setMinRep] = useState(3);
+  const [priceOrder, setPriceOrder] = useState(GRAPHQL_SORT_ENUMS.ASC);
+  const [ratingOrder, setRatingOrder] = useState(GRAPHQL_SORT_ENUMS.DESC);
 
   const onSubmit = (formData) => {
-    console.log(formData);
+    console.log({ ...formData, minRep });
   };
 
   const handleOnClick = (id) => {
     router.push({ pathname: `/maker/${id}` });
   };
 
-  const [minRep, setMinRep] = useState(3);
+  const handlePriceOrder = (order) => setPriceOrder(order);
 
-  const handlePriceOrder = () => {};
+  const handleRatingOrder = (order) => setRatingOrder(order);
 
   return (
     <Layout>
-      <Flex w="100%" h="100vh" pt="4rem">
-        <Stack w="25%" bg="brandGray.100" v="100vh" p="2rem 3rem">
+      <SideBarLayout
+        sideBarChildren={
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl isInvalid={errors.search} pb="5px">
-              <FormLabel color="brandBlue" htmlFor="search">
+            <FormControl isInvalid={errors.productName} pb="5px">
+              <FormLabel color="brandBlue" htmlFor="productName">
                 Que buscas?
               </FormLabel>
               <Input
                 bg="white"
                 color="black"
-                id="search"
-                defaultValue={search}
-                {...register('search', {
+                id="productName"
+                defaultValue={productName}
+                {...register('productName', {
                   required: 'Este campo es requerido',
                 })}
               />
-              <FormErrorMessage>{errors.search && errors.search.message}</FormErrorMessage>
+              <FormErrorMessage>{errors.productName && errors.productName.message}</FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={errors.quantity}>
               <FormLabel color="brandBlue">Que Cantidad?</FormLabel>
-              <Select
-                bg="white"
-                color="black"
-                defaultValue={quantity}
-                id="quantity"
-                {...register('quantity', {
-                  required: 'Este campo es requerido',
-                })}
-              >
+              <Select bg="white" color="black" defaultValue={quantity} id="quantity" {...register('quantity')}>
                 {quantities.map((option) => (
                   <option value={option.id} key={option.id}>
                     {option.label}
@@ -88,15 +85,7 @@ const Search = ({ quantities, categories, makers }) => {
             </FormControl>
             <FormControl isInvalid={errors.category}>
               <FormLabel color="brandBlue">Selecciona una categoria</FormLabel>
-              <Select
-                bg="white"
-                color="black"
-                defaultValue={category}
-                id="category"
-                {...register('category', {
-                  required: 'Este campo es requerido',
-                })}
-              >
+              <Select bg="white" color="black" defaultValue={category} id="category" {...register('category')}>
                 <option value={null}>Cualquiera</option>
                 {categories.map((category) => (
                   <option value={category.id} key={category.id}>
@@ -112,13 +101,25 @@ const Search = ({ quantities, categories, makers }) => {
             </Text>
             <Flex>
               <FormLabel color="brandBlue">Precio</FormLabel>
-              <ArrowDownIcon color="brandBlue" onClick={handlePriceOrder} />
-              <ArrowUpIcon color="brandBlue" onClick={handlePriceOrder} />
+              <ArrowDownIcon
+                color={priceOrder === GRAPHQL_SORT_ENUMS.DESC ? 'brandBlue' : 'gray'}
+                onClick={() => handlePriceOrder(GRAPHQL_SORT_ENUMS.DESC)}
+              />
+              <ArrowUpIcon
+                color={priceOrder === GRAPHQL_SORT_ENUMS.ASC ? 'brandBlue' : 'gray'}
+                onClick={() => handlePriceOrder(GRAPHQL_SORT_ENUMS.ASC)}
+              />
             </Flex>
             <Flex>
-              <FormLabel color="brandBlue">Ventas</FormLabel>
-              <ArrowDownIcon color="brandBlue" onClick={handlePriceOrder} />
-              <ArrowUpIcon color="brandBlue" onClick={handlePriceOrder} />
+              <FormLabel color="brandBlue">Reputacion</FormLabel>
+              <ArrowDownIcon
+                color={ratingOrder === GRAPHQL_SORT_ENUMS.DESC ? 'brandBlue' : 'gray'}
+                onClick={() => handleRatingOrder(GRAPHQL_SORT_ENUMS.DESC)}
+              />
+              <ArrowUpIcon
+                color={ratingOrder === GRAPHQL_SORT_ENUMS.ASC ? 'brandBlue' : 'gray'}
+                onClick={() => handleRatingOrder(GRAPHQL_SORT_ENUMS.ASC)}
+              />
             </Flex>
             <FormLabel color="brandBlue">Reputacion minima: {minRep}</FormLabel>
             <Slider
@@ -140,57 +141,43 @@ const Search = ({ quantities, categories, makers }) => {
               </Button>
             </Box>
           </form>
-        </Stack>
-        <Stack w="75%" bg="white" h="100%" overflow="scroll">
+        }
+        contentChildren={
           <UnorderedList m="3rem">
-            {makers.map(({ maker_name, maker_description, maker_rating, maker_sales, id }) => (
-              <MakerCard
-                name={maker_name}
-                description={maker_description}
-                rating={maker_rating}
-                sales={maker_sales}
+            {products.map(({ id, main_photo, description, maker: { fullname }, name }) => (
+              <ProductSearchCard
+                id={id}
+                main_photo={main_photo}
+                description={description}
+                makerName={fullname}
+                productName={name}
                 handleOnClick={() => handleOnClick(id)}
                 key={id}
               />
             ))}
           </UnorderedList>
-        </Stack>
-      </Flex>
+        }
+      />
     </Layout>
   );
 };
 
 export default Search;
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ query }) {
+  const { productName, quantity, category } = query;
+  const productNameForQuery = `%${productName}%`;
+
   const { data } = await client.query({
-    query: gql`
-      query MyQuery {
-        order_quantity {
-          id
-          label
-        }
-        maker_category {
-          id
-          label
-        }
-        user(where: { maker_active: { _eq: true } }) {
-          maker_category_id
-          maker_description
-          maker_name
-          maker_rating
-          maker_sales
-          id
-        }
-      }
-    `,
+    query: GET_PRODUCTS,
+    variables: { category, productName: productNameForQuery },
   });
 
   return {
     props: {
       quantities: data.order_quantity,
       categories: data.maker_category,
-      makers: data.user,
+      products: data.product,
     },
   };
 }

@@ -17,6 +17,34 @@ export const GET_SEARCHFORM_QUERY = gql`
   }
 `;
 
+export const GET_PRODUCTS = gql`
+  query getProducts($category: Int, $productName: String!) {
+    maker_category {
+      id
+      label
+    }
+    order_quantity {
+      id
+      label
+    }
+    product(
+      where: {
+        maker: { maker_active: { _eq: true }, maker_category_id: { _eq: $category } }
+        name: { _ilike: $productName }
+      }
+      limit: 20
+    ) {
+      id
+      main_photo
+      description
+      maker {
+        fullname
+      }
+      name
+    }
+  }
+`;
+
 export const GET_MAKER_BY_ID = gql`
   query getMakerById($id: Int!) {
     user_by_pk(id: $id) {
