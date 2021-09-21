@@ -33,7 +33,7 @@ const SearchProductForm = ({ quantities, categories }) => {
   } = useForm();
 
   const onSubmit = (formData) => {
-    router.push({ pathname: '/search', query: { searchType: 'products', ...formData } });
+    router.push({ pathname: '/searchProduct', query: formData });
   };
 
   return (
@@ -111,7 +111,7 @@ const SearchProductForm = ({ quantities, categories }) => {
   );
 };
 
-const SearchMakerForm = ({ quantities, provinces }) => {
+const SearchMakerForm = ({ categories, provinces }) => {
   const router = useRouter();
   const {
     handleSubmit,
@@ -120,7 +120,7 @@ const SearchMakerForm = ({ quantities, provinces }) => {
   } = useForm();
 
   const onSubmit = (formData) => {
-    router.push({ pathname: '/search', query: { searchType: 'makers', ...formData } });
+    router.push({ pathname: '/searchMaker', query: formData });
   };
 
   return (
@@ -128,43 +128,23 @@ const SearchMakerForm = ({ quantities, provinces }) => {
       <Stack direction="row" spacing="10%">
         <FormControl w="40%" ml="38px" isInvalid={errors.makerName}>
           <FormLabel color="brandBlue" htmlFor="makerName">
-            Nombre del Maker (Opcional):
+            Nombre (Opcional):
           </FormLabel>
           <Input bg="white" color="black" id="makerName" {...register('makerName', {})} />
           <FormErrorMessage>{errors.makerName && errors.makerName.message}</FormErrorMessage>
         </FormControl>
-        <FormControl w="40%" isInvalid={errors.quantity}>
-          <FormLabel color="brandBlue">Cantidad:</FormLabel>
-          <Select
-            bg="white"
-            color="black"
-            defaultValue="1"
-            id="quantity"
-            {...register('quantity', {
-              required: 'Este campo es requerido',
-            })}
-          >
-            {quantities.map((option) => (
-              <option value={option.id} key={option.id}>
-                {option.label}
-              </option>
-            ))}
-          </Select>
-          <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
-        </FormControl>
-      </Stack>
-      <Stack direction="row" spacing="10%" mt="25px" pb="20px">
         <FormControl ml="5%" w="40%" isInvalid={errors.makerLocation}>
           <FormLabel color="brandBlue">Localidad:</FormLabel>
           <Select
             bg="white"
             color="black"
-            defaultValue="1"
+            defaultValue={null}
             id="makerLocation"
             {...register('makerLocation', {
               required: 'Este campo es requerido',
             })}
           >
+            <option value={null}>Cualquiera</option>
             {provinces.map((province) => (
               <option value={province.id} key={province.id}>
                 {province.name}
@@ -172,6 +152,28 @@ const SearchMakerForm = ({ quantities, provinces }) => {
             ))}
           </Select>
           <FormErrorMessage>{errors.makerLocation && errors.makerLocation.message}</FormErrorMessage>
+        </FormControl>
+      </Stack>
+      <Stack direction="row" spacing="10%" mt="25px" pb="20px">
+        <FormControl ml="5%" w="40%" isInvalid={errors.category}>
+          <FormLabel color="brandBlue">Categoria:</FormLabel>
+          <Select
+            bg="white"
+            color="black"
+            defaultValue={null}
+            id="category"
+            {...register('category', {
+              required: 'Este campo es requerido',
+            })}
+          >
+            <option value={null}>Cualquiera</option>
+            {categories.map((category) => (
+              <option value={category.id} key={category.id}>
+                {category.label}
+              </option>
+            ))}
+          </Select>
+          <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
         </FormControl>
       </Stack>
       <Box ml="38px">
@@ -225,7 +227,7 @@ export default function Home({ quantities, categories, provinces }) {
                     <SearchProductForm quantities={quantities} categories={categories} />
                   </TabPanel>
                   <TabPanel>
-                    <SearchMakerForm quantities={quantities} provinces={provinces} />
+                    <SearchMakerForm categories={categories} provinces={provinces} />
                   </TabPanel>
                 </TabPanels>
               </Tabs>
