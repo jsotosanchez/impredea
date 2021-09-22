@@ -12,14 +12,16 @@ import ManageProductModal from './ManageProductModal';
 import ProductCard from './ProductCard';
 import QuestionCard from './QuestionCard';
 import QuestionsAdmin from './QuestionsAdmin';
-import QuotationAdmin from './QuotationAdmin';
+import QuotationsAdmin from './QuotationAdmin';
 import RenderRating from './RenderRating';
 import ReviewCard from './ReviewCard';
 import SideBarLayout from './SideBarLayout';
+import SalesAdmin from './MakerSalesAdmin';
 
 export {
   Authorization,
   CatalogAdmin,
+  SalesAdmin,
   ClientOnly,
   ErrorPage,
   Layout,
@@ -32,7 +34,7 @@ export {
   ProductCard,
   QuestionCard,
   QuestionsAdmin,
-  QuotationAdmin,
+  QuotationsAdmin,
   RenderRating,
   ReviewCard,
   SideBarLayout,
