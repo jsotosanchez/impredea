@@ -25,6 +25,7 @@ import { Layout, LoadingPage, MakerCard, ErrorPage, SideBarLayout } from '../com
 import client from '../graphql/apollo-client';
 // import { GRAPHQL_SORT_ENUMS } from '../utils/constants';
 import { GET_MAKERS } from '../graphql/queries';
+import { formatToContains } from '../graphql/utils';
 import { removeEmptyFields } from '../utils/methods';
 
 const Search = ({ quantities, categories, provinces }) => {
@@ -39,7 +40,7 @@ const Search = ({ quantities, categories, provinces }) => {
   const [minRep, setMinRep] = useState(3);
 
   const { data, loading, error, refetch, fetchMore } = useQuery(GET_MAKERS, {
-    variables: { category, makerName: `%${makerName}%`, quantity, location },
+    variables: { category, makerName: formatToContains(makerName), quantity, location },
   });
 
   const onSubmit = (formData) => {

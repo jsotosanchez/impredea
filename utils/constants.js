@@ -19,6 +19,6 @@ export const MY_PURCHASES_SECTIONS = {
 };
 
 export const GRAPHQL_SORT_ENUMS = {
-  ASC: 'ASC',
-  DESC: 'DESC',
+  ASC: 'asc',
+  DESC: 'desc',
 };

@@ -11,13 +11,14 @@ import {
   Center,
   Heading,
 } from '@chakra-ui/react';
+import { useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import { ErrorPage, Layout, LoadingPage } from '../components';
 import client from '../graphql/apollo-client';
 import { GET_PRODUCTS, GET_SEARCH_PRODUCT_DATA } from '../graphql/queries';
 import ProductSearchCard from '../components/ProductSearchCard';
 import SideBarLayout from '../components/SideBarLayout';
-import { useQuery } from '@apollo/client';
+import { formatToContains } from '../graphql/utils';
 
 const EmptyResults = () => (
   <Center mt="20%">
@@ -28,9 +29,8 @@ const EmptyResults = () => (
 const Search = ({ quantities, categories }) => {
   const router = useRouter();
   const { productName, quantity, category } = router.query;
-  const productNameForQuery = `%${productName}%`;
   const { data, loading, error, refetch, fetchMore } = useQuery(GET_PRODUCTS, {
-    variables: { category, productName: productNameForQuery, quantity },
+    variables: { category, productName: formatToContains(productName), quantity },
   });
 
   const {
@@ -41,7 +41,7 @@ const Search = ({ quantities, categories }) => {
   } = useForm();
 
   const onSubmit = ({ productName, ...rest }) => {
-    refetch({ productName: `%${productName}%`, ...rest });
+    refetch({ productName: formatToContains(productName), ...rest });
   };
 
   const handleOnClick = (id) => {
