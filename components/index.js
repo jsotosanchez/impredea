@@ -17,6 +17,7 @@ import RenderRating from './RenderRating';
 import ReviewCard from './ReviewCard';
 import SideBarLayout from './SideBarLayout';
 import SalesAdmin from './MakerSalesAdmin';
+import EmptyResults from './EmptyResults';
 
 export {
   Authorization,
@@ -38,4 +39,5 @@ export {
   RenderRating,
   ReviewCard,
   SideBarLayout,
+  EmptyResults,
 };

@@ -1,7 +1,7 @@
 import { Center, Heading, Text, Stack, Button } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
-const ErrorPage = () => {
+const ErrorPage = ({ route = '/' }) => {
   const router = useRouter();
   return (
     <Center w="100%" mt="20%">
@@ -10,7 +10,7 @@ const ErrorPage = () => {
           Lo sentimos, ha ocurrido un error.
         </Heading>
         <Text>Por favor intenta mas tarde</Text>
-        <Button variant="link" colorScheme="facebook" onClick={() => router.push('/')}>
+        <Button variant="link" colorScheme="facebook" onClick={() => router.push(route)}>
           Volver a inicio
         </Button>
       </Stack>

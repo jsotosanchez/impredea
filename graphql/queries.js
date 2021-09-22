@@ -119,8 +119,13 @@ export const GET_USER_BY_ID = gql`
 `;
 
 export const GET_PRODUCTS_BY_MAKER_ID = gql`
-  query getProductsByMakerId($id: Int!) {
-    product(where: { maker_id: { _eq: $id } }) {
+  query getProductsByMakerId($id: Int!, $filter: String, $limit: Int = 10, $offset: Int = 0) {
+    product(
+      where: { maker_id: { _eq: $id }, name: { _ilike: $filter } }
+      order_by: { updated_at: desc }
+      limit: $limit
+      offset: $offset
+    ) {
       name
       updated_at
       id

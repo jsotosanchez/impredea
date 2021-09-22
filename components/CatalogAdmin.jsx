@@ -16,19 +16,19 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-
-import LoadingPage from './LoadingPage';
-import { useGetProductsByMakerId } from '../graphql/hooks';
+import _ from 'lodash';
 import { CloseIcon, EditIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { DELETE_PRODUCT_BY_ID, EDIT_PRODUCT_BY_ID, INSERT_PRODUCT } from '../graphql/mutations';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { GET_PRODUCT_BY_ID } from '../graphql/queries';
-import ManageProductModal from './ManageProductModal';
+import { GET_PRODUCTS_BY_MAKER_ID, GET_PRODUCT_BY_ID } from '../graphql/queries';
+import { formatToStartsWith } from '../graphql/utils';
+import { EmptyResults, ErrorPage, LoadingPage, ManageProductModal } from '.';
 
 const CatalogAdmin = ({ id }) => {
-  const { data: productsByMakerId, loading, refetch } = useGetProductsByMakerId(id);
   const [filter, setFilter] = useState('');
+  const [currentPage, setCurrentPage] = useState(0);
+  const [currentProductId, setCurrentProductId] = useState();
   const toast = useToast();
   const { isOpen: addModalIsOpen, onOpen: addModalOnOpen, onClose: addModalOnClose } = useDisclosure();
   const { isOpen: editModalIsOpen, onOpen: editModalOnOpen, onClose: editModalOnClose } = useDisclosure();
@@ -46,14 +46,12 @@ const CatalogAdmin = ({ id }) => {
     reset: resetEditModal,
   } = useForm();
 
-  const [currentProductId, setCurrentProductId] = useState();
+  const { data, loading: loadingProducts, error, refetch } = useQuery(GET_PRODUCTS_BY_MAKER_ID, { variables: { id } });
   const [getProduct, { loading: loadingGetProduct, data: currentProduct }] = useLazyQuery(GET_PRODUCT_BY_ID, {
     variables: { id: currentProductId },
   });
 
-  useEffect(() => {
-    getProduct();
-  }, [currentProductId]);
+  const productsHasResults = data.product.length > 0;
 
   const [insertProduct] = useMutation(INSERT_PRODUCT, {
     onError: () => {
@@ -117,12 +115,7 @@ const CatalogAdmin = ({ id }) => {
     },
   });
 
-  const handleEdit = (id) => {
-    setCurrentProductId(id);
-    editModalOnOpen();
-  };
-
-  const handleOnChange = (e) => setFilter(e.target.value);
+  const debouncedSearch = _.debounce(() => refetch({ id, filter: formatToStartsWith(filter) }), 250);
 
   const onAddSubmit = (formData) => {
     insertProduct({
@@ -136,6 +129,15 @@ const CatalogAdmin = ({ id }) => {
       variables: { id: currentProductId, ...formData },
     });
     editModalOnClose();
+  };
+
+  const handleEdit = (id) => {
+    setCurrentProductId(id);
+    editModalOnOpen();
+  };
+
+  const handleFilterChange = (e) => {
+    setFilter(e.target.value);
   };
 
   const handleAddOnClose = () => {
@@ -152,58 +154,101 @@ const CatalogAdmin = ({ id }) => {
     deleteProduct({ variables: { id } });
     refetch();
   };
-  if (loading) return <LoadingPage />;
+
+  useEffect(() => {
+    debouncedSearch();
+    setCurrentPage(0);
+  }, [filter]);
+
+  useEffect(() => {
+    getProduct();
+  }, [currentProductId]);
+
+  useEffect(() => refetch({ offset: data.product.length * currentPage }), [currentPage]);
+
+  if (error) return <ErrorPage route={`myBusiness/${id}`} />;
 
   return (
     <Box>
-      <ManageProductModal
-        isOpen={addModalIsOpen}
-        handleOnClose={handleAddOnClose}
-        onSubmit={handleAddModalSubmit(onAddSubmit)}
-        errors={addModalErrors}
-        register={registerAddModal}
-      />
-      <ManageProductModal
-        isOpen={editModalIsOpen}
-        handleOnClose={handleEditOnClose}
-        product={currentProduct && currentProduct.product_by_pk}
-        loading={loadingGetProduct}
-        onSubmit={handleEditModalSubmit(onEditSubmit)}
-        errors={editModalErrors}
-        register={registerEditModal}
-      />
-      <Flex mt="20px">
-        <FormLabel color="brandBlue" pt="5px">
-          Buscar por nombre
-        </FormLabel>
-        <Input w="20%" value={filter} onChange={handleOnChange} />
-        <Spacer />
-        <Button variant="solid" colorScheme="facebook" onClick={addModalOnOpen}>
-          Agregar Producto
-        </Button>
-      </Flex>
-      <Table variant="striped" colorScheme="gray">
-        <TableCaption placement="top">Mi Catalogo:</TableCaption>
-        <Thead>
-          <Tr>
-            <Th>Producto</Th>
-            <Th>Fecha de Actualizacion</Th>
-            <Th>Acciones</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {productsByMakerId.products.map((product) => (
-            <Tr key={product.id}>
-              <Td>{product.name}</Td>
-              <Td>{product.updated_at}</Td>
-              <Td>
-                <EditIcon color="facebook" mr="20px" cursor="pointer" onClick={() => handleEdit(product.id)} />
-                <CloseIcon color="red" cursor="pointer" onClick={() => handleDelete(product.id)} />
-              </Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
+      <>
+        <ManageProductModal
+          isOpen={addModalIsOpen}
+          handleOnClose={handleAddOnClose}
+          onSubmit={handleAddModalSubmit(onAddSubmit)}
+          errors={addModalErrors}
+          register={registerAddModal}
+        />
+        <ManageProductModal
+          isOpen={editModalIsOpen}
+          handleOnClose={handleEditOnClose}
+          product={currentProduct && currentProduct.product_by_pk}
+          loading={loadingGetProduct}
+          onSubmit={handleEditModalSubmit(onEditSubmit)}
+          errors={editModalErrors}
+          register={registerEditModal}
+        />
+        <Flex mt="20px">
+          <FormLabel color="brandBlue" pt="5px">
+            Buscar por nombre
+          </FormLabel>
+          <Input w="20%" value={filter} onChange={handleFilterChange} onBlur={debouncedSearch} />
+          <Spacer />
+          <Button variant="solid" colorScheme="facebook" onClick={addModalOnOpen}>
+            Agregar Producto
+          </Button>
+        </Flex>
+      </>
+      <>
+        {loadingProducts ? (
+          <LoadingPage />
+        ) : (
+          <>
+            {productsHasResults ? (
+              <Table variant="striped" colorScheme="gray" mt="2%">
+                <Thead>
+                  <Tr>
+                    <Th>Nombre del Producto</Th>
+                    <Th>Fecha de Actualizacion</Th>
+                    <Th>Acciones</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {data.product.map((product) => (
+                    <Tr key={product.id}>
+                      <Td>{product.name}</Td>
+                      <Td>{product.updated_at}</Td>
+                      <Td>
+                        <EditIcon color="facebook" mr="20px" cursor="pointer" onClick={() => handleEdit(product.id)} />
+                        <CloseIcon color="red" cursor="pointer" onClick={() => handleDelete(product.id)} />
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            ) : (
+              <EmptyResults />
+            )}
+            <Flex mt="5px">
+              {currentPage > 0 && (
+                <Button
+                  size="md"
+                  variant="outline"
+                  colorScheme="facebook"
+                  onClick={() => setCurrentPage((prev) => prev - 1)}
+                >
+                  Anterior
+                </Button>
+              )}
+              <Spacer />
+              {productsHasResults && (
+                <Button variant="solid" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev + 1)}>
+                  Siguiente
+                </Button>
+              )}
+            </Flex>
+          </>
+        )}
+      </>
     </Box>
   );
 };
