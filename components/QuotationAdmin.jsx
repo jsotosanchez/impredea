@@ -213,7 +213,6 @@ const QuotationsAdmin = ({ id }) => {
         </ModalContent>
       </Modal>
       <Table variant="striped" colorScheme="gray">
-        <TableCaption placement="top">Mis Cotizaciones Pendientes:</TableCaption>
         <Thead>
           <Tr>
             <Th>Producto</Th>

@@ -51,7 +51,7 @@ const CatalogAdmin = ({ id }) => {
     variables: { id: currentProductId },
   });
 
-  const productsHasResults = data.product.length > 0;
+  const productsHasResults = data ? data.product.length > 0 : false;
 
   const [insertProduct] = useMutation(INSERT_PRODUCT, {
     onError: () => {
@@ -164,7 +164,9 @@ const CatalogAdmin = ({ id }) => {
     getProduct();
   }, [currentProductId]);
 
-  useEffect(() => refetch({ offset: data.product.length * currentPage }), [currentPage]);
+  useEffect(() => {
+    if (data) refetch({ offset: data.product.length * currentPage });
+  }, [currentPage]);
 
   if (error) return <ErrorPage route={`myBusiness/${id}`} />;
 
