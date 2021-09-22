@@ -276,15 +276,27 @@ export const GET_SALES_BY_MAKER_ID = gql`
 `;
 
 export const GET_MAKERS = gql`
-  query MyQuery($quantity: Int, $location: Int, $category: Int, $makerName: String) {
+  query MyQuery(
+    $quantity: Int
+    $location: Int
+    $category: Int
+    $makerName: String
+    $minRep: numeric
+    $limit: Int = 10
+    $offset: Int = 0
+  ) {
     user(
       where: {
         maker_active: { _eq: true }
-        maker_capacity: { _lte: $quantity }
+        maker_capacity: { _gte: $quantity }
         maker_location: { _eq: $location }
         maker_category_id: { _eq: $category }
         maker_name: { _ilike: $makerName }
+        maker_rating: { _gte: $minRep }
       }
+      order_by: { maker_rating: desc }
+      offset: $offset
+      limit: $limit
     ) {
       maker_category_id
       maker_description

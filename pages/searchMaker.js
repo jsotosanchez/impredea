@@ -21,10 +21,11 @@ import {
 // import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
 import { gql, useQuery } from '@apollo/client';
-import { Layout, LoadingPage, MakerCard, ErrorPage } from '../components/';
+import { Layout, LoadingPage, MakerCard, ErrorPage, SideBarLayout } from '../components/';
 import client from '../graphql/apollo-client';
 // import { GRAPHQL_SORT_ENUMS } from '../utils/constants';
 import { GET_MAKERS } from '../graphql/queries';
+import { removeEmptyFields } from '../utils/methods';
 
 const Search = ({ quantities, categories, provinces }) => {
   const router = useRouter();
@@ -33,47 +34,45 @@ const Search = ({ quantities, categories, provinces }) => {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm();
+    getValues: getFormValues,
+  } = useForm({ defaultValues: { makerName: '', category: null, makerLocation: null, quantity } });
   const [minRep, setMinRep] = useState(3);
-  // const [priceOrder, setPriceOrder] = useState(GRAPHQL_SORT_ENUMS.ASC);
-  // const [ratingOrder, setRatingOrder] = useState(GRAPHQL_SORT_ENUMS.DESC);
 
-  const { data, loading, error, refetch } = useQuery(GET_MAKERS, {
+  const { data, loading, error, refetch, fetchMore } = useQuery(GET_MAKERS, {
     variables: { category, makerName: `%${makerName}%`, quantity, location },
   });
 
   const onSubmit = (formData) => {
-    console.log({ ...formData, minRep });
+    const { makerName, ...rest } = removeEmptyFields(formData);
+
+    console.log({ makerName: `%${makerName}%`, ...rest, minRep });
+
+    refetch({ makerName: `%${makerName}%`, ...rest, minRep });
   };
 
   const handleOnClick = (id) => {
     router.push({ pathname: `/maker/${id}` });
   };
 
-  // const handlePriceOrder = (order) => setPriceOrder(order);
-
-  // const handleRatingOrder = (order) => setRatingOrder(order);
+  const handleLoadMore = () => {
+    const { makerName, ...rest } = removeEmptyFields(getFormValues());
+    fetchMore({
+      variables: { makerName: `%${makerName}%`, ...rest, offset: data.user.length, minRep },
+    });
+  };
 
   if (loading) return <LoadingPage />;
   if (error) return <ErrorPage />;
   return (
     <Layout>
-      <Flex w="100%" h="100vh" pt="4rem">
-        <Stack w="25%" bg="brandGray.100" v="100vh" p="2rem 3rem">
+      <SideBarLayout
+        sideBarChildren={
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl isInvalid={errors.makerName} pb="5px">
               <FormLabel color="brandBlue" htmlFor="makerName">
                 Nombre del Maker:
               </FormLabel>
-              <Input
-                bg="white"
-                color="black"
-                id="makerName"
-                defaultValue={makerName}
-                {...register('makerName', {
-                  required: 'Este campo es requerido',
-                })}
-              />
+              <Input bg="white" color="black" id="makerName" defaultValue={makerName} {...register('makerName')} />
               <FormErrorMessage>{errors.makerName && errors.makerName.message}</FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={errors.quantity}>
@@ -81,7 +80,6 @@ const Search = ({ quantities, categories, provinces }) => {
               <Select
                 bg="white"
                 color="black"
-                defaultValue={quantity}
                 id="quantity"
                 {...register('quantity', {
                   required: 'Este campo es requerido',
@@ -97,16 +95,8 @@ const Search = ({ quantities, categories, provinces }) => {
             </FormControl>
             <FormControl isInvalid={errors.category}>
               <FormLabel color="brandBlue">Selecciona una categoria</FormLabel>
-              <Select
-                bg="white"
-                color="black"
-                defaultValue={category}
-                id="category"
-                {...register('category', {
-                  required: 'Este campo es requerido',
-                })}
-              >
-                <option value={null}>Cualquiera</option>
+              <Select bg="white" color="black" defaultValue={category} id="category" {...register('category')}>
+                <option value={''}>Cualquiera</option>
                 {categories.map((category) => (
                   <option value={category.id} key={category.id}>
                     {category.label}
@@ -117,8 +107,14 @@ const Search = ({ quantities, categories, provinces }) => {
             </FormControl>
             <FormControl isInvalid={errors.makerLocation}>
               <FormLabel color="brandBlue">Selecciona una localidad:</FormLabel>
-              <Select bg="white" color="black" defaultValue={null} id="makerLocation" {...register('makerLocation')}>
-                <option value={null}>Cualquiera</option>
+              <Select
+                bg="white"
+                color="black"
+                defaultValue={location}
+                id="makerLocation"
+                {...register('makerLocation')}
+              >
+                <option value={''}>Cualquiera</option>
                 {provinces.map((province) => (
                   <option value={province.id} key={province.id}>
                     {province.name}
@@ -127,8 +123,8 @@ const Search = ({ quantities, categories, provinces }) => {
               </Select>
               <FormErrorMessage>{errors.makerLocation && errors.makerLocation.message}</FormErrorMessage>
             </FormControl>
-            <Divider colorScheme="white" color="white" />
-            {/* <Text color="brandBlue" fontWeight="bold" fontSize="xl">
+            {/* <Divider colorScheme="white" color="white" />
+            <Text color="brandBlue" fontWeight="bold" fontSize="xl">
               Ordenar por:
             </Text>
             <Flex>
@@ -173,21 +169,32 @@ const Search = ({ quantities, categories, provinces }) => {
               </Button>
             </Box>
           </form>
-        </Stack>
-        <Stack w="75%" bg="white" h="100%" overflow="scroll">
-          <UnorderedList m="3rem">
-            {data.user.map(({ maker_name, maker_description, maker_rating, id }) => (
-              <MakerCard
-                name={maker_name}
-                description={maker_description}
-                rating={maker_rating}
-                handleOnClick={() => handleOnClick(id)}
-                key={id}
-              />
-            ))}
-          </UnorderedList>
-        </Stack>
-      </Flex>
+        }
+        contentChildren={
+          data.user.length ? (
+            <>
+              <UnorderedList m="3rem">
+                {data.user.map(({ maker_name, maker_description, maker_rating, id }) => (
+                  <MakerCard
+                    name={maker_name}
+                    description={maker_description}
+                    rating={maker_rating}
+                    handleOnClick={() => handleOnClick(id)}
+                    key={id}
+                  />
+                ))}
+              </UnorderedList>
+              <Box>
+                <Button variant="solid" colorScheme="facebook" ml="75%" onClick={handleLoadMore} isLoading={loading}>
+                  Cargar mas
+                </Button>
+              </Box>
+            </>
+          ) : (
+            <EmptyResults />
+          )
+        }
+      />
     </Layout>
   );
 };

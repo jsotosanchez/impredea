@@ -28,9 +28,8 @@ const EmptyResults = () => (
 const Search = ({ quantities, categories }) => {
   const router = useRouter();
   const { productName, quantity, category } = router.query;
-  console.log(router.query);
   const productNameForQuery = `%${productName}%`;
-  const { data, loading, error, refetch } = useQuery(GET_PRODUCTS, {
+  const { data, loading, error, refetch, fetchMore } = useQuery(GET_PRODUCTS, {
     variables: { category, productName: productNameForQuery, quantity },
   });
 
@@ -38,15 +37,22 @@ const Search = ({ quantities, categories }) => {
     handleSubmit,
     register,
     formState: { errors },
+    getValues: getFormValues,
   } = useForm();
 
-  const onSubmit = ({ category, productName, quantity }) => {
-    const productNameForQuery = `%${productName}%`;
-    refetch({ variables: { category, quantity, productName: productNameForQuery } });
+  const onSubmit = ({ productName, ...rest }) => {
+    refetch({ productName: `%${productName}%`, ...rest });
   };
 
   const handleOnClick = (id) => {
     router.push({ pathname: `/maker/${id}` });
+  };
+
+  const handleLoadMore = () => {
+    const { makerName, ...rest } = removeEmptyFields(getFormValues());
+    fetchMore({
+      variables: { makerName: `%${makerName}%`, ...rest, offset: data.user.length },
+    });
   };
 
   if (loading) return <LoadingPage />;
@@ -111,22 +117,28 @@ const Search = ({ quantities, categories }) => {
           </form>
         }
         contentChildren={
-          loading ? (
-            <LoadingPage />
-          ) : data.product.length ? (
-            <UnorderedList m="3rem">
-              {data.product.map(({ id, main_photo, description, maker: { maker_name }, name }) => (
-                <ProductSearchCard
-                  id={id}
-                  main_photo={main_photo}
-                  description={description}
-                  makerName={maker_name}
-                  productName={name}
-                  handleOnClick={() => handleOnClick(id)}
-                  key={id}
-                />
-              ))}
-            </UnorderedList>
+          data.product.length ? (
+            <>
+              <UnorderedList m="3rem">
+                {data.product.map(({ id, main_photo, description, maker: { maker_name }, name }) => (
+                  <ProductSearchCard
+                    id={id}
+                    main_photo={main_photo}
+                    description={description}
+                    makerName={maker_name}
+                    productName={name}
+                    handleOnClick={() => handleOnClick(id)}
+                    key={id}
+                  />
+                ))}
+              </UnorderedList>
+
+              <Box>
+                <Button variant="solid" colorScheme="facebook" ml="75%" onClick={handleLoadMore} isLoading={loading}>
+                  Cargar mas
+                </Button>
+              </Box>
+            </>
           ) : (
             <EmptyResults />
           )

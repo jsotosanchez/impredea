@@ -15,6 +15,7 @@ import QuestionsAdmin from './QuestionsAdmin';
 import QuotationAdmin from './QuotationAdmin';
 import RenderRating from './RenderRating';
 import ReviewCard from './ReviewCard';
+import SideBarLayout from './SideBarLayout';
 
 export {
   Authorization,
@@ -34,4 +35,5 @@ export {
   QuotationAdmin,
   RenderRating,
   ReviewCard,
+  SideBarLayout,
 };

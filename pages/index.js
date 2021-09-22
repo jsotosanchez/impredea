@@ -97,7 +97,7 @@ const SearchProductForm = ({ quantities, categories }) => {
   );
 };
 
-const SearchMakerForm = ({ categories, provinces }) => {
+const SearchMakerForm = ({ categories, provinces, quantities }) => {
   const router = useRouter();
   const {
     handleSubmit,
@@ -141,6 +141,17 @@ const SearchMakerForm = ({ categories, provinces }) => {
             {categories.map((category) => (
               <option value={category.id} key={category.id}>
                 {category.label}
+              </option>
+            ))}
+          </Select>
+          <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
+        </FormControl>
+        <FormControl w="40%" isInvalid={errors.quantity}>
+          <FormLabel color="brandBlue">Cantidad:</FormLabel>
+          <Select bg="white" color="black" defaultValue="1" id="quantity" {...register('quantity')}>
+            {quantities.map((option) => (
+              <option value={option.id} key={option.id}>
+                {option.label}
               </option>
             ))}
           </Select>
@@ -198,7 +209,7 @@ export default function Home({ quantities, categories, provinces }) {
                     <SearchProductForm quantities={quantities} categories={categories} />
                   </TabPanel>
                   <TabPanel>
-                    <SearchMakerForm categories={categories} provinces={provinces} />
+                    <SearchMakerForm categories={categories} provinces={provinces} quantities={quantities} />
                   </TabPanel>
                 </TabPanels>
               </Tabs>
