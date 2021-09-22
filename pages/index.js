@@ -23,6 +23,7 @@ import { useForm } from 'react-hook-form';
 import client from '../graphql/apollo-client';
 import { Layout, Authorization } from '../components';
 import { GET_SEARCHFORM_QUERY } from '../graphql/queries';
+import { removeEmptyFields } from '../utils/methods';
 
 const SearchProductForm = ({ quantities, categories }) => {
   const router = useRouter();
@@ -30,11 +31,11 @@ const SearchProductForm = ({ quantities, categories }) => {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-  } = useForm();
+  } = useForm({ defaultValues: { productName: '', category: null } });
 
   const onSubmit = (formData) => {
-    // console.log(formData);
-    router.push({ pathname: '/searchProduct', query: formData });
+    const query = removeEmptyFields(formData);
+    router.push({ pathname: '/searchProduct', query });
   };
 
   return (
@@ -69,15 +70,15 @@ const SearchProductForm = ({ quantities, categories }) => {
       <Stack direction="row" spacing="10%" mt="25px" pb="20px">
         <FormControl ml="5%" w="40%" isInvalid={errors.category}>
           <FormLabel color="brandBlue">Categoria:</FormLabel>
-          <Select bg="white" color="black" defaultValue={null} id="category">
-            <option value={null}>Cualquiera</option>
+          <Select bg="white" color="black" defaultValue={''} id="category" {...register('category')}>
+            <option value={''}>Cualquiera</option>
             {categories.map((category) => (
               <option value={category.id} key={category.id}>
                 {category.label}
               </option>
             ))}
           </Select>
-          <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
+          <FormErrorMessage>{errors.category && errors.category.message}</FormErrorMessage>
         </FormControl>
       </Stack>
       <Box ml="38px">
@@ -102,10 +103,11 @@ const SearchMakerForm = ({ categories, provinces }) => {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-  } = useForm();
+  } = useForm({ defaultValues: { makerName: '', category: null, makerLocation: null } });
 
   const onSubmit = (formData) => {
-    router.push({ pathname: '/searchMaker', query: formData });
+    const query = removeEmptyFields(formData);
+    router.push({ pathname: '/searchMaker', query });
   };
 
   return (
@@ -120,8 +122,8 @@ const SearchMakerForm = ({ categories, provinces }) => {
         </FormControl>
         <FormControl ml="5%" w="40%" isInvalid={errors.makerLocation}>
           <FormLabel color="brandBlue">Localidad:</FormLabel>
-          <Select bg="white" color="black" defaultValue={null} id="makerLocation" {...register('makerLocation')}>
-            <option value={null}>Cualquiera</option>
+          <Select bg="white" color="black" defaultValue={''} id="makerLocation" {...register('makerLocation')}>
+            <option value={''}>Cualquiera</option>
             {provinces.map((province) => (
               <option value={province.id} key={province.id}>
                 {province.name}
@@ -134,8 +136,8 @@ const SearchMakerForm = ({ categories, provinces }) => {
       <Stack direction="row" spacing="10%" mt="25px" pb="20px">
         <FormControl ml="5%" w="40%" isInvalid={errors.category}>
           <FormLabel color="brandBlue">Categoria:</FormLabel>
-          <Select bg="white" color="black" defaultValue={null} id="category" {...register('category')}>
-            <option value={null}>Cualquiera</option>
+          <Select bg="white" color="black" defaultValue={''} id="category" {...register('category')}>
+            <option value={''}>Cualquiera</option>
             {categories.map((category) => (
               <option value={category.id} key={category.id}>
                 {category.label}

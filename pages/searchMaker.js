@@ -11,32 +11,36 @@ import {
   Select,
   Divider,
   FormErrorMessage,
-  Text,
+  // Text,
   Slider,
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
   UnorderedList,
 } from '@chakra-ui/react';
-import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
+// import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
-import { gql } from '@apollo/client';
-import Layout from '../components/Layout';
+import { gql, useQuery } from '@apollo/client';
+import { Layout, LoadingPage, MakerCard, ErrorPage } from '../components/';
 import client from '../graphql/apollo-client';
-import MakerCard from '../components/MakerCard';
-import { GRAPHQL_SORT_ENUMS } from '../utils/constants';
+// import { GRAPHQL_SORT_ENUMS } from '../utils/constants';
+import { GET_MAKERS } from '../graphql/queries';
 
-const Search = ({ quantities, categories, makers }) => {
+const Search = ({ quantities, categories, provinces }) => {
   const router = useRouter();
-  const { search, quantity, category } = router.query;
+  const { makerName, quantity, category, location } = router.query;
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm();
   const [minRep, setMinRep] = useState(3);
-  const [priceOrder, setPriceOrder] = useState(GRAPHQL_SORT_ENUMS.ASC);
-  const [ratingOrder, setRatingOrder] = useState(GRAPHQL_SORT_ENUMS.DESC);
+  // const [priceOrder, setPriceOrder] = useState(GRAPHQL_SORT_ENUMS.ASC);
+  // const [ratingOrder, setRatingOrder] = useState(GRAPHQL_SORT_ENUMS.DESC);
+
+  const { data, loading, error, refetch } = useQuery(GET_MAKERS, {
+    variables: { category, makerName: `%${makerName}%`, quantity, location },
+  });
 
   const onSubmit = (formData) => {
     console.log({ ...formData, minRep });
@@ -46,29 +50,31 @@ const Search = ({ quantities, categories, makers }) => {
     router.push({ pathname: `/maker/${id}` });
   };
 
-  const handlePriceOrder = (order) => setPriceOrder(order);
+  // const handlePriceOrder = (order) => setPriceOrder(order);
 
-  const handleRatingOrder = (order) => setRatingOrder(order);
+  // const handleRatingOrder = (order) => setRatingOrder(order);
 
+  if (loading) return <LoadingPage />;
+  if (error) return <ErrorPage />;
   return (
     <Layout>
       <Flex w="100%" h="100vh" pt="4rem">
         <Stack w="25%" bg="brandGray.100" v="100vh" p="2rem 3rem">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl isInvalid={errors.search} pb="5px">
-              <FormLabel color="brandBlue" htmlFor="search">
-                Que buscas?
+            <FormControl isInvalid={errors.makerName} pb="5px">
+              <FormLabel color="brandBlue" htmlFor="makerName">
+                Nombre del Maker:
               </FormLabel>
               <Input
                 bg="white"
                 color="black"
-                id="search"
-                defaultValue={search}
-                {...register('search', {
+                id="makerName"
+                defaultValue={makerName}
+                {...register('makerName', {
                   required: 'Este campo es requerido',
                 })}
               />
-              <FormErrorMessage>{errors.search && errors.search.message}</FormErrorMessage>
+              <FormErrorMessage>{errors.makerName && errors.makerName.message}</FormErrorMessage>
             </FormControl>
             <FormControl isInvalid={errors.quantity}>
               <FormLabel color="brandBlue">Que Cantidad?</FormLabel>
@@ -109,8 +115,20 @@ const Search = ({ quantities, categories, makers }) => {
               </Select>
               <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
             </FormControl>
+            <FormControl isInvalid={errors.makerLocation}>
+              <FormLabel color="brandBlue">Selecciona una localidad:</FormLabel>
+              <Select bg="white" color="black" defaultValue={null} id="makerLocation" {...register('makerLocation')}>
+                <option value={null}>Cualquiera</option>
+                {provinces.map((province) => (
+                  <option value={province.id} key={province.id}>
+                    {province.name}
+                  </option>
+                ))}
+              </Select>
+              <FormErrorMessage>{errors.makerLocation && errors.makerLocation.message}</FormErrorMessage>
+            </FormControl>
             <Divider colorScheme="white" color="white" />
-            <Text color="brandBlue" fontWeight="bold" fontSize="xl">
+            {/* <Text color="brandBlue" fontWeight="bold" fontSize="xl">
               Ordenar por:
             </Text>
             <Flex>
@@ -134,7 +152,7 @@ const Search = ({ quantities, categories, makers }) => {
                 color={ratingOrder === GRAPHQL_SORT_ENUMS.ASC ? 'brandBlue' : 'gray'}
                 onClick={() => handleRatingOrder(GRAPHQL_SORT_ENUMS.ASC)}
               />
-            </Flex>
+            </Flex> */}
             <FormLabel color="brandBlue">Reputacion minima: {minRep}</FormLabel>
             <Slider
               min={1}
@@ -158,7 +176,7 @@ const Search = ({ quantities, categories, makers }) => {
         </Stack>
         <Stack w="75%" bg="white" h="100%" overflow="scroll">
           <UnorderedList m="3rem">
-            {makers.map(({ maker_name, maker_description, maker_rating, id }) => (
+            {data.user.map(({ maker_name, maker_description, maker_rating, id }) => (
               <MakerCard
                 name={maker_name}
                 description={maker_description}
@@ -176,8 +194,7 @@ const Search = ({ quantities, categories, makers }) => {
 
 export default Search;
 
-export async function getServerSideProps({ query }) {
-  const { search, quantity, category } = query;
+export async function getServerSideProps() {
   const { data } = await client.query({
     query: gql`
       query MyQuery {
@@ -189,11 +206,8 @@ export async function getServerSideProps({ query }) {
           id
           label
         }
-        user(where: { maker_active: { _eq: true } }) {
-          maker_category_id
-          maker_description
-          maker_name
-          maker_rating
+        provinces {
+          name
           id
         }
       }
@@ -204,7 +218,7 @@ export async function getServerSideProps({ query }) {
     props: {
       quantities: data.order_quantity,
       categories: data.maker_category,
-      makers: data.user,
+      provinces: data.provinces,
     },
   };
 }

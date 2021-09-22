@@ -1,56 +1,56 @@
-import { useState } from 'react';
 import { useRouter } from 'next/router';
 import {
   Box,
-  Flex,
-  Stack,
   FormControl,
   FormLabel,
   Input,
   Button,
   Select,
-  Divider,
   FormErrorMessage,
-  Text,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
   UnorderedList,
+  Center,
+  Heading,
 } from '@chakra-ui/react';
-import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
-import Layout from '../components/Layout';
+import { ErrorPage, Layout, LoadingPage } from '../components';
 import client from '../graphql/apollo-client';
-import { GRAPHQL_SORT_ENUMS } from '../utils/constants';
-import { GET_PRODUCTS } from '../graphql/queries';
+import { GET_PRODUCTS, GET_SEARCH_PRODUCT_DATA } from '../graphql/queries';
 import ProductSearchCard from '../components/ProductSearchCard';
 import SideBarLayout from '../components/SideBarLayout';
+import { useQuery } from '@apollo/client';
 
-const Search = ({ quantities, categories, products }) => {
-  console.log(products);
+const EmptyResults = () => (
+  <Center mt="20%">
+    <Heading> Tu busqueda no tuvo ningun resultado!</Heading>
+  </Center>
+);
+
+const Search = ({ quantities, categories }) => {
   const router = useRouter();
   const { productName, quantity, category } = router.query;
+  console.log(router.query);
+  const productNameForQuery = `%${productName}%`;
+  const { data, loading, error, refetch } = useQuery(GET_PRODUCTS, {
+    variables: { category, productName: productNameForQuery, quantity },
+  });
+
   const {
     handleSubmit,
     register,
     formState: { errors },
   } = useForm();
-  const [minRep, setMinRep] = useState(3);
-  const [priceOrder, setPriceOrder] = useState(GRAPHQL_SORT_ENUMS.ASC);
-  const [ratingOrder, setRatingOrder] = useState(GRAPHQL_SORT_ENUMS.DESC);
 
-  const onSubmit = (formData) => {
-    console.log({ ...formData, minRep });
+  const onSubmit = ({ category, productName, quantity }) => {
+    const productNameForQuery = `%${productName}%`;
+    refetch({ variables: { category, quantity, productName: productNameForQuery } });
   };
 
   const handleOnClick = (id) => {
     router.push({ pathname: `/maker/${id}` });
   };
 
-  const handlePriceOrder = (order) => setPriceOrder(order);
-
-  const handleRatingOrder = (order) => setRatingOrder(order);
+  if (loading) return <LoadingPage />;
+  if (error) return <ErrorPage />;
 
   return (
     <Layout>
@@ -74,7 +74,15 @@ const Search = ({ quantities, categories, products }) => {
             </FormControl>
             <FormControl isInvalid={errors.quantity}>
               <FormLabel color="brandBlue">Que Cantidad?</FormLabel>
-              <Select bg="white" color="black" defaultValue={quantity} id="quantity" {...register('quantity')}>
+              <Select
+                bg="white"
+                color="black"
+                defaultValue={quantity}
+                id="quantity"
+                {...register('quantity', {
+                  required: 'Este campo es requerido',
+                })}
+              >
                 {quantities.map((option) => (
                   <option value={option.id} key={option.id}>
                     {option.label}
@@ -95,46 +103,6 @@ const Search = ({ quantities, categories, products }) => {
               </Select>
               <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
             </FormControl>
-            <Divider colorScheme="white" color="white" />
-            <Text color="brandBlue" fontWeight="bold" fontSize="xl">
-              Ordenar por:
-            </Text>
-            <Flex>
-              <FormLabel color="brandBlue">Precio</FormLabel>
-              <ArrowDownIcon
-                color={priceOrder === GRAPHQL_SORT_ENUMS.DESC ? 'brandBlue' : 'gray'}
-                onClick={() => handlePriceOrder(GRAPHQL_SORT_ENUMS.DESC)}
-              />
-              <ArrowUpIcon
-                color={priceOrder === GRAPHQL_SORT_ENUMS.ASC ? 'brandBlue' : 'gray'}
-                onClick={() => handlePriceOrder(GRAPHQL_SORT_ENUMS.ASC)}
-              />
-            </Flex>
-            <Flex>
-              <FormLabel color="brandBlue">Reputacion</FormLabel>
-              <ArrowDownIcon
-                color={ratingOrder === GRAPHQL_SORT_ENUMS.DESC ? 'brandBlue' : 'gray'}
-                onClick={() => handleRatingOrder(GRAPHQL_SORT_ENUMS.DESC)}
-              />
-              <ArrowUpIcon
-                color={ratingOrder === GRAPHQL_SORT_ENUMS.ASC ? 'brandBlue' : 'gray'}
-                onClick={() => handleRatingOrder(GRAPHQL_SORT_ENUMS.ASC)}
-              />
-            </Flex>
-            <FormLabel color="brandBlue">Reputacion minima: {minRep}</FormLabel>
-            <Slider
-              min={1}
-              max={5}
-              aria-label="slider-ex-1"
-              defaultValue={minRep}
-              name="reputacion"
-              onChange={(v) => setMinRep(v)}
-            >
-              <SliderTrack bg="white">
-                <SliderFilledTrack />
-              </SliderTrack>
-              <SliderThumb />
-            </Slider>
             <Box pt="27px">
               <Button variant="solid" bg="brandBlue" colorScheme="brandBlue" color="white" type="submit">
                 Buscar
@@ -143,19 +111,25 @@ const Search = ({ quantities, categories, products }) => {
           </form>
         }
         contentChildren={
-          <UnorderedList m="3rem">
-            {products.map(({ id, main_photo, description, maker: { fullname }, name }) => (
-              <ProductSearchCard
-                id={id}
-                main_photo={main_photo}
-                description={description}
-                makerName={fullname}
-                productName={name}
-                handleOnClick={() => handleOnClick(id)}
-                key={id}
-              />
-            ))}
-          </UnorderedList>
+          loading ? (
+            <LoadingPage />
+          ) : data.product.length ? (
+            <UnorderedList m="3rem">
+              {data.product.map(({ id, main_photo, description, maker: { maker_name }, name }) => (
+                <ProductSearchCard
+                  id={id}
+                  main_photo={main_photo}
+                  description={description}
+                  makerName={maker_name}
+                  productName={name}
+                  handleOnClick={() => handleOnClick(id)}
+                  key={id}
+                />
+              ))}
+            </UnorderedList>
+          ) : (
+            <EmptyResults />
+          )
         }
       />
     </Layout>
@@ -164,20 +138,15 @@ const Search = ({ quantities, categories, products }) => {
 
 export default Search;
 
-export async function getServerSideProps({ query }) {
-  const { productName, quantity, category } = query;
-  const productNameForQuery = `%${productName}%`;
-
+export async function getServerSideProps() {
   const { data } = await client.query({
-    query: GET_PRODUCTS,
-    variables: { category, productName: productNameForQuery },
+    query: GET_SEARCH_PRODUCT_DATA,
   });
 
   return {
     props: {
       quantities: data.order_quantity,
       categories: data.maker_category,
-      products: data.product,
     },
   };
 }

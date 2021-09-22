@@ -6,19 +6,32 @@ export const GET_SEARCHFORM_QUERY = gql`
       id
       label
     }
-    maker_category {
+    maker_category(order_by: { label: asc }) {
       id
       label
     }
-    provinces {
+    provinces(order_by: { name: asc }) {
       name
       id
     }
   }
 `;
 
+export const GET_SEARCH_PRODUCT_DATA = gql`
+  query {
+    order_quantity {
+      id
+      label
+    }
+    maker_category(order_by: { label: asc }) {
+      id
+      label
+    }
+  }
+`;
+
 export const GET_PRODUCTS = gql`
-  query getProducts($category: Int, $productName: String!) {
+  query getProducts($category: Int, $productName: String!, $quantity: Int!) {
     maker_category {
       id
       label
@@ -29,8 +42,12 @@ export const GET_PRODUCTS = gql`
     }
     product(
       where: {
-        maker: { maker_active: { _eq: true }, maker_category_id: { _eq: $category } }
         name: { _ilike: $productName }
+        maker: {
+          maker_active: { _eq: true }
+          maker_category_id: { _eq: $category }
+          maker_capacity: { _lte: $quantity }
+        }
       }
       limit: 20
     ) {
@@ -38,7 +55,7 @@ export const GET_PRODUCTS = gql`
       main_photo
       description
       maker {
-        fullname
+        maker_name
       }
       name
     }
@@ -254,6 +271,26 @@ export const GET_SALES_BY_MAKER_ID = gql`
           fullname
         }
       }
+    }
+  }
+`;
+
+export const GET_MAKERS = gql`
+  query MyQuery($quantity: Int, $location: Int, $category: Int, $makerName: String) {
+    user(
+      where: {
+        maker_active: { _eq: true }
+        maker_capacity: { _lte: $quantity }
+        maker_location: { _eq: $location }
+        maker_category_id: { _eq: $category }
+        maker_name: { _ilike: $makerName }
+      }
+    ) {
+      maker_category_id
+      maker_description
+      maker_name
+      maker_rating
+      id
     }
   }
 `;

@@ -1,7 +1,7 @@
 import { useLazyQuery, useQuery } from '@apollo/react-hooks';
 import { useCallback } from 'react';
 import {
-  GET_SEARCHFORM_QUERY,
+  GET_SEARCH_PRODUCT_DATA,
   GET_MAKER_BY_ID,
   GET_PRODUCT_BY_ID,
   GET_USER_BY_ID,
@@ -16,7 +16,7 @@ import {
 } from './queries';
 
 export const useSearchFormData = () => {
-  const { loading, error, data } = useQuery(GET_SEARCHFORM_QUERY);
+  const { loading, error, data } = useQuery(GET_SEARCH_PRODUCT_DATA);
 
   if (!loading && data) {
     return {
