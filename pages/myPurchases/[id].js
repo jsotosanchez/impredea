@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import {
   Box,
   Button,
@@ -18,7 +19,6 @@ import {
   Spinner,
   Stack,
   Table,
-  TableCaption,
   Tbody,
   Td,
   Textarea,
@@ -30,15 +30,12 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
-import { MY_PURCHASES_SECTIONS } from '../../utils/constants';
-import Layout from '../../components/Layout';
-import { useGetQuotationsByClientId } from '../../graphql/hooks';
 import { ChatIcon, RepeatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
-import LoadingPage from '../../components/LoadingPage';
-import ErrorPage from '../../components/ErrorPage';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_QUOTATION_BY_PK } from '../../graphql/queries';
+import { MY_PURCHASES_SECTIONS } from '../../utils/constants';
+import { useGetQuotationsByClientId } from '../../graphql/hooks';
+import { LoadingPage, Layout, ErrorPage } from '../../components';
+import { GET_QUOTATION_BY_PK, GET_SALES_BY_CLIENT_ID } from '../../graphql/queries';
 import { ACCEPT_QUOTATION, CREATE_SALE, DECLINE_QUOTATION } from '../../graphql/mutations';
 
 const Purchases = ({ id }) => {
@@ -49,7 +46,6 @@ const Purchases = ({ id }) => {
 
   return (
     <Table variant="striped" colorScheme="gray">
-      <TableCaption placement="top">Mis Compras</TableCaption>
       <Thead>
         <Tr>
           <Th>Producto</Th>
@@ -287,7 +283,6 @@ const ClientQuotations = ({ id }) => {
         </ModalContent>
       </Modal>
       <Table variant="striped" colorScheme="gray">
-        <TableCaption placement="top">Mis Cotizaciones Pendientes:</TableCaption>
         <Thead>
           <Tr>
             <Th>Producto</Th>
@@ -305,17 +300,15 @@ const ClientQuotations = ({ id }) => {
               <Td>{quotation.maker.maker_name}</Td>
               <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
               <Td>
-                <Stack>
-                  <ChatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
-                  <ViewIcon
-                    color="facebook"
-                    mr="20px"
-                    cursor="pointer"
-                    onClick={() => {
-                      handleOnEdit(quotation.id);
-                    }}
-                  />
-                </Stack>
+                <ChatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                <ViewIcon
+                  color="facebook"
+                  mr="20px"
+                  cursor="pointer"
+                  onClick={() => {
+                    handleOnEdit(quotation.id);
+                  }}
+                />
               </Td>
             </Tr>
           ))}
