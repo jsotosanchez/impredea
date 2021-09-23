@@ -134,8 +134,13 @@ export const GET_PRODUCTS_BY_MAKER_ID = gql`
 `;
 
 export const GET_QUESTIONS_BY_MAKER_ID = gql`
-  query getProductsByMakerId($id: Int!) {
-    questions(where: { maker_id: { _eq: $id }, response: { _is_null: true } }) {
+  query getProductsByMakerId($id: Int!, $limit: Int = 10, $offset: Int = 0) {
+    questions(
+      where: { maker_id: { _eq: $id }, response: { _is_null: true } }
+      order_by: { created_at: asc }
+      limit: $limit
+      offset: $offset
+    ) {
       id
       question
       client {

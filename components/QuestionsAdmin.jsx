@@ -7,8 +7,8 @@ import {
   Tr,
   Th,
   Td,
-  TableCaption,
-  useDisclosure,
+  Flex,
+  Spacer,
   Spinner,
   Modal,
   ModalOverlay,
@@ -24,18 +24,20 @@ import {
   FormLabel,
   FormErrorMessage,
   Text,
+  Tooltip,
+  useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import LoadingPage from './LoadingPage';
-import { useGetQuestionsByMakerId } from '../graphql/hooks';
-import { ViewIcon } from '@chakra-ui/icons';
-import { GET_QUESTION_BY_ID } from '../graphql/queries';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
+import { ViewIcon } from '@chakra-ui/icons';
+import { GET_QUESTIONS_BY_MAKER_ID, GET_QUESTION_BY_ID } from '../graphql/queries';
 import { UPDATE_QUESTION_BY_ID } from '../graphql/mutations';
+import { LoadingPage } from '.';
 
 const QuestionsAdmin = ({ id }) => {
-  const { data, loading, refetch } = useGetQuestionsByMakerId(id);
+  const [currentPage, setCurrentPage] = useState(0);
+  const { data, loading, refetch } = useQuery(GET_QUESTIONS_BY_MAKER_ID, { variables: { id } });
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
@@ -94,6 +96,10 @@ const QuestionsAdmin = ({ id }) => {
     });
   };
 
+  useEffect(() => {
+    if (data) refetch({ offset: 10 * currentPage });
+  }, [currentPage]);
+
   if (loading) return <LoadingPage />;
 
   return (
@@ -135,7 +141,6 @@ const QuestionsAdmin = ({ id }) => {
         </ModalContent>
       </Modal>
       <Table variant="striped" colorScheme="gray">
-        <TableCaption placement="top">Preguntas pendientes:</TableCaption>
         <Thead>
           <Tr>
             <Th>Cliente</Th>
@@ -149,13 +154,31 @@ const QuestionsAdmin = ({ id }) => {
               <Td>{question.client.fullname}</Td>
               <Td>{question.created_at}</Td>
               <Td>
-                <ViewIcon color="facebook" mr="20px" cursor="pointer" onClick={() => handleViewQuestion(question.id)} />
+                <Tooltip hasArrow label="Responder">
+                  <ViewIcon
+                    color="facebook"
+                    mr="20px"
+                    cursor="pointer"
+                    onClick={() => handleViewQuestion(question.id)}
+                  />
+                </Tooltip>
                 {/* <CloseIcon color="red" cursor="pointer" onClick={() => handleOnDelete(question.id)} /> */}
               </Td>
             </Tr>
           ))}
         </Tbody>
       </Table>
+      <Flex mt="5px">
+        {currentPage > 0 && (
+          <Button size="md" variant="outline" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev - 1)}>
+            Anterior
+          </Button>
+        )}
+        <Spacer />
+        <Button variant="solid" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev + 1)}>
+          Siguiente
+        </Button>
+      </Flex>
     </Box>
   );
 };

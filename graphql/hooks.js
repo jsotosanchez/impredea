@@ -141,10 +141,6 @@ export const useGetProductsByMakerId = (id) => {
   };
 };
 
-export const useGetQuestionsByMakerId = (id) => {
-  return useQuery(GET_QUESTIONS_BY_MAKER_ID, { variables: { id } });
-};
-
 const emptyData = {};
 
 export const useGetUserIdentity = () => {
