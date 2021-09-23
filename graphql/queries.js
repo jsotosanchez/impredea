@@ -181,8 +181,13 @@ export const GET_USER_IDENTITY_BY_EMAIL = gql`
 `;
 
 export const GET_QUOTATIONS_BY_MAKER_ID = gql`
-  query getQuotationsByMakerId($id: Int!) {
-    quotations(where: { maker_id: { _eq: $id }, status_id: { _eq: 1 } }) {
+  query getQuotationsByMakerId($id: Int!, $statuses: [Int!] = [1, 2, 3, 4], $limit: Int = 10, $offset: Int = 0) {
+    quotations(
+      where: { maker_id: { _eq: $id }, status_id: { _in: $statuses } }
+      order_by: { updated_at: asc, quotation_status: { id: asc } }
+      limit: $limit
+      offset: $offset
+    ) {
       id
       updated_at
       created_at
@@ -308,6 +313,15 @@ export const GET_MAKERS = gql`
       maker_name
       maker_rating
       id
+    }
+  }
+`;
+
+export const GET_QUOTATIONS_STATUSES = gql`
+  query MyQuery {
+    quotation_statuses {
+      id
+      label
     }
   }
 `;

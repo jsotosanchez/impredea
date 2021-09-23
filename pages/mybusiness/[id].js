@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Box, Heading, HStack } from '@chakra-ui/react';
+import client from '../../graphql/apollo-client';
 import { CatalogAdmin, Layout, QuestionsAdmin, MakerInfoAdmin, QuotationsAdmin, SalesAdmin } from '../../components';
 import { MY_BUSINESS_SECTIONS } from '../../utils/constants';
+import { GET_QUOTATIONS_STATUSES } from '../../graphql/queries';
 
-const MyBusiness = () => {
+const MyBusiness = ({ statuses }) => {
   const router = useRouter();
   const { id } = router.query;
   const [activeSection, setActiveSection] = useState(MY_BUSINESS_SECTIONS.PRODUCTS);
 
   const renderSection = {
     [MY_BUSINESS_SECTIONS.PRODUCTS]: <CatalogAdmin id={id} />,
-    [MY_BUSINESS_SECTIONS.QUOTATIONS]: <QuotationsAdmin id={id} />,
+    [MY_BUSINESS_SECTIONS.QUOTATIONS]: <QuotationsAdmin id={id} statuses={statuses} />,
     [MY_BUSINESS_SECTIONS.QUESTIONS]: <QuestionsAdmin id={id} />,
     [MY_BUSINESS_SECTIONS.INFO]: <MakerInfoAdmin id={id} />,
     [MY_BUSINESS_SECTIONS.SALES]: <SalesAdmin id={id} />,
@@ -72,5 +74,17 @@ const MyBusiness = () => {
     </Layout>
   );
 };
+
+export async function getServerSideProps() {
+  const { data } = await client.query({
+    query: GET_QUOTATIONS_STATUSES,
+  });
+
+  return {
+    props: {
+      statuses: data.quotation_statuses,
+    },
+  };
+}
 
 export default MyBusiness;

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -17,7 +18,6 @@ import {
   Spinner,
   Stack,
   Table,
-  TableCaption,
   Tbody,
   Td,
   Text,
@@ -27,19 +27,32 @@ import {
   Tr,
   useDisclosure,
   useToast,
+  Spacer,
+  Checkbox,
+  HStack,
 } from '@chakra-ui/react';
 import LoadingPage from '../components/LoadingPage';
-import { useGetQuotationsByMakerId } from '../graphql/hooks';
 import { EditIcon } from '@chakra-ui/icons';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { GET_QUOTATION_BY_PK } from '../graphql/queries';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { GET_QUOTATIONS_BY_MAKER_ID, GET_QUOTATION_BY_PK } from '../graphql/queries';
 import { useForm } from 'react-hook-form';
 import { SEND_QUOTATION } from '../graphql/mutations';
 
-const QuotationsAdmin = ({ id }) => {
-  const { data, loading, refetch } = useGetQuotationsByMakerId(id);
+const QuotationsAdmin = ({ id, statuses }) => {
+  const [currentPage, setCurrentPage] = useState(0);
+  const {
+    data,
+    loading,
+    refetch: refetchQuotations,
+    fetchMore,
+  } = useQuery(GET_QUOTATIONS_BY_MAKER_ID, { variables: { id } });
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
+
+  const [checkedStatuses, setCheckedStatuses] = useState([true, true, true, true]);
+  const allChecked = checkedStatuses.every(Boolean);
+  const isIndeterminate = checkedStatuses.some(Boolean) && !allChecked;
 
   const {
     handleSubmit,
@@ -79,12 +92,26 @@ const QuotationsAdmin = ({ id }) => {
   const handleOnClose = () => {
     reset();
     onClose();
-    refetch();
+    refetchQuotations();
   };
 
   const onSubmit = (formData) => {
     updateQuotation({ variables: { ...formData, id: quotation?.quotations_by_pk.id } });
   };
+
+  useEffect(() => {
+    const statuses = checkedStatuses.map((status, id) => {
+      if (status) return id + 1;
+      return 0;
+    });
+    refetchQuotations({ id, statuses });
+    setCurrentPage(0);
+  }, [checkedStatuses]);
+
+  useEffect(() => {
+    if (data) refetchQuotations({ offset: 10 * currentPage });
+  }, [currentPage]);
+
   if (loading) return <LoadingPage />;
 
   return (
@@ -212,6 +239,32 @@ const QuotationsAdmin = ({ id }) => {
           )}
         </ModalContent>
       </Modal>
+      <>
+        <HStack pl={6} mt={1} spacing={1}>
+          <Checkbox
+            isChecked={allChecked}
+            isIndeterminate={isIndeterminate}
+            onChange={(e) => setCheckedStatuses(statuses.map(() => e.target.checked))}
+          >
+            Todos
+          </Checkbox>
+          {statuses.map(({ id, label }, index) => (
+            <Checkbox
+              isChecked={checkedStatuses[index]}
+              onChange={(e) => {
+                setCheckedStatuses((prev) => {
+                  const newValues = [...prev];
+                  newValues[index] = e.target.checked;
+                  return newValues;
+                });
+              }}
+              key={id}
+            >
+              {label}
+            </Checkbox>
+          ))}
+        </HStack>
+      </>
       <Table variant="striped" colorScheme="gray">
         <Thead>
           <Tr>
@@ -228,19 +281,32 @@ const QuotationsAdmin = ({ id }) => {
               <Td>{quotation.updated_at.slice(0, 10)}</Td>
               <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
               <Td>
-                <EditIcon
-                  color="facebook"
-                  mr="20px"
-                  cursor="pointer"
-                  onClick={() => {
-                    handleOnEdit(quotation.id);
-                  }}
-                />
+                {quotation.status_id === 1 && (
+                  <EditIcon
+                    color="facebook"
+                    mr="20px"
+                    cursor="pointer"
+                    onClick={() => {
+                      handleOnEdit(quotation.id);
+                    }}
+                  />
+                )}
               </Td>
             </Tr>
           ))}
         </Tbody>
       </Table>
+      <Flex mt="5px">
+        {currentPage > 0 && (
+          <Button size="md" variant="outline" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev - 1)}>
+            Anterior
+          </Button>
+        )}
+        <Spacer />
+        <Button variant="solid" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev + 1)}>
+          Siguiente
+        </Button>
+      </Flex>
     </Box>
   );
 };

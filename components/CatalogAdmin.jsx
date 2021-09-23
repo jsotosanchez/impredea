@@ -165,7 +165,7 @@ const CatalogAdmin = ({ id }) => {
   }, [currentProductId]);
 
   useEffect(() => {
-    if (data) refetch({ offset: data.product.length * currentPage });
+    if (data) refetch({ offset: 10 * currentPage });
   }, [currentPage]);
 
   if (error) return <ErrorPage route={`myBusiness/${id}`} />;
