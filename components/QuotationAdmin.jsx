@@ -31,11 +31,11 @@ import {
   Checkbox,
   HStack,
 } from '@chakra-ui/react';
-import LoadingPage from '../components/LoadingPage';
 import { EditIcon } from '@chakra-ui/icons';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_QUOTATIONS_BY_MAKER_ID, GET_QUOTATION_BY_PK } from '../graphql/queries';
 import { useForm } from 'react-hook-form';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import LoadingPage from '../components/LoadingPage';
+import { GET_QUOTATIONS_BY_MAKER_ID, GET_QUOTATION_BY_PK } from '../graphql/queries';
 import { SEND_QUOTATION } from '../graphql/mutations';
 
 const QuotationsAdmin = ({ id, statuses }) => {

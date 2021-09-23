@@ -183,7 +183,3 @@ export const useGetQuotationsByClientId = (id) => {
 export const useGetSalesByClientId = (id) => {
   return useQuery(GET_SALES_BY_CLIENT_ID, { variables: { id } });
 };
-
-export const useGetSalesByMakerId = (id) => {
-  return useQuery(GET_SALES_BY_MAKER_ID, { variables: { id } });
-};

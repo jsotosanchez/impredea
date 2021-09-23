@@ -272,8 +272,8 @@ export const GET_SALES_BY_CLIENT_ID = gql`
 `;
 
 export const GET_SALES_BY_MAKER_ID = gql`
-  query getSalesByMakerId($id: Int!) {
-    sales(where: { maker_id: { _eq: $id } }) {
+  query getSalesByMakerId($id: Int!, $limit: Int = 10, $offset: Int = 0) {
+    sales(where: { maker_id: { _eq: $id } }, offset: $offset, limit: $limit) {
       id
       quotation {
         price
