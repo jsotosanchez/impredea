@@ -34,10 +34,11 @@ import { ViewIcon } from '@chakra-ui/icons';
 import { GET_QUESTIONS_BY_MAKER_ID, GET_QUESTION_BY_ID } from '../graphql/queries';
 import { UPDATE_QUESTION_BY_ID } from '../graphql/mutations';
 import { LoadingPage } from '.';
+import { usePagination } from '../hooks/';
 
 const QuestionsAdmin = ({ id }) => {
-  const [currentPage, setCurrentPage] = useState(0);
   const { data, loading, refetch } = useQuery(GET_QUESTIONS_BY_MAKER_ID, { variables: { id } });
+  const { currentPage, setCurrentPage } = usePagination(data, refetch);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
@@ -95,10 +96,6 @@ const QuestionsAdmin = ({ id }) => {
       variables: { id: currentQuestionId, ...formData, answered_at: now },
     });
   };
-
-  useEffect(() => {
-    if (data) refetch({ offset: 10 * currentPage });
-  }, [currentPage]);
 
   if (loading) return <LoadingPage />;
 

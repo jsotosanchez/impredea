@@ -7,7 +7,6 @@ import {
   Tr,
   Th,
   Td,
-  TableCaption,
   Button,
   Input,
   Spacer,
@@ -24,11 +23,17 @@ import { DELETE_PRODUCT_BY_ID, EDIT_PRODUCT_BY_ID, INSERT_PRODUCT } from '../gra
 import { GET_PRODUCTS_BY_MAKER_ID, GET_PRODUCT_BY_ID } from '../graphql/queries';
 import { formatToStartsWith } from '../graphql/utils';
 import { EmptyResults, ErrorPage, LoadingPage, ManageProductModal } from '.';
+import { usePagination } from '../hooks/';
 
 const CatalogAdmin = ({ id }) => {
-  const [filter, setFilter] = useState('');
-  const [currentPage, setCurrentPage] = useState(0);
   const [currentProductId, setCurrentProductId] = useState();
+  const [filter, setFilter] = useState('');
+  const { data, loading: loadingProducts, error, refetch } = useQuery(GET_PRODUCTS_BY_MAKER_ID, { variables: { id } });
+  const [getProduct, { loading: loadingGetProduct, data: currentProduct }] = useLazyQuery(GET_PRODUCT_BY_ID, {
+    variables: { id: currentProductId },
+  });
+  const { currentPage, setCurrentPage } = usePagination(data, refetch);
+
   const toast = useToast();
   const { isOpen: addModalIsOpen, onOpen: addModalOnOpen, onClose: addModalOnClose } = useDisclosure();
   const { isOpen: editModalIsOpen, onOpen: editModalOnOpen, onClose: editModalOnClose } = useDisclosure();
@@ -38,18 +43,12 @@ const CatalogAdmin = ({ id }) => {
     formState: { errors: addModalErrors },
     reset: resetAddModal,
   } = useForm();
-
   const {
     handleSubmit: handleEditModalSubmit,
     register: registerEditModal,
     formState: { errors: editModalErrors },
     reset: resetEditModal,
   } = useForm();
-
-  const { data, loading: loadingProducts, error, refetch } = useQuery(GET_PRODUCTS_BY_MAKER_ID, { variables: { id } });
-  const [getProduct, { loading: loadingGetProduct, data: currentProduct }] = useLazyQuery(GET_PRODUCT_BY_ID, {
-    variables: { id: currentProductId },
-  });
 
   const productsHasResults = data ? data.product.length > 0 : false;
 
@@ -163,10 +162,6 @@ const CatalogAdmin = ({ id }) => {
   useEffect(() => {
     getProduct();
   }, [currentProductId]);
-
-  useEffect(() => {
-    if (data) refetch({ offset: 10 * currentPage });
-  }, [currentPage]);
 
   if (error) return <ErrorPage route={`myBusiness/${id}`} />;
 

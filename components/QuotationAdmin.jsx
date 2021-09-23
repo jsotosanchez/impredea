@@ -37,15 +37,11 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import LoadingPage from '../components/LoadingPage';
 import { GET_QUOTATIONS_BY_MAKER_ID, GET_QUOTATION_BY_PK } from '../graphql/queries';
 import { SEND_QUOTATION } from '../graphql/mutations';
+import { usePagination } from '../hooks/';
 
 const QuotationsAdmin = ({ id, statuses }) => {
-  const [currentPage, setCurrentPage] = useState(0);
-  const {
-    data,
-    loading,
-    refetch: refetchQuotations,
-    fetchMore,
-  } = useQuery(GET_QUOTATIONS_BY_MAKER_ID, { variables: { id } });
+  const { data, loading, refetch: refetchQuotations } = useQuery(GET_QUOTATIONS_BY_MAKER_ID, { variables: { id } });
+  const { currentPage, setCurrentPage } = usePagination(data, refetchQuotations);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
@@ -107,10 +103,6 @@ const QuotationsAdmin = ({ id, statuses }) => {
     refetchQuotations({ id, statuses });
     setCurrentPage(0);
   }, [checkedStatuses]);
-
-  useEffect(() => {
-    if (data) refetchQuotations({ offset: 10 * currentPage });
-  }, [currentPage]);
 
   if (loading) return <LoadingPage />;
 

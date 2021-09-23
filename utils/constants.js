@@ -22,3 +22,7 @@ export const GRAPHQL_SORT_ENUMS = {
   ASC: 'asc',
   DESC: 'desc',
 };
+
+export const PAGINATION = {
+  defaultSize: 10,
+};

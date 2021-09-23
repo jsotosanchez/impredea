@@ -4,15 +4,11 @@ import { ChatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
 import { useQuery } from '@apollo/client';
 import { GET_SALES_BY_MAKER_ID } from '../graphql/queries';
 import { LoadingPage } from '.';
+import { usePagination } from '../hooks/';
 
 const SalesAdmin = ({ id }) => {
-  const [currentPage, setCurrentPage] = useState(0);
-
   const { data, loading, refetch } = useQuery(GET_SALES_BY_MAKER_ID, { variables: { id } });
-
-  useEffect(() => {
-    if (data) refetch({ offset: 10 * currentPage });
-  }, [currentPage]);
+  const { currentPage, setCurrentPage } = usePagination(data, refetch);
 
   if (loading) return <LoadingPage />;
 
