@@ -208,8 +208,8 @@ export const GET_QUOTATIONS_BY_MAKER_ID = gql`
 `;
 
 export const GET_QUOTATIONS_BY_CLIENT_ID = gql`
-  query getQuotationsByMakerId($id: Int!) {
-    quotations(where: { client_id: { _eq: $id }, status_id: { _eq: 2 } }) {
+  query getQuotationsByMakerId($id: Int!, $limit: Int = 10, $offset: Int = 0) {
+    quotations(where: { client_id: { _eq: $id }, status_id: { _eq: 2 } }, limit: $limit, offset: $offset) {
       id
       updated_at
       product {
@@ -253,8 +253,8 @@ export const GET_QUOTATION_BY_PK = gql`
 `;
 
 export const GET_SALES_BY_CLIENT_ID = gql`
-  query getSalesByClientId($id: Int!) {
-    sales(where: { client_id: { _eq: $id } }) {
+  query getSalesByClientId($id: Int!, $limit: Int = 10, $offset: Int = 0) {
+    sales(where: { client_id: { _eq: $id } }, offset: $offset, limit: $limit) {
       id
       quotation {
         price

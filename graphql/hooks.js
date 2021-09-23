@@ -175,11 +175,3 @@ export const useGetQuotationsByMakerId = (id) => {
     refetch,
   };
 };
-
-export const useGetQuotationsByClientId = (id) => {
-  return useQuery(GET_QUOTATIONS_BY_CLIENT_ID, { variables: { id } });
-};
-
-export const useGetSalesByClientId = (id) => {
-  return useQuery(GET_SALES_BY_CLIENT_ID, { variables: { id } });
-};

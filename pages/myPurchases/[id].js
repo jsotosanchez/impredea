@@ -29,64 +29,83 @@ import {
   useToast,
   Text,
   Tooltip,
+  Spacer,
 } from '@chakra-ui/react';
 import { ChatIcon, RepeatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { MY_PURCHASES_SECTIONS } from '../../utils/constants';
-import { useGetQuotationsByClientId } from '../../graphql/hooks';
 import { LoadingPage, Layout, ErrorPage } from '../../components';
-import { GET_QUOTATION_BY_PK, GET_SALES_BY_CLIENT_ID } from '../../graphql/queries';
+import { GET_QUOTATIONS_BY_CLIENT_ID, GET_QUOTATION_BY_PK, GET_SALES_BY_CLIENT_ID } from '../../graphql/queries';
 import { ACCEPT_QUOTATION, CREATE_SALE, DECLINE_QUOTATION } from '../../graphql/mutations';
+import { usePagination } from '../../hooks';
 
 const Purchases = ({ id }) => {
-  const { data, loading, error } = useQuery(GET_SALES_BY_CLIENT_ID, { variables: { id } });
+  const { data, loading, error, refetch } = useQuery(GET_SALES_BY_CLIENT_ID, { variables: { id } });
+  const { currentPage, setCurrentPage } = usePagination(data, refetch);
 
   if (loading) return <LoadingPage />;
   if (error) return <ErrorPage />;
 
   return (
-    <Table variant="striped" colorScheme="gray">
-      <Thead>
-        <Tr>
-          <Th>Producto</Th>
-          <Th>Fecha de Entrega</Th>
-          <Th>Maker</Th>
-          <Th>Precio</Th>
-          <Th>Acciones</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        {data?.sales.map((sale) => (
-          <Tr key={sale.id}>
-            <Td>{sale.quotation.product.name}</Td>
-            <Td>{sale.quotation.estimated_date.slice(0, 10)}</Td>
-            <Td>{sale.quotation.maker.maker_name}</Td>
-            <Td>{sale.quotation.price}</Td>
-            <Td>
-              <Center>
-                <Tooltip hasArrow label="Ver Conversación">
-                  <ChatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
-                </Tooltip>
-                <Tooltip hasArrow label="Ver Compra">
-                  <ViewIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
-                </Tooltip>
-                <Tooltip hasArrow label="Repetir Compra">
-                  <RepeatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
-                </Tooltip>
-                <Tooltip hasArrow label="Reportar un problema">
-                  <WarningIcon color="red" mr="20px" cursor="pointer" onClick={() => {}} />
-                </Tooltip>
-              </Center>
-            </Td>
+    <>
+      <Table variant="striped" colorScheme="gray">
+        <Thead>
+          <Tr>
+            <Th>Producto</Th>
+            <Th>Fecha de Entrega</Th>
+            <Th>Maker</Th>
+            <Th>Precio</Th>
+            <Th>Acciones</Th>
           </Tr>
-        ))}
-      </Tbody>
-    </Table>
+        </Thead>
+        <Tbody>
+          {data?.sales.map((sale) => (
+            <Tr key={sale.id}>
+              <Td>{sale.quotation.product.name}</Td>
+              <Td>{sale.quotation.estimated_date.slice(0, 10)}</Td>
+              <Td>{sale.quotation.maker.maker_name}</Td>
+              <Td>{sale.quotation.price}</Td>
+              <Td>
+                <Center>
+                  <Tooltip hasArrow label="Ver Conversación">
+                    <ChatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                  </Tooltip>
+                  <Tooltip hasArrow label="Ver Compra">
+                    <ViewIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                  </Tooltip>
+                  <Tooltip hasArrow label="Repetir Compra">
+                    <RepeatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                  </Tooltip>
+                  <Tooltip hasArrow label="Reportar un problema">
+                    <WarningIcon color="red" mr="20px" cursor="pointer" onClick={() => {}} />
+                  </Tooltip>
+                </Center>
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
+      <Flex mt="5px">
+        {currentPage > 0 && (
+          <Button size="md" variant="outline" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev - 1)}>
+            Anterior
+          </Button>
+        )}
+        <Spacer />
+        {
+          <Button variant="solid" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev + 1)}>
+            Siguiente
+          </Button>
+        }
+      </Flex>
+    </>
   );
 };
 
 const ClientQuotations = ({ id }) => {
-  const { data, loading, refetch } = useGetQuotationsByClientId(id);
+  const { data, loading, refetch } = useQuery(GET_QUOTATIONS_BY_CLIENT_ID, { variables: { id } });
+  const { currentPage, setCurrentPage } = usePagination(data, refetch);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
@@ -314,6 +333,19 @@ const ClientQuotations = ({ id }) => {
           ))}
         </Tbody>
       </Table>
+      <Flex mt="5px">
+        {currentPage > 0 && (
+          <Button size="md" variant="outline" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev - 1)}>
+            Anterior
+          </Button>
+        )}
+        <Spacer />
+        {
+          <Button variant="solid" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev + 1)}>
+            Siguiente
+          </Button>
+        }
+      </Flex>
     </Box>
   );
 };
