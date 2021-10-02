@@ -2,16 +2,12 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import {
   Box,
-  Flex,
-  Stack,
   FormControl,
   FormLabel,
   Input,
   Button,
   Select,
-  Divider,
   FormErrorMessage,
-  // Text,
   Slider,
   SliderTrack,
   SliderFilledTrack,
@@ -21,12 +17,11 @@ import {
 // import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
 import { gql, useQuery } from '@apollo/client';
-import { Layout, LoadingPage, MakerCard, ErrorPage, SideBarLayout } from '../components/';
+import { Layout, LoadingPage, MakerCard, ErrorPage, SideBarLayout, EmptyResults } from '../components/';
 import client from '../graphql/apollo-client';
-// import { GRAPHQL_SORT_ENUMS } from '../utils/constants';
 import { GET_MAKERS } from '../graphql/queries';
 import { formatToContains } from '../graphql/utils';
-import { removeEmptyFields } from '../utils/methods';
+import { removeEmptyFields } from '../utils/miscellaneous';
 
 const Search = ({ quantities, categories, provinces }) => {
   const router = useRouter();

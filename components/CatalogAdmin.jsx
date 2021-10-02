@@ -157,11 +157,11 @@ const CatalogAdmin = ({ id }) => {
   useEffect(() => {
     debouncedSearch();
     setCurrentPage(0);
-  }, [filter]);
+  }, [filter, debouncedSearch, setCurrentPage]);
 
   useEffect(() => {
     getProduct();
-  }, [currentProductId]);
+  }, [currentProductId, getProduct]);
 
   if (error) return <ErrorPage route={`myBusiness/${id}`} />;
 
