@@ -371,7 +371,7 @@ const MyPurchases = () => {
             cursor="pointer"
             onClick={() => setActiveSection(MY_PURCHASES_SECTIONS.QUOTATIONS)}
           >
-            Cotizaciónes
+            Cotizaciones
           </Heading>
           <Heading
             as="h3"
