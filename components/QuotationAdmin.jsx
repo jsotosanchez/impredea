@@ -102,7 +102,7 @@ const QuotationsAdmin = ({ id, statuses }) => {
     });
     refetchQuotations({ id, statuses });
     setCurrentPage(0);
-  }, [checkedStatuses]);
+  }, [checkedStatuses, refetchQuotations, setCurrentPage, id]);
 
   if (loading) return <LoadingPage />;
 

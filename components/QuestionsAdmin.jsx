@@ -83,7 +83,7 @@ const QuestionsAdmin = ({ id }) => {
 
   useEffect(() => {
     getQuestion();
-  }, [currentQuestionId]);
+  }, [currentQuestionId, getQuestion]);
 
   const handleViewQuestion = (id) => {
     setCurrentQuestionId(id);
