@@ -67,10 +67,16 @@ export default function Layout({ children, ...rest }) {
             </Button>
           )}
           {!id && (
-            <Button variant="link" colorScheme="white" color="white" mr="5">
-              {/* TODO: change for next/link */}
-              <a href="/api/auth/login">Contectarse</a>
-            </Button>
+            <>
+              <Button variant="link" colorScheme="white" color="white" mr="5">
+                {/* TODO: change for next/link */}
+                <a href="/api/auth/login">Registrarme</a>
+              </Button>
+              <Button variant="link" colorScheme="white" color="white" mr="5">
+                {/* TODO: change for next/link */}
+                <a href="/api/auth/login">Contectarse</a>
+              </Button>
+            </>
           )}
           {id && (
             <Button variant="link" colorScheme="white" color="white" mr="5">

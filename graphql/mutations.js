@@ -154,3 +154,12 @@ export const REPORT_PROBLEM = gql`
     }
   }
 `;
+
+export const REGISTER_USER = gql`
+  mutation registerUser($email: String!, $fullname: String!) {
+    insert_user_one(object: { email: $email, fullname: $fullname }) {
+      id
+      email
+    }
+  }
+`;
