@@ -18,6 +18,7 @@ import ReviewCard from './ReviewCard';
 import SideBarLayout from './SideBarLayout';
 import SalesAdmin from './MakerSalesAdmin';
 import EmptyResults from './EmptyResults';
+import ReportProblemModal from './ReportProblemModal';
 
 export {
   Authorization,
@@ -40,4 +41,5 @@ export {
   ReviewCard,
   SideBarLayout,
   EmptyResults,
+  ReportProblemModal,
 };

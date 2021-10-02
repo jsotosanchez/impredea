@@ -144,3 +144,13 @@ export const CREATE_SALE = gql`
     }
   }
 `;
+
+export const REPORT_PROBLEM = gql`
+  mutation reportProblem($description: String!, $related_sale: uuid = "2", $subject: String!, $reporter: Int!) {
+    insert_problems_one(
+      object: { reporter: $reporter, subject: $subject, description: $description, related_sale: $related_sale }
+    ) {
+      id
+    }
+  }
+`;
