@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import {
   Box,
   Button,
@@ -11,20 +11,21 @@ import {
   Input,
   Spacer,
   Stack,
+  Checkbox,
   useToast,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { Layout, LoadingPage } from '../../components';
-import { useGetUser } from '../../graphql/hooks';
 import { UPDATE_USER_BY_PK } from '../../graphql/mutations';
+import { GET_USER_BY_ID } from '../../graphql/queries';
 
 const MyProfile = () => {
   const router = useRouter();
   const toast = useToast();
   const { id } = router.query;
 
-  const { data, loading } = useGetUser(id);
+  const { data, loading, refetch } = useQuery(GET_USER_BY_ID, { variables: { id } });
 
   const [updateUserInfo, { loadingMutation }] = useMutation(UPDATE_USER_BY_PK, {
     onCompleted: () => {
@@ -34,6 +35,7 @@ const MyProfile = () => {
         duration: 3000,
         isClosable: true,
       });
+      refetch();
     },
     onError: () => {
       toast({
@@ -78,7 +80,7 @@ const MyProfile = () => {
                     bg="white"
                     color="black"
                     id="fullname"
-                    defaultValue={data.user.fullname}
+                    defaultValue={data.user_by_pk.fullname}
                     {...register('fullname', {
                       required: 'Este campo es requerido',
                     })}
@@ -93,7 +95,7 @@ const MyProfile = () => {
                     bg="white"
                     color="black"
                     id="document"
-                    defaultValue={data.user.document}
+                    defaultValue={data.user_by_pk.document}
                     type="number"
                     {...register('document', {
                       required: 'Este campo es requerido',
@@ -109,7 +111,7 @@ const MyProfile = () => {
                     bg="white"
                     color="black"
                     id="email"
-                    defaultValue={data.user.email}
+                    defaultValue={data.user_by_pk.email}
                     {...register('email', {
                       required: 'Este campo es requerido',
                     })}
@@ -129,7 +131,7 @@ const MyProfile = () => {
                         bg="white"
                         color="black"
                         id="province"
-                        defaultValue={data.user.province}
+                        defaultValue={data.user_by_pk.province}
                         {...register('province', {
                           required: 'Este campo es requerido',
                         })}
@@ -145,7 +147,7 @@ const MyProfile = () => {
                         color="black"
                         id="street"
                         placeholder="Lima 752"
-                        defaultValue={data.user.street}
+                        defaultValue={data.user_by_pk.street}
                         {...register('street', {
                           required: 'Este campo es requerido',
                         })}
@@ -163,7 +165,7 @@ const MyProfile = () => {
                         bg="white"
                         color="black"
                         id="location"
-                        defaultValue={data.user.location}
+                        defaultValue={data.user_by_pk.location}
                         {...register('location', {
                           required: 'Este campo es requerido',
                         })}
@@ -178,7 +180,7 @@ const MyProfile = () => {
                         bg="white"
                         color="black"
                         id="zip_code"
-                        defaultValue={data.user.zip_code}
+                        defaultValue={data.user_by_pk.zip_code}
                         {...register('zip_code', {
                           required: 'Este campo es requerido',
                         })}
@@ -187,6 +189,9 @@ const MyProfile = () => {
                     </FormControl>
                   </Stack>
                 </Flex>
+                <Checkbox defaultChecked={data.user_by_pk.maker_active} {...register('maker_active')}>
+                  Activar mi cuenta como Maker
+                </Checkbox>
               </Stack>
               <Button mt="10px" alignSelf="flex-end" type="submit" colorScheme="facebook">
                 Guardar

@@ -114,6 +114,7 @@ export const GET_USER_BY_ID = gql`
       street
       zip_code
       document
+      maker_active
     }
   }
 `;

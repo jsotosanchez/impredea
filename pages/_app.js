@@ -14,13 +14,6 @@ const colors = {
   },
 };
 
-// const config = {
-//   initialColorMode: 'light',
-//   useSystemColorMode: false,
-// };
-// 3. extend the theme
-// const theme = extendTheme({ config });
-
 const theme = extendTheme({ colors });
 
 function MyApp({ Component, pageProps }) {

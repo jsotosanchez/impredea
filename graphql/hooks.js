@@ -79,26 +79,6 @@ export const useGetProduct = (id) => {
   };
 };
 
-export const useGetUser = (id) => {
-  const { loading, error, data } = useQuery(GET_USER_BY_ID, { variables: { id } });
-
-  if (!loading && data) {
-    return {
-      loading,
-      error,
-      data: {
-        user: data.user_by_pk,
-      },
-    };
-  }
-
-  return {
-    loading,
-    error,
-    data,
-  };
-};
-
 export const useGetMakerAdmin = (id) => {
   const { loading, error, data } = useQuery(GET_MAKER_INFO_BY_ID, { variables: { id } });
 

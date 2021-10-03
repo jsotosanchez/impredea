@@ -18,6 +18,7 @@ export const UPDATE_USER_BY_PK = gql`
     $province: String!
     $street: String!
     $zip_code: String!
+    $maker_active: Boolean
   ) {
     update_user_by_pk(
       pk_columns: { id: $id }
@@ -29,6 +30,7 @@ export const UPDATE_USER_BY_PK = gql`
         province: $province
         street: $street
         zip_code: $zip_code
+        maker_active: $maker_active
       }
     ) {
       id

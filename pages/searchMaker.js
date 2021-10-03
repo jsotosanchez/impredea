@@ -119,32 +119,6 @@ const Search = ({ quantities, categories, provinces }) => {
               </Select>
               <FormErrorMessage>{errors.makerLocation && errors.makerLocation.message}</FormErrorMessage>
             </FormControl>
-            {/* <Divider colorScheme="white" color="white" />
-            <Text color="brandBlue" fontWeight="bold" fontSize="xl">
-              Ordenar por:
-            </Text>
-            <Flex>
-              <FormLabel color="brandBlue">Precio</FormLabel>
-              <ArrowDownIcon
-                color={priceOrder === GRAPHQL_SORT_ENUMS.DESC ? 'brandBlue' : 'gray'}
-                onClick={() => handlePriceOrder(GRAPHQL_SORT_ENUMS.DESC)}
-              />
-              <ArrowUpIcon
-                color={priceOrder === GRAPHQL_SORT_ENUMS.ASC ? 'brandBlue' : 'gray'}
-                onClick={() => handlePriceOrder(GRAPHQL_SORT_ENUMS.ASC)}
-              />
-            </Flex>
-            <Flex>
-              <FormLabel color="brandBlue">Reputacion</FormLabel>
-              <ArrowDownIcon
-                color={ratingOrder === GRAPHQL_SORT_ENUMS.DESC ? 'brandBlue' : 'gray'}
-                onClick={() => handleRatingOrder(GRAPHQL_SORT_ENUMS.DESC)}
-              />
-              <ArrowUpIcon
-                color={ratingOrder === GRAPHQL_SORT_ENUMS.ASC ? 'brandBlue' : 'gray'}
-                onClick={() => handleRatingOrder(GRAPHQL_SORT_ENUMS.ASC)}
-              />
-            </Flex> */}
             <FormLabel color="brandBlue">Reputacion minima: {minRep}</FormLabel>
             <Slider
               min={1}
