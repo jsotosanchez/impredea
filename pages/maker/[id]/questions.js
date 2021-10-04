@@ -29,7 +29,12 @@ const QuestionsContent = ({ questions }) => {
   return (
     <UnorderedList>
       {questions.map((question) => (
-        <QuestionCard key={question.id} question={question} />
+        <QuestionCard
+          key={question.id}
+          question={question.question}
+          client={question.client}
+          response={question.response}
+        />
       ))}
     </UnorderedList>
   );

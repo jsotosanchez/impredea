@@ -12,7 +12,7 @@ const ReviewsContent = ({ reviews }) => {
   return (
     <UnorderedList>
       {reviews.map((review) => (
-        <ReviewCard key={review.id} review={review} />
+        <ReviewCard key={review.id} client={review.client} rating={review.rating} text={review.text} />
       ))}
     </UnorderedList>
   );
@@ -22,9 +22,7 @@ export default function Reviews() {
   const router = useRouter();
   const { id } = router.query;
   const { data, loading } = useGetMaker(id);
-  const [questionText, setQuestionText] = useState('');
   const context = useContext(SessionContext);
-  const { id: currentUserId } = context.getUser();
 
   if (!data) {
     return <LoadingPage></LoadingPage>;

@@ -1,14 +1,24 @@
 import { Box, Heading, Stack, Text } from '@chakra-ui/react';
 
-const QuestionCard = ({ question }) => {
+interface ClientType {
+  fullname: String;
+}
+
+interface Props {
+  client: ClientType;
+  question: String;
+  response: String;
+}
+
+const QuestionCard = ({ client, question, response }: Props): JSX.Element => {
   return (
     <Box>
       <Box w="100%" bg="brandGray.100" borderRadius="10px" p="5px 15px" mt="5px">
         <Stack p="5px">
           <Heading as="h3" size="md" color="brandBlue">
-            {question.client.fullname}:
+            {client.fullname}:
           </Heading>
-          <Text noOfLines="4">{question.question}</Text>
+          <Text noOfLines={4}>{question}</Text>
         </Stack>
       </Box>
       <Box w="95%" bg="brandGray.100" ml="5%" borderRadius="10px" mb="5px" mt="-5px">
@@ -16,7 +26,7 @@ const QuestionCard = ({ question }) => {
           <Heading as="h3" size="sm" color="brandBlue">
             Respuesta:
           </Heading>
-          <Text noOfLines="4">{question.response}</Text>
+          <Text noOfLines={4}>{response}</Text>
         </Stack>
       </Box>
     </Box>

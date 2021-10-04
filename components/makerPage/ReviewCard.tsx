@@ -1,17 +1,27 @@
 import { Box, Flex, Heading, Spacer, Text } from '@chakra-ui/react';
 import { RenderRating } from '../common';
 
-const ReviewCard = ({ review }) => {
+interface ClientType {
+  fullname: String;
+}
+
+interface Props {
+  client: ClientType;
+  rating: Number;
+  text: String;
+}
+
+const ReviewCard = ({ client, rating, text }: Props): JSX.Element => {
   return (
     <Box w="100%" bg="brandGray.100" borderRadius="10px" p="5px 15px" mt="5px">
       <Flex>
         <Heading as="h2" size="md" p="5px" color="brandBlue">
-          {review.client.fullname}
+          {client.fullname}
         </Heading>
         <Spacer />
-        <RenderRating rating={review.rating} />
+        <RenderRating rating={rating} />
       </Flex>
-      <Text>{review.text}</Text>
+      <Text>{text}</Text>
     </Box>
   );
 };
