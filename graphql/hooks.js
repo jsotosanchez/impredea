@@ -36,29 +36,6 @@ export const useSearchFormData = () => {
   };
 };
 
-export const useGetMaker = (id) => {
-  const { loading, error, data } = useQuery(GET_MAKER_BY_ID, { variables: { id } });
-
-  if (!loading && data) {
-    return {
-      loading,
-      error,
-      data: {
-        maker: data.user_by_pk,
-        products: data.product,
-        questions: data.questions,
-        reviews: data.reviews,
-      },
-    };
-  }
-
-  return {
-    loading,
-    error,
-    data,
-  };
-};
-
 export const useGetProduct = (id) => {
   const { loading, error, data } = useQuery(GET_PRODUCT_BY_ID, { variables: { id } });
 

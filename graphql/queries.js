@@ -70,10 +70,20 @@ export const GET_MAKER_BY_ID = gql`
       maker_rating
       maker_sales
     }
+  }
+`;
+
+export const GET_MAKER_CATALOG = gql`
+  query getMakerCatalog($id: Int!) {
     product(where: { maker_id: { _eq: $id } }) {
       name
       id
     }
+  }
+`;
+
+export const GET_MAKER_QUESTIONS = gql`
+  query getMakerQuestions($id: Int!) {
     questions(where: { maker_id: { _eq: $id }, response: { _is_null: false } }) {
       id
       question
@@ -83,6 +93,11 @@ export const GET_MAKER_BY_ID = gql`
         fullname
       }
     }
+  }
+`;
+
+export const GET_MAKER_REVIEWS = gql`
+  query getMakerQuestions($id: Int!) {
     reviews(where: { maker_id: { _eq: $id } }) {
       id
       text
