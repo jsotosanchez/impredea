@@ -1,5 +1,5 @@
 import { Box, Flex, Heading, Spacer, Text } from '@chakra-ui/react';
-import RenderRating from './RenderRating';
+import { RenderRating } from '../common';
 
 const ReviewCard = ({ review }) => {
   return (

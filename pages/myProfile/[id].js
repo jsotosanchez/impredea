@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
-import { Layout, LoadingPage } from '../../components';
+import { Layout, LoadingPage } from '../../components/common';
 import { UPDATE_USER_BY_PK } from '../../graphql/mutations';
 import { GET_USER_BY_ID } from '../../graphql/queries';
 

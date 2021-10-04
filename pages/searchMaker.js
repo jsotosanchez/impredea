@@ -46,7 +46,7 @@ const Search = ({ quantities, categories, provinces }) => {
   };
 
   const handleOnClick = (id) => {
-    router.push({ pathname: `/maker/${id}` });
+    router.push({ pathname: `/maker/${id}/catalog` });
   };
 
   const handleLoadMore = () => {

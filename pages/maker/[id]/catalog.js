@@ -1,23 +1,12 @@
 import { useRouter } from 'next/router';
-import {
-  Box,
-  Flex,
-  Heading,
-  HStack,
-  SimpleGrid,
-  Spacer,
-  Spinner,
-  Square,
-  Stack,
-  Text,
-  useDisclosure,
-} from '@chakra-ui/react';
+import Link from 'next/link';
+import { Box, Flex, Heading, HStack, SimpleGrid, Spacer, Spinner, Square, Stack, Text } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@chakra-ui/icons';
-import { useGetMaker } from '../../graphql/hooks';
-import { RenderRating, MakeQuestionModal, ProductCard, LoadingPage, Layout } from '../../components/common';
-import { MAKER_SECTIONS } from '../../utils/constants';
+import { useGetMaker } from '../../../graphql/hooks';
+import { RenderRating, LoadingPage, Layout } from '../../../components/common';
+import { ProductCard } from '../../../components/makerPage';
 
-const Catalog = ({ products }) => {
+const CatalogContent = ({ products }) => {
   return (
     <SimpleGrid columns={3} spacing={10}>
       {products.map(({ name, id }) => (
@@ -27,11 +16,10 @@ const Catalog = ({ products }) => {
   );
 };
 
-export default function MakerProfile() {
+export default function Catalog() {
   const router = useRouter();
   const { id } = router.query;
   const { data, loading } = useGetMaker(id);
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   if (!data) {
     return <LoadingPage></LoadingPage>;
@@ -39,13 +27,6 @@ export default function MakerProfile() {
 
   return (
     <Layout>
-      <MakeQuestionModal
-        isOpen={isOpen}
-        onClose={onClose}
-        questionText={questionText}
-        setQuestionText={setQuestionText}
-        onSubmit={handleSubmit}
-      />
       <Flex w="100%" h="100vh" bg="white" p="5%" pt="5%">
         <Stack w="25%">
           {loading ? (
@@ -76,35 +57,21 @@ export default function MakerProfile() {
         </Stack>
         <Box w="70%" pl="20px">
           <HStack spacing="20px" pb="20px">
-            <Heading
-              as="h3"
-              size="lg"
-              color="brandBlue"
-              cursor="pointer"
-              onClick={() => router.push(`maker/${id}/catalog`)}
-            >
+            <Heading as="h3" size="lg" color="brandBlue" cursor="pointer">
               Catalogo
             </Heading>
-            <Heading
-              as="h3"
-              size="lg"
-              color={activeSection === MAKER_SECTIONS.REVIEWS ? 'brandBlue' : 'gray.300'}
-              cursor="pointer"
-              onClick={() => setActiveSection(MAKER_SECTIONS.REVIEWS)}
-            >
-              Reviews
+            <Heading as="h3" size="lg" color="gray.300" cursor="pointer">
+              <Link href={`/maker/${id}/reviews`}>
+                <a>Reviews</a>
+              </Link>
             </Heading>
-            <Heading
-              as="h3"
-              size="lg"
-              color={activeSection === MAKER_SECTIONS.QUESTIONS ? 'brandBlue' : 'gray.300'}
-              cursor="pointer"
-              onClick={() => setActiveSection(MAKER_SECTIONS.QUESTIONS)}
-            >
-              Preguntas
+            <Heading as="h3" size="lg" color="gray.300" cursor="pointer">
+              <Link href={`/maker/${id}/questions`}>
+                <a>Preguntas</a>
+              </Link>
             </Heading>
           </HStack>
-          {data && <Catalog products={data.products} />}
+          {data && <CatalogContent products={data.products} />}
         </Box>
       </Flex>
     </Layout>
