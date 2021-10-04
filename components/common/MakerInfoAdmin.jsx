@@ -11,11 +11,11 @@ import {
   Textarea,
   useToast,
 } from '@chakra-ui/react';
-import LoadingPage from '../components/LoadingPage';
+import { LoadingPage } from '../../components/common';
 import { useForm } from 'react-hook-form';
-import { useGetMakerAdmin } from '../graphql/hooks';
+import { useGetMakerAdmin } from '../../graphql/hooks';
 import { useMutation } from '@apollo/client';
-import { UPDATE_MAKER_INFO } from '../graphql/mutations';
+import { UPDATE_MAKER_INFO } from '../../graphql/mutations';
 
 const MakerInfoAdmin = ({ id }) => {
   const {

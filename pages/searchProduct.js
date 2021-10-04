@@ -13,11 +13,9 @@ import {
 } from '@chakra-ui/react';
 import { useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
-import { ErrorPage, Layout, LoadingPage } from '../components';
 import client from '../graphql/apollo-client';
 import { GET_PRODUCTS, GET_SEARCH_PRODUCT_DATA } from '../graphql/queries';
-import ProductSearchCard from '../components/ProductSearchCard';
-import SideBarLayout from '../components/SideBarLayout';
+import { SideBarLayout, ProductSearchCard, ErrorPage, Layout, LoadingPage } from '../components/common';
 import { formatToContains } from '../graphql/utils';
 
 const EmptyResults = () => (

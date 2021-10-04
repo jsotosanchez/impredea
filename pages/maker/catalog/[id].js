@@ -1,8 +1,6 @@
-import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
   Box,
-  Button,
   Flex,
   Heading,
   HStack,
@@ -12,24 +10,11 @@ import {
   Square,
   Stack,
   Text,
-  UnorderedList,
   useDisclosure,
-  useToast,
 } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 import { useGetMaker } from '../../graphql/hooks';
-import {
-  RenderRating,
-  QuestionCard,
-  ReviewCard,
-  MakeQuestionModal,
-  ProductCard,
-  LoadingPage,
-  Layout,
-} from '../../components/common';
-import { useMutation } from '@apollo/client';
-import { MAKE_QUESTION_TO_MAKER } from '../../graphql/mutations';
-import { SessionContext } from '../../context/sessionContext';
+import { RenderRating, MakeQuestionModal, ProductCard, LoadingPage, Layout } from '../../components/common';
 import { MAKER_SECTIONS } from '../../utils/constants';
 
 const Catalog = ({ products }) => {
@@ -42,81 +27,15 @@ const Catalog = ({ products }) => {
   );
 };
 
-const Questions = ({ questions }) => {
-  return (
-    <UnorderedList>
-      {questions.map((question) => (
-        <QuestionCard key={question.id} question={question} />
-      ))}
-    </UnorderedList>
-  );
-};
-
-const Reviews = ({ reviews }) => {
-  return (
-    <UnorderedList>
-      {reviews.map((review) => (
-        <ReviewCard key={review.id} review={review} />
-      ))}
-    </UnorderedList>
-  );
-};
-
 export default function MakerProfile() {
   const router = useRouter();
   const { id } = router.query;
   const { data, loading } = useGetMaker(id);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [activeSection, setActiveSection] = useState(MAKER_SECTIONS.PRODUCTS);
-  const [questionText, setQuestionText] = useState('');
-  const toast = useToast();
-  const context = useContext(SessionContext);
-  const { id: currentUserId } = context.getUser();
-
-  const [createQuestion] = useMutation(MAKE_QUESTION_TO_MAKER, {
-    onError: () => {
-      toast({
-        title: 'No se pudo hacer la pregunta',
-        description: 'Por favor intenta mas tarde.',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-    },
-    onCompleted: () => {
-      toast({
-        title: 'Se realizo tu pregunta con exito',
-        description: 'Seras notificado cuando el Maker te responda.',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      });
-    },
-  });
 
   if (!data) {
     return <LoadingPage></LoadingPage>;
   }
-  const renderSection = {
-    [MAKER_SECTIONS.PRODUCTS]: <Catalog products={data.products} />,
-    [MAKER_SECTIONS.QUESTIONS]: <Questions questions={data.questions} />,
-    [MAKER_SECTIONS.REVIEWS]: <Reviews reviews={data.reviews} />,
-  };
-
-  const handleSubmit = () => {
-    const newQuestion = {
-      maker_id: id,
-      user_id: currentUserId,
-      question: questionText,
-    };
-
-    createQuestion({
-      variables: { ...newQuestion },
-    });
-    // add react-hook-form and reset
-    setQuestionText('');
-    onClose();
-  };
 
   return (
     <Layout>
@@ -160,9 +79,9 @@ export default function MakerProfile() {
             <Heading
               as="h3"
               size="lg"
-              color={activeSection === MAKER_SECTIONS.PRODUCTS ? 'brandBlue' : 'gray.300'}
+              color="brandBlue"
               cursor="pointer"
-              onClick={() => setActiveSection(MAKER_SECTIONS.PRODUCTS)}
+              onClick={() => router.push(`maker/${id}/catalog`)}
             >
               Catalogo
             </Heading>
@@ -184,14 +103,8 @@ export default function MakerProfile() {
             >
               Preguntas
             </Heading>
-            <Spacer />
-            {activeSection === MAKER_SECTIONS.QUESTIONS && (
-              <Button colorScheme="facebook" onClick={onOpen}>
-                Hacer pregunta
-              </Button>
-            )}
           </HStack>
-          {data && renderSection[activeSection]}
+          {data && <Catalog products={data.products} />}
         </Box>
       </Flex>
     </Layout>

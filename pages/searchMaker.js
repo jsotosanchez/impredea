@@ -14,10 +14,9 @@ import {
   SliderThumb,
   UnorderedList,
 } from '@chakra-ui/react';
-// import { ArrowDownIcon, ArrowUpIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
 import { gql, useQuery } from '@apollo/client';
-import { Layout, LoadingPage, MakerCard, ErrorPage, SideBarLayout, EmptyResults } from '../components/';
+import { Layout, LoadingPage, MakerCard, ErrorPage, SideBarLayout, EmptyResults } from '../components/common';
 import client from '../graphql/apollo-client';
 import { GET_MAKERS } from '../graphql/queries';
 import { formatToContains } from '../graphql/utils';
@@ -31,17 +30,17 @@ const Search = ({ quantities, categories, provinces }) => {
     register,
     formState: { errors },
     getValues: getFormValues,
-  } = useForm({ defaultValues: { makerName: '', category: null, makerLocation: null, quantity } });
+  } = useForm({ defaultValues: { makerName: makerName, category: null, makerLocation: null, quantity } });
   const [minRep, setMinRep] = useState(3);
 
   const { data, loading, error, refetch, fetchMore } = useQuery(GET_MAKERS, {
     variables: { category, makerName: formatToContains(makerName), quantity, location },
   });
+  console.log(data);
+  console.log(error);
 
   const onSubmit = (formData) => {
     const { makerName, ...rest } = removeEmptyFields(formData);
-
-    console.log({ makerName: `%${makerName}%`, ...rest, minRep });
 
     refetch({ makerName: `%${makerName}%`, ...rest, minRep });
   };

@@ -26,9 +26,9 @@ import {
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { useForm } from 'react-hook-form';
-import { SessionContext } from '../context/sessionContext';
-import { useGetProduct } from '../graphql/hooks';
-import { REQUEST_QUOTATION } from '../graphql/mutations';
+import { SessionContext } from '../../context/sessionContext';
+import { useGetProduct } from '../../graphql/hooks';
+import { REQUEST_QUOTATION } from '../../graphql/mutations';
 
 const BuyProductModal = ({ isOpen, onClose, id, name }) => {
   const router = useRouter();

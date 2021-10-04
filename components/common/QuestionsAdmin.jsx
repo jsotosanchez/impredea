@@ -31,10 +31,10 @@ import {
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import { ViewIcon } from '@chakra-ui/icons';
-import { GET_QUESTIONS_BY_MAKER_ID, GET_QUESTION_BY_ID } from '../graphql/queries';
-import { UPDATE_QUESTION_BY_ID } from '../graphql/mutations';
+import { GET_QUESTIONS_BY_MAKER_ID, GET_QUESTION_BY_ID } from '../../graphql/queries';
+import { UPDATE_QUESTION_BY_ID } from '../../graphql/mutations';
 import { LoadingPage } from '.';
-import { usePagination } from '../hooks/';
+import { usePagination } from '../../hooks/';
 
 const QuestionsAdmin = ({ id }) => {
   const { data, loading, refetch } = useQuery(GET_QUESTIONS_BY_MAKER_ID, { variables: { id } });
