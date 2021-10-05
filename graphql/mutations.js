@@ -18,6 +18,7 @@ export const UPDATE_USER_BY_PK = gql`
     $province: String!
     $street: String!
     $zip_code: String!
+    $maker_active: Boolean
   ) {
     update_user_by_pk(
       pk_columns: { id: $id }
@@ -29,6 +30,7 @@ export const UPDATE_USER_BY_PK = gql`
         province: $province
         street: $street
         zip_code: $zip_code
+        maker_active: $maker_active
       }
     ) {
       id
@@ -77,6 +79,89 @@ export const UPDATE_MAKER_INFO = gql`
   mutation updateMakerInfo($id: Int!, $description: String!, $name: String!) {
     update_user_by_pk(pk_columns: { id: $id }, _set: { maker_description: $description, maker_name: $name }) {
       id
+    }
+  }
+`;
+
+export const REQUEST_QUOTATION = gql`
+  mutation requestQuotation(
+    $clientId: Int!
+    $clientInstructions: String!
+    $materialId: Int!
+    $qualityId: Int!
+    $quantity: Int!
+    $makerId: Int!
+    $productId: Int!
+  ) {
+    insert_quotations_one(
+      object: {
+        client_id: $clientId
+        client_instructions: $clientInstructions
+        material_id: $materialId
+        quality_id: $qualityId
+        quantity: $quantity
+        maker_id: $makerId
+        product_id: $productId
+      }
+    ) {
+      id
+    }
+  }
+`;
+
+export const SEND_QUOTATION = gql`
+  mutation updateQuotation($id: uuid!, $estimated_date: date, $information: String, $price: numeric) {
+    update_quotations_by_pk(
+      pk_columns: { id: $id }
+      _set: { estimated_date: $estimated_date, information: $information, price: $price, status_id: 2 }
+    ) {
+      id
+    }
+  }
+`;
+export const ACCEPT_QUOTATION = gql`
+  mutation acceptQuotation($id: uuid!) {
+    update_quotations_by_pk(pk_columns: { id: $id }, _set: { status_id: 3 }) {
+      id
+      maker_id
+      client_id
+    }
+  }
+`;
+
+export const DECLINE_QUOTATION = gql`
+  mutation declineQuotation($id: uuid!) {
+    update_quotations_by_pk(pk_columns: { id: $id }, _set: { status_id: 4 }) {
+      id
+      maker_id
+      client_id
+    }
+  }
+`;
+
+export const CREATE_SALE = gql`
+  mutation createSale($client_id: Int!, $maker_id: Int!, $id: uuid!) {
+    insert_sales_one(object: { client_id: $client_id, quotation_id: $id, maker_id: $maker_id }) {
+      id
+    }
+  }
+`;
+
+export const REPORT_PROBLEM = gql`
+  mutation reportProblem($description: String!, $related_sale: uuid = "2", $subject: String!, $reporter: Int!) {
+    insert_problems_one(
+      object: { reporter: $reporter, subject: $subject, description: $description, related_sale: $related_sale }
+    ) {
+      id
+    }
+  }
+`;
+
+export const REGISTER_USER = gql`
+  mutation registerUser($email: String!, $fullname: String!) {
+    insert_user_one(object: { email: $email, fullname: $fullname }) {
+      id
+      email
     }
   }
 `;

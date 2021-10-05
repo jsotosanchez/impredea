@@ -1,7 +1,15 @@
 import { Flex, Stack, Text, Center, Heading } from '@chakra-ui/react';
-import { RenderRating } from './RenderRating';
+import RenderRating from './RenderRating';
 
-const MakerCard = ({ name, description, rating, sales, handleOnClick, id }) => {
+interface Props {
+  name: string;
+  description: string;
+  rating: number;
+  // sales: number;
+  handleOnClick: () => void;
+}
+
+const MakerCard = ({ name, description, rating, handleOnClick }: Props): JSX.Element => {
   return (
     <Flex
       bg="brandGray.100"
@@ -27,7 +35,7 @@ const MakerCard = ({ name, description, rating, sales, handleOnClick, id }) => {
       </Stack>
       <Stack w="auto" pl="5%">
         <RenderRating rating={rating} />
-        <Text color="black">Ventas: {sales}</Text>
+        {/* <Text color="black">Ventas: {sales}</Text> */}
       </Stack>
     </Flex>
   );

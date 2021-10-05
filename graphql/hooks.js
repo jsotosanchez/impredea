@@ -1,7 +1,7 @@
 import { useLazyQuery, useQuery } from '@apollo/react-hooks';
 import { useCallback } from 'react';
 import {
-  GET_SEARCHFORM_QUERY,
+  GET_SEARCH_PRODUCT_DATA,
   GET_MAKER_BY_ID,
   GET_PRODUCT_BY_ID,
   GET_USER_BY_ID,
@@ -9,41 +9,22 @@ import {
   GET_QUESTIONS_BY_MAKER_ID,
   GET_MAKER_INFO_BY_ID,
   GET_USER_IDENTITY_BY_EMAIL,
+  GET_QUOTATIONS_BY_MAKER_ID,
+  GET_QUOTATIONS_BY_CLIENT_ID,
+  GET_SALES_BY_CLIENT_ID,
+  GET_SALES_BY_MAKER_ID,
 } from './queries';
 
 export const useSearchFormData = () => {
-  const { loading, error, data } = useQuery(GET_SEARCHFORM_QUERY);
-
-  if (!loading && data.deals) {
-    return {
-      loading,
-      error,
-      data: {
-        quantities: data.order_quantity,
-        categories: data.maker_category,
-      },
-    };
-  }
-
-  return {
-    loading,
-    error,
-    data,
-  };
-};
-
-export const useGetMaker = (id) => {
-  const { loading, error, data } = useQuery(GET_MAKER_BY_ID, { variables: { id } });
+  const { loading, error, data } = useQuery(GET_SEARCH_PRODUCT_DATA);
 
   if (!loading && data) {
     return {
       loading,
       error,
       data: {
-        maker: data.user_by_pk,
-        products: data.product,
-        questions: data.questions,
-        reviews: data.reviews,
+        quantities: data.order_quantity,
+        categories: data.maker_category,
       },
     };
   }
@@ -64,26 +45,6 @@ export const useGetProduct = (id) => {
       error,
       data: {
         product: data.product_by_pk,
-      },
-    };
-  }
-
-  return {
-    loading,
-    error,
-    data,
-  };
-};
-
-export const useGetUser = (id) => {
-  const { loading, error, data } = useQuery(GET_USER_BY_ID, { variables: { id } });
-
-  if (!loading && data) {
-    return {
-      loading,
-      error,
-      data: {
-        user: data.user_by_pk,
       },
     };
   }
@@ -116,7 +77,7 @@ export const useGetMakerAdmin = (id) => {
 };
 
 export const useGetProductsByMakerId = (id) => {
-  const { loading, error, data } = useQuery(GET_PRODUCTS_BY_MAKER_ID, { variables: { id } });
+  const { loading, error, data, refetch } = useQuery(GET_PRODUCTS_BY_MAKER_ID, { variables: { id } });
 
   if (!loading && data) {
     return {
@@ -125,24 +86,6 @@ export const useGetProductsByMakerId = (id) => {
       data: {
         products: data.product,
       },
-    };
-  }
-
-  return {
-    loading,
-    error,
-    data,
-  };
-};
-
-export const useGetQuestionsByMakerId = (id) => {
-  const { loading, error, data, refetch } = useQuery(GET_QUESTIONS_BY_MAKER_ID, { variables: { id } });
-
-  if (!loading && data) {
-    return {
-      loading,
-      error,
-      data,
       refetch,
     };
   }
@@ -176,5 +119,16 @@ export const useGetUserIdentity = () => {
     loading,
     error,
     data: emptyData,
+  };
+};
+
+export const useGetQuotationsByMakerId = (id) => {
+  const { loading, error, data, refetch } = useQuery(GET_QUOTATIONS_BY_MAKER_ID, { variables: { id } });
+
+  return {
+    loading,
+    error,
+    data,
+    refetch,
   };
 };

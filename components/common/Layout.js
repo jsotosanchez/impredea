@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Box, Spacer, Flex, Heading, Button } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { SessionContext } from '../context/sessionContext';
+import { SessionContext } from '@/context/sessionContext';
 
 export default function Layout({ children, ...rest }) {
   const router = useRouter();
@@ -39,9 +39,20 @@ export default function Layout({ children, ...rest }) {
               colorScheme="white"
               color="white"
               mr="5"
-              onClick={() => router.push(`/mybusiness/${id}`)}
+              onClick={() => router.push(`/mybusiness/${id}/catalog`)}
             >
               Mi negocio
+            </Button>
+          )}
+          {id && (
+            <Button
+              variant="link"
+              colorScheme="white"
+              color="white"
+              mr="5"
+              onClick={() => router.push(`/myPurchases/${id}/purchases`)}
+            >
+              Mis Compras
             </Button>
           )}
           {id && (
@@ -56,12 +67,20 @@ export default function Layout({ children, ...rest }) {
             </Button>
           )}
           {!id && (
-            <Button variant="link" colorScheme="white" color="white" mr="5">
-              <a href="/api/auth/login">Contectarse</a>
-            </Button>
+            <>
+              <Button variant="link" colorScheme="white" color="white" mr="5">
+                {/* TODO: change for next/link */}
+                <a href="/api/auth/login">Registrarme</a>
+              </Button>
+              <Button variant="link" colorScheme="white" color="white" mr="5">
+                {/* TODO: change for next/link */}
+                <a href="/api/auth/login">Contectarse</a>
+              </Button>
+            </>
           )}
           {id && (
             <Button variant="link" colorScheme="white" color="white" mr="5">
+              {/* TODO: change for next/link */}
               <a href="/api/auth/logout">Desconectarse</a>
             </Button>
           )}

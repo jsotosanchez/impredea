@@ -1,3 +1,6 @@
+import { useContext, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useQuery, useMutation } from '@apollo/client';
 import {
   Box,
   Text,
@@ -8,7 +11,6 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useDisclosure,
   Button,
   Flex,
   Stack,
@@ -20,34 +22,90 @@ import {
   FormErrorMessage,
   Select,
   Textarea,
+  useToast,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { useGetProduct } from '../graphql/hooks';
+import { REQUEST_QUOTATION } from '@/graphql/mutations';
+import { SessionContext } from '@/context/sessionContext';
+import { GET_PRODUCT_BY_ID } from '@/graphql/queries';
 
-const BuyProductModal = ({ isOpen, onClose, id, name }) => {
-  const { data, loading } = useGetProduct(id);
-  const qualities = [{ id: 1, label: 'Baja' }, { id: 2, label: 'Media' }, , { id: 3, label: 'Alta' }];
+interface Material {
+  id: string;
+  label: string;
+}
 
-  const materials = [
-    { id: 1, label: 'PLA' },
-    { id: 2, label: 'ABS' },
+interface Quality {
+  id: string;
+  label: string;
+}
+
+interface Props {}
+
+const Product = ({}: Props): JSX.Element => {
+  const router = useRouter();
+  const { id: makerId, pid } = router.query;
+  const toast = useToast();
+  const { data, loading, refetch } = useQuery(GET_PRODUCT_BY_ID, { variables: { id: pid } });
+  const context = useContext(SessionContext);
+  const user = context.getUser();
+
+  const [requestQuotation] = useMutation(REQUEST_QUOTATION, {
+    onCompleted: () => {
+      toast({
+        title: 'Se ha enviado tu solicitud al Maker',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+    onError: () => {
+      toast({
+        title: 'Ha ocurrido un error',
+        description: 'Por favor intenta mas tarde',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+  });
+
+  const qualities: Quality[] = [
+    { id: '1', label: 'Baja' },
+    { id: '2', label: 'Media' },
+    { id: '3', label: 'Alta' },
+  ];
+
+  const materials: Material[] = [
+    { id: '1', label: 'PLA' },
+    { id: '2', label: 'ABS' },
   ];
 
   const {
     handleSubmit,
     register,
     formState: { errors },
+    reset,
   } = useForm();
 
-  const onSubmit = (formData) => {
-    console.log(formData);
+  const onSubmit = (formData: Object) => {
+    requestQuotation({ variables: { ...formData, productId: pid, clientId: user.id, makerId } });
+    handleOnClose();
   };
 
+  const handleOnClose = () => {
+    reset();
+    router.push(`/maker/${makerId}/catalog`);
+  };
+
+  useEffect(() => {
+    refetch();
+  }, [pid, refetch]);
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="4xl">
+    <Modal isOpen={true} onClose={handleOnClose} size="4xl">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{name}</ModalHeader>
+        <ModalHeader></ModalHeader>
         <ModalCloseButton />
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalBody>
@@ -59,7 +117,7 @@ const BuyProductModal = ({ isOpen, onClose, id, name }) => {
               <Flex w="100%">
                 <Stack w="40%" mr="5%">
                   <Center>
-                    <Box bg="tomato" height="80px" w="300px"></Box>
+                    <Box bg="red.100" height="250px" w="250px"></Box>
                   </Center>
                   <FormControl isInvalid={errors.quantity}>
                     <FormLabel color="brandBlue" htmlFor="quantity">
@@ -77,13 +135,13 @@ const BuyProductModal = ({ isOpen, onClose, id, name }) => {
                     />
                     <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
                   </FormControl>
-                  <FormControl isInvalid={errors.quality}>
+                  <FormControl isInvalid={errors.qualityId}>
                     <FormLabel color="brandBlue">Calidad</FormLabel>
                     <Select
                       bg="white"
                       color="black"
-                      id="quality"
-                      {...register('quality', {
+                      id="qualityId"
+                      {...register('qualityId', {
                         required: 'Este campo es requerido',
                       })}
                     >
@@ -93,15 +151,15 @@ const BuyProductModal = ({ isOpen, onClose, id, name }) => {
                         </option>
                       ))}
                     </Select>
-                    <FormErrorMessage>{errors.quality && errors.quality.message}</FormErrorMessage>
+                    <FormErrorMessage>{errors.qualityId && errors.qualityId.message}</FormErrorMessage>
                   </FormControl>
-                  <FormControl isInvalid={errors.material}>
+                  <FormControl isInvalid={errors.materialId}>
                     <FormLabel color="brandBlue">Material</FormLabel>
                     <Select
                       bg="white"
                       color="black"
-                      id="material"
-                      {...register('material', {
+                      id="materialId"
+                      {...register('materialId', {
                         required: 'Este campo es requerido',
                       })}
                     >
@@ -111,36 +169,37 @@ const BuyProductModal = ({ isOpen, onClose, id, name }) => {
                         </option>
                       ))}
                     </Select>
-                    <FormErrorMessage>{errors.material && errors.material.message}</FormErrorMessage>
+                    <FormErrorMessage>{errors.materialId && errors.materialId.message}</FormErrorMessage>
                   </FormControl>
                 </Stack>
                 <Stack w="45%">
                   <Text fontWeight="semibold">Descripcion del producto:</Text>
-                  <Text>{data && data.product.description}</Text>
+                  <Text>{data && data.product_by_pk.description}</Text>
                   <Text fontWeight="semibold" pt="10px">
                     Indicaciones:
                   </Text>
-                  <Text>{data && data.product.instructions}</Text>
-                  <FormControl isInvalid={errors.clientIndications}>
-                    <FormLabel color="brandBlue" htmlFor="clientIndications">
+                  <Text>{data && data.product_by_pk.instructions}</Text>
+                  <FormControl isInvalid={errors.clientInstructions}>
+                    <FormLabel color="brandBlue" htmlFor="clientInstructions">
                       Informacion para el Maker:
                     </FormLabel>
                     <Textarea
                       bg="white"
                       color="black"
-                      id="clientIndications"
+                      id="clientInstructions"
                       placeholder="Por favor ingresa lo indicado por el Maker para tener un producto acorde a tus necesidades"
-                      {...register('clientIndications', {
+                      {...register('clientInstructions', {
                         required: 'Este campo es requerido',
                       })}
                     />
-                    <FormErrorMessage>{errors.clientIndications && errors.clientIndications.message}</FormErrorMessage>
+                    <FormErrorMessage>
+                      {errors.clientInstructions && errors.clientInstructions.message}
+                    </FormErrorMessage>
                   </FormControl>
                 </Stack>
               </Flex>
             )}
           </ModalBody>
-
           <ModalFooter>
             <Button colorScheme="facebook" type="submit">
               Pedir Cotizacion
@@ -152,20 +211,4 @@ const BuyProductModal = ({ isOpen, onClose, id, name }) => {
   );
 };
 
-const ProductCard = ({ id, name }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  return (
-    <>
-      <BuyProductModal id={id} isOpen={isOpen} onOpen={onOpen} onClose={onClose} name={name} />
-      <Box onClick={onOpen} cursor="pointer">
-        <Box bg="tomato" height="80px"></Box>
-        <Text noOfLines="1" align="center">
-          {name}
-        </Text>
-      </Box>
-    </>
-  );
-};
-
-export default ProductCard;
+export default Product;
