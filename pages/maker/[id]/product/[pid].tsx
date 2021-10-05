@@ -39,6 +39,13 @@ interface Quality {
   label: string;
 }
 
+interface Form {
+  quantity: number;
+  qualityId: number;
+  materialId: number;
+  clientInstructions: string;
+}
+
 interface Props {}
 
 const Product = ({}: Props): JSX.Element => {
@@ -85,7 +92,7 @@ const Product = ({}: Props): JSX.Element => {
     register,
     formState: { errors },
     reset,
-  } = useForm();
+  } = useForm<Form>();
 
   const onSubmit = (formData: Object) => {
     requestQuotation({ variables: { ...formData, productId: pid, clientId: user.id, makerId } });

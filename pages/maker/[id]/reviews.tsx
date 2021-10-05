@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { UnorderedList } from '@chakra-ui/react';
 import { LoadingPage } from '@/components/common';
@@ -6,7 +7,17 @@ import { GET_MAKER_REVIEWS } from '@/graphql/queries';
 import { useQuery } from '@apollo/client';
 import { MAKER_SECTIONS } from '@/utils/constants';
 
-export default function Reviews() {
+interface Review {
+  id: string;
+  client: Client;
+  rating: number;
+  text: string;
+}
+
+interface Client {
+  fullname: string;
+}
+export default function Reviews(): JSX.Element {
   const router = useRouter();
   const { id } = router.query;
   const { data, loading, refetch } = useQuery(GET_MAKER_REVIEWS, { variables: { id } });
@@ -25,7 +36,7 @@ export default function Reviews() {
   return (
     <Layout activeHeader={MAKER_SECTIONS.REVIEWS}>
       <UnorderedList>
-        {data.reviews.map((review) => (
+        {data.reviews.map((review: Review) => (
           <ReviewCard key={review.id} client={review.client} rating={review.rating} text={review.text} />
         ))}
       </UnorderedList>

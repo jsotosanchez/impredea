@@ -7,8 +7,8 @@ interface ClientType {
 
 interface Props {
   client: ClientType;
-  rating: Number;
-  text: String;
+  rating: number;
+  text: string;
 }
 
 const ReviewCard = ({ client, rating, text }: Props): JSX.Element => {

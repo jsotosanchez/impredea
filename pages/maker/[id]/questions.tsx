@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { UnorderedList, useDisclosure, useToast } from '@chakra-ui/react';
 import { LoadingPage } from '@/components/common';
@@ -9,7 +9,17 @@ import { SessionContext } from '@/context/sessionContext';
 import { GET_MAKER_QUESTIONS } from '@/graphql/queries';
 import { MAKER_SECTIONS } from '@/utils/constants';
 
-export default function Questions() {
+interface ClientType {
+  fullname: String;
+}
+interface Question {
+  id: string;
+  question: string;
+  client: ClientType;
+  response: string;
+}
+
+export default function Questions(): JSX.Element {
   const router = useRouter();
   const { id } = router.query;
   const { data, loading, refetch } = useQuery(GET_MAKER_QUESTIONS, { variables: { id } });
@@ -78,7 +88,7 @@ export default function Questions() {
           onSubmit={handleSubmit}
         />
         <UnorderedList>
-          {data.questions.map((question) => (
+          {data.questions.map((question: Question) => (
             <QuestionCard
               key={question.id}
               question={question.question}
