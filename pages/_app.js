@@ -17,15 +17,15 @@ const theme = extendTheme({ colors });
 
 function MyApp({ Component, pageProps }) {
   return (
-    <SessionProvider>
-      <UserProvider>
+    <UserProvider>
+      <SessionProvider>
         <ApolloProvider client={client}>
           <ChakraProvider theme={theme}>
             <Component {...pageProps} />
           </ChakraProvider>
         </ApolloProvider>
-      </UserProvider>
-    </SessionProvider>
+      </SessionProvider>
+    </UserProvider>
   );
 }
 

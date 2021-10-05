@@ -39,7 +39,7 @@ export default function Layout({ children, ...rest }) {
               colorScheme="white"
               color="white"
               mr="5"
-              onClick={() => router.push(`/mybusiness/${id}`)}
+              onClick={() => router.push(`/mybusiness/${id}/catalog`)}
             >
               Mi negocio
             </Button>

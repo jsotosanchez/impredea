@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import {
   Center,
   Table,
@@ -18,17 +19,21 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import { useContext, useState } from 'react';
 import { GET_SALES_BY_MAKER_ID } from '@/graphql/queries';
-import { LoadingPage, ReportProblemModal } from '.';
+import { ErrorPage, ReportProblemModal, LoadingPage } from '@/components/common';
 import { usePagination } from '@/hooks/index';
 import { REPORT_PROBLEM } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
+import { Layout } from '@/components/mybusiness';
+import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 
-const SalesAdmin = ({ id }) => {
+const SalesAdmin = ({}) => {
+  const router = useRouter();
+  const { id } = router.query;
   const toast = useToast();
   const context = useContext(SessionContext);
   const { id: currentUser } = context.getUser();
   const [selectedSale, setSelectedSale] = useState();
-  const { data, loading, refetch } = useQuery(GET_SALES_BY_MAKER_ID, { variables: { id } });
+  const { data, loading, refetch, error } = useQuery(GET_SALES_BY_MAKER_ID, { variables: { id } });
   const { currentPage, setCurrentPage } = usePagination(data, refetch);
   const {
     handleSubmit: handleReportProblemSubmit,
@@ -71,10 +76,16 @@ const SalesAdmin = ({ id }) => {
     },
   });
 
-  if (loading) return <LoadingPage />;
+  if (error) return <ErrorPage route={`/`} />;
+  if (loading)
+    return (
+      <Layout activeHeader={MY_BUSINESS_SECTIONS.SALES}>
+        <LoadingPage />
+      </Layout>
+    );
 
   return (
-    <>
+    <Layout activeHeader={MY_BUSINESS_SECTIONS.SALES}>
       <ReportProblemModal
         isOpen={reportProblemIsOpen}
         handleOnClose={handleReportProblemClose}
@@ -135,7 +146,7 @@ const SalesAdmin = ({ id }) => {
           Siguiente
         </Button>
       </Flex>
-    </>
+    </Layout>
   );
 };
 
