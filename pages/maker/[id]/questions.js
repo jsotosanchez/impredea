@@ -12,7 +12,7 @@ import { MAKER_SECTIONS } from '../../../utils/constants';
 export default function Questions() {
   const router = useRouter();
   const { id } = router.query;
-  const { data, loading } = useQuery(GET_MAKER_QUESTIONS, { variables: { id } });
+  const { data, loading, refetch } = useQuery(GET_MAKER_QUESTIONS, { variables: { id } });
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [questionText, setQuestionText] = useState('');
@@ -55,6 +55,10 @@ export default function Questions() {
     setQuestionText('');
     onClose();
   };
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   if (loading)
     return (

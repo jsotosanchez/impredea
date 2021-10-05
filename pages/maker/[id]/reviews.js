@@ -9,7 +9,11 @@ import { MAKER_SECTIONS } from '../../../utils/constants';
 export default function Reviews() {
   const router = useRouter();
   const { id } = router.query;
-  const { data, loading } = useQuery(GET_MAKER_REVIEWS, { variables: { id } });
+  const { data, loading, refetch } = useQuery(GET_MAKER_REVIEWS, { variables: { id } });
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   if (loading)
     return (
