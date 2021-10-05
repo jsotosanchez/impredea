@@ -1,7 +1,11 @@
 import { Center, Heading, Text, Stack, Button } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
-const ErrorPage = ({ route = '/' }) => {
+interface Props {
+  route?: string;
+}
+
+const ErrorPage = ({ route = '/' }: Props): JSX.Element => {
   const router = useRouter();
   return (
     <Center w="100%" mt="20%">

@@ -1,6 +1,14 @@
 import { Flex, Stack, Text, Center, Heading, Spacer } from '@chakra-ui/react';
 
-const ProductSearchCard = ({ main_photo, description, makerName, productName, handleOnClick }) => {
+interface Props {
+  main_photo: string;
+  description: string;
+  makerName: string;
+  productName: string;
+  handleOnClick: () => void;
+}
+
+const ProductSearchCard = ({ main_photo, description, makerName, productName, handleOnClick }: Props): JSX.Element => {
   return (
     <Flex
       bg="brandGray.100"

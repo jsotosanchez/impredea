@@ -1,7 +1,15 @@
 import { Flex, Stack, Text, Center, Heading } from '@chakra-ui/react';
 import RenderRating from './RenderRating';
 
-const MakerCard = ({ name, description, rating, sales, handleOnClick }) => {
+interface Props {
+  name: string;
+  description: string;
+  rating: number;
+  // sales: number;
+  handleOnClick: () => void;
+}
+
+const MakerCard = ({ name, description, rating, handleOnClick }: Props): JSX.Element => {
   return (
     <Flex
       bg="brandGray.100"
