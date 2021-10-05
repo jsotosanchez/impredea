@@ -36,9 +36,6 @@ const Search = ({ quantities, categories, provinces }) => {
   const { data, loading, error, refetch, fetchMore } = useQuery(GET_MAKERS, {
     variables: { category, makerName: formatToContains(makerName), quantity, location },
   });
-  console.log(data);
-  console.log(error);
-
   const onSubmit = (formData) => {
     const { makerName, ...rest } = removeEmptyFields(formData);
 
