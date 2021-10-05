@@ -17,11 +17,11 @@ import { ChatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
 import { useMutation, useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import { useContext, useState } from 'react';
-import { GET_SALES_BY_MAKER_ID } from '../../graphql/queries';
+import { GET_SALES_BY_MAKER_ID } from '@/graphql/queries';
 import { LoadingPage, ReportProblemModal } from '.';
-import { usePagination } from '../../hooks/';
-import { REPORT_PROBLEM } from '../../graphql/mutations';
-import { SessionContext } from '../../context/sessionContext';
+import { usePagination } from '@/hooks/index';
+import { REPORT_PROBLEM } from '@/graphql/mutations';
+import { SessionContext } from '@/context/sessionContext';
 
 const SalesAdmin = ({ id }) => {
   const toast = useToast();

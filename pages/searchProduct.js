@@ -13,10 +13,10 @@ import {
 } from '@chakra-ui/react';
 import { useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
-import client from '../graphql/apollo-client';
-import { GET_PRODUCTS, GET_SEARCH_PRODUCT_DATA } from '../graphql/queries';
-import { SideBarLayout, ProductSearchCard, ErrorPage, Layout, LoadingPage } from '../components/common';
-import { formatToContains } from '../graphql/utils';
+import client from '@/graphql/apollo-client';
+import { GET_PRODUCTS, GET_SEARCH_PRODUCT_DATA } from '@/graphql/queries';
+import { SideBarLayout, ProductSearchCard, ErrorPage, Layout, LoadingPage } from '@/components/common';
+import { formatToContains } from '@/graphql/utils';
 
 const EmptyResults = () => (
   <Center mt="20%">

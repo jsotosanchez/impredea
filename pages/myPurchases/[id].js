@@ -33,11 +33,11 @@ import {
 } from '@chakra-ui/react';
 import { ChatIcon, RepeatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { MY_PURCHASES_SECTIONS } from '../../utils/constants';
-import { LoadingPage, Layout, ErrorPage } from '../../components';
-import { GET_QUOTATIONS_BY_CLIENT_ID, GET_QUOTATION_BY_PK, GET_SALES_BY_CLIENT_ID } from '../../graphql/queries';
-import { ACCEPT_QUOTATION, CREATE_SALE, DECLINE_QUOTATION } from '../../graphql/mutations';
-import { usePagination } from '../../hooks';
+import { MY_PURCHASES_SECTIONS } from '@/utils/constants';
+import { LoadingPage, Layout, ErrorPage } from '@/components';
+import { GET_QUOTATIONS_BY_CLIENT_ID, GET_QUOTATION_BY_PK, GET_SALES_BY_CLIENT_ID } from '@/graphql/queries';
+import { ACCEPT_QUOTATION, CREATE_SALE, DECLINE_QUOTATION } from '@/graphql/mutations';
+import { usePagination } from '@/hooks/index';
 
 const Purchases = ({ id }) => {
   const { data, loading, error, refetch } = useQuery(GET_SALES_BY_CLIENT_ID, { variables: { id } });

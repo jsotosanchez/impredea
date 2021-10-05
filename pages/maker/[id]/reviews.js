@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router';
 import { UnorderedList } from '@chakra-ui/react';
-import { LoadingPage } from '../../../components/common';
-import { ReviewCard, Layout } from '../../../components/makerPage';
-import { GET_MAKER_REVIEWS } from '../../../graphql/queries';
+import { LoadingPage } from '@/components/common';
+import { ReviewCard, Layout } from '@/components/makerPage';
+import { GET_MAKER_REVIEWS } from '@/graphql/queries';
 import { useQuery } from '@apollo/client';
-import { MAKER_SECTIONS } from '../../../utils/constants';
+import { MAKER_SECTIONS } from '@/utils/constants';
 
 export default function Reviews() {
   const router = useRouter();

@@ -19,11 +19,11 @@ import _ from 'lodash';
 import { CloseIcon, EditIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { DELETE_PRODUCT_BY_ID, EDIT_PRODUCT_BY_ID, INSERT_PRODUCT } from '../../graphql/mutations';
-import { GET_PRODUCTS_BY_MAKER_ID, GET_PRODUCT_BY_ID } from '../../graphql/queries';
-import { formatToStartsWith } from '../../graphql/utils';
+import { DELETE_PRODUCT_BY_ID, EDIT_PRODUCT_BY_ID, INSERT_PRODUCT } from '@/graphql/mutations';
+import { GET_PRODUCTS_BY_MAKER_ID, GET_PRODUCT_BY_ID } from '@/graphql/queries';
+import { formatToStartsWith } from '@/graphql/utils';
 import { EmptyResults, ErrorPage, LoadingPage, ManageProductModal } from '.';
-import { usePagination } from '../../hooks/';
+import { usePagination } from '@/hooks/index';
 
 const CatalogAdmin = ({ id }) => {
   const [currentProductId, setCurrentProductId] = useState();

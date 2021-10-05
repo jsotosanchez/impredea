@@ -2,9 +2,9 @@ import { useMutation } from '@apollo/client';
 import { useUser } from '@auth0/nextjs-auth0';
 import { useToast } from '@chakra-ui/toast';
 import React, { useContext, useEffect, useRef } from 'react';
-import { SessionContext } from '../../context/sessionContext';
-import { useGetUserIdentity } from '../../graphql/hooks';
-import { REGISTER_USER } from '../../graphql/mutations';
+import { SessionContext } from '@/context/sessionContext';
+import { useGetUserIdentity } from '@/graphql/hooks';
+import { REGISTER_USER } from '@/graphql/mutations';
 
 export default function Authorization({ children }) {
   const { user, error, isLoading } = useUser();

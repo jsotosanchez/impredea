@@ -1,9 +1,8 @@
-import '../styles/globals.css';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { ApolloProvider } from '@apollo/client';
-import client from '../graphql/apollo-client';
+import client from '@/graphql/apollo-client';
 import { UserProvider } from '@auth0/nextjs-auth0';
-import { SessionProvider } from '../context/sessionContext';
+import { SessionProvider } from '@/context/sessionContext';
 
 const colors = {
   brandBlue: '#3D5A80',

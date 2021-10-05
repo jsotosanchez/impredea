@@ -3,10 +3,10 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useQuery } from '@apollo/client';
 import { Box, Text, SimpleGrid } from '@chakra-ui/react';
-import { GET_MAKER_CATALOG } from '../../../graphql/queries';
-import { Layout } from '../../../components/makerPage';
-import { LoadingPage } from '../../../components/common';
-import { MAKER_SECTIONS } from '../../../utils/constants';
+import { GET_MAKER_CATALOG } from '@/graphql/queries';
+import { Layout } from '@/components/makerPage';
+import { LoadingPage } from '@/components/common';
+import { MAKER_SECTIONS } from '@/utils/constants';
 
 export default function Catalog() {
   const router = useRouter();

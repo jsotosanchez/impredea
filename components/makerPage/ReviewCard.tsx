@@ -1,5 +1,5 @@
 import { Box, Flex, Heading, Spacer, Text } from '@chakra-ui/react';
-import { RenderRating } from '../common';
+import { RenderRating } from '@/components/common';
 
 interface ClientType {
   fullname: String;

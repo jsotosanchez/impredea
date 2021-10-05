@@ -1,17 +1,10 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Box, Heading, HStack } from '@chakra-ui/react';
-import client from '../../graphql/apollo-client';
-import {
-  CatalogAdmin,
-  Layout,
-  QuestionsAdmin,
-  MakerInfoAdmin,
-  QuotationsAdmin,
-  SalesAdmin,
-} from '../../components/common';
-import { MY_BUSINESS_SECTIONS } from '../../utils/constants';
-import { GET_QUOTATIONS_STATUSES } from '../../graphql/queries';
+import client from '@/graphql/apollo-client';
+import { CatalogAdmin, Layout, QuestionsAdmin, MakerInfoAdmin, QuotationsAdmin, SalesAdmin } from '@/components/common';
+import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
+import { GET_QUOTATIONS_STATUSES } from '@/graphql/queries';
 
 const MyBusiness = ({ statuses }) => {
   const router = useRouter();

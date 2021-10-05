@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Box, Spacer, Flex, Heading, Button } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { SessionContext } from '../../context/sessionContext';
+import { SessionContext } from '@/context/sessionContext';
 
 export default function Layout({ children, ...rest }) {
   const router = useRouter();

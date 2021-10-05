@@ -3,9 +3,9 @@ import Link from 'next/link';
 import { Box, Flex, Heading, HStack, Spacer, Square, Stack, Text } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 import { useQuery } from '@apollo/client';
-import { RenderRating, LoadingPage, Layout } from '../common';
-import { MAKER_SECTIONS } from '../../utils/constants';
-import { GET_MAKER_BY_ID } from '../../graphql/queries';
+import { RenderRating, LoadingPage, Layout } from '@/components/common';
+import { MAKER_SECTIONS } from '@/utils/constants';
+import { GET_MAKER_BY_ID } from '@/graphql/queries';
 
 interface Props {
   children: JSX.Element;

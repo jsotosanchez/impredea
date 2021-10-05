@@ -34,10 +34,10 @@ import {
 import { EditIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_QUOTATIONS_BY_MAKER_ID, GET_QUOTATION_BY_PK } from '../../graphql/queries';
-import { SEND_QUOTATION } from '../../graphql/mutations';
-import { usePagination } from '../../hooks/';
-import { LoadingPage } from './';
+import { GET_QUOTATIONS_BY_MAKER_ID, GET_QUOTATION_BY_PK } from '@/graphql/queries';
+import { SEND_QUOTATION } from '@/graphql/mutations';
+import { usePagination } from '@/hooks/index';
+import { LoadingPage } from '@/components/common';
 
 const QuotationsAdmin = ({ id, statuses }) => {
   const { data, loading, refetch: refetchQuotations } = useQuery(GET_QUOTATIONS_BY_MAKER_ID, { variables: { id } });

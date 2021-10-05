@@ -25,9 +25,9 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { REQUEST_QUOTATION } from '../../../../graphql/mutations';
-import { SessionContext } from '../../../../context/sessionContext';
-import { GET_PRODUCT_BY_ID } from '../../../../graphql/queries';
+import { REQUEST_QUOTATION } from '@/graphql/mutations';
+import { SessionContext } from '@/context/sessionContext';
+import { GET_PRODUCT_BY_ID } from '@/graphql/queries';
 
 interface Material {
   id: string;

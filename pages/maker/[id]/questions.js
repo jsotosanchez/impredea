@@ -1,13 +1,13 @@
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import { UnorderedList, useDisclosure, useToast } from '@chakra-ui/react';
-import { LoadingPage } from '../../../components/common';
-import { MakeQuestionModal, Layout, QuestionCard } from '../../../components/makerPage';
+import { LoadingPage } from '@/components/common';
+import { MakeQuestionModal, Layout, QuestionCard } from '@/components/makerPage';
 import { useMutation, useQuery } from '@apollo/client';
-import { MAKE_QUESTION_TO_MAKER } from '../../../graphql/mutations';
-import { SessionContext } from '../../../context/sessionContext';
-import { GET_MAKER_QUESTIONS } from '../../../graphql/queries';
-import { MAKER_SECTIONS } from '../../../utils/constants';
+import { MAKE_QUESTION_TO_MAKER } from '@/graphql/mutations';
+import { SessionContext } from '@/context/sessionContext';
+import { GET_MAKER_QUESTIONS } from '@/graphql/queries';
+import { MAKER_SECTIONS } from '@/utils/constants';
 
 export default function Questions() {
   const router = useRouter();

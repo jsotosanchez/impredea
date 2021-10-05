@@ -16,11 +16,11 @@ import {
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { gql, useQuery } from '@apollo/client';
-import { Layout, LoadingPage, MakerCard, ErrorPage, SideBarLayout, EmptyResults } from '../components/common';
-import client from '../graphql/apollo-client';
-import { GET_MAKERS } from '../graphql/queries';
-import { formatToContains } from '../graphql/utils';
-import { removeEmptyFields } from '../utils/miscellaneous';
+import { Layout, LoadingPage, MakerCard, ErrorPage, SideBarLayout, EmptyResults } from '@/components/common';
+import client from '@/graphql/apollo-client';
+import { GET_MAKERS } from '@/graphql/queries';
+import { formatToContains } from '@/graphql/utils';
+import { removeEmptyFields } from '@/utils/miscellaneous';
 
 const Search = ({ quantities, categories, provinces }) => {
   const router = useRouter();

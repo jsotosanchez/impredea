@@ -20,10 +20,10 @@ import {
   TabPanel,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import client from '../graphql/apollo-client';
-import { Layout, Authorization } from '../components/common';
-import { GET_SEARCHFORM_QUERY } from '../graphql/queries';
-import { removeEmptyFields } from '../utils/miscellaneous';
+import client from '@/graphql/apollo-client';
+import { Layout, Authorization } from '@/components/common';
+import { GET_SEARCHFORM_QUERY } from '@/graphql/queries';
+import { removeEmptyFields } from '@/utils/miscellaneous';
 
 const SearchProductForm = ({ quantities, categories }) => {
   const router = useRouter();
