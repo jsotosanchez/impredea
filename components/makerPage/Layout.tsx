@@ -26,7 +26,7 @@ const MakerProfileLayout = ({ children, activeHeader }: Props): JSX.Element => {
           <>
             <Flex
               onClick={() => {
-                router.back();
+                router.push(`/searchMaker`);
               }}
             >
               <ArrowLeftIcon color="brandBlue" />
