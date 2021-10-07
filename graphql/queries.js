@@ -83,8 +83,13 @@ export const GET_MAKER_CATALOG = gql`
 `;
 
 export const GET_MAKER_QUESTIONS = gql`
-  query getMakerQuestions($id: Int!) {
-    questions(where: { maker_id: { _eq: $id }, response: { _is_null: false } }) {
+  query getMakerQuestions($id: Int!, $limit: Int = 10, $offset: Int = 0) {
+    questions(
+      where: { maker_id: { _eq: $id }, response: { _is_null: false } }
+      order_by: { created_at: asc }
+      limit: $limit
+      offset: $offset
+    ) {
       id
       question
       response
