@@ -78,7 +78,7 @@ export default function Questions(): JSX.Element {
     );
 
   return (
-    <Layout activeHeader={MAKER_SECTIONS.QUESTIONS}>
+    <Layout activeHeader={MAKER_SECTIONS.QUESTIONS} onButtonClick={onOpen}>
       <>
         <MakeQuestionModal
           isOpen={isOpen}
