@@ -4,7 +4,7 @@ import { ChatIcon, RepeatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
 import { useQuery } from '@apollo/client';
 import { MY_PURCHASES_SECTIONS } from '@/utils/constants';
 import { Layout } from '@/components/myPurchases';
-import { LoadingPage, ErrorPage } from '@/components/common';
+import { LoadingPage, ErrorPage, PaginationButtons } from '@/components/common';
 import { GET_SALES_BY_CLIENT_ID } from '@/graphql/queries';
 import { usePagination } from '@/hooks/index';
 import { Quotation } from 'types';
@@ -21,6 +21,7 @@ const Purchases = ({}: Props) => {
   const { data, loading, error, refetch } = useQuery(GET_SALES_BY_CLIENT_ID, { variables: { id } });
   const { currentPage, setCurrentPage } = usePagination(data, refetch);
 
+  const salesHasResults = data ? data.sales.length > 0 : false;
   if (loading)
     return (
       <Layout activeTab={MY_PURCHASES_SECTIONS.PURCHASES}>
@@ -70,24 +71,7 @@ const Purchases = ({}: Props) => {
             ))}
           </Tbody>
         </Table>
-        <Flex mt="5px">
-          {currentPage > 0 && (
-            <Button
-              size="md"
-              variant="outline"
-              colorScheme="facebook"
-              onClick={() => setCurrentPage((prev) => prev - 1)}
-            >
-              Anterior
-            </Button>
-          )}
-          <Spacer />
-          {
-            <Button variant="solid" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev + 1)}>
-              Siguiente
-            </Button>
-          }
-        </Flex>
+        <PaginationButtons currentPage={currentPage} hasResults={salesHasResults} setCurrentPage={setCurrentPage} />
       </>
     </Layout>
   );

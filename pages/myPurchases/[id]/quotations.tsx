@@ -31,7 +31,7 @@ import {
 import { ChatIcon, ViewIcon } from '@chakra-ui/icons';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { MY_PURCHASES_SECTIONS } from '@/utils/constants';
-import { LoadingPage } from '@/components/common';
+import { LoadingPage, PaginationButtons } from '@/components/common';
 import { Layout } from '@/components/myPurchases';
 import { GET_QUOTATIONS_BY_CLIENT_ID, GET_QUOTATION_BY_PK } from '@/graphql/queries';
 import { ACCEPT_QUOTATION, CREATE_SALE, DECLINE_QUOTATION } from '@/graphql/mutations';
@@ -46,6 +46,7 @@ const Quotations = ({}: Props) => {
   const { data, loading, refetch } = useQuery(GET_QUOTATIONS_BY_CLIENT_ID, { variables: { id } });
   const { currentPage, setCurrentPage } = usePagination(data, refetch);
 
+  const quotationsHasResults = data ? data.quotations.length > 0 : false;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
@@ -279,24 +280,11 @@ const Quotations = ({}: Props) => {
             ))}
           </Tbody>
         </Table>
-        <Flex mt="5px">
-          {currentPage > 0 && (
-            <Button
-              size="md"
-              variant="outline"
-              colorScheme="facebook"
-              onClick={() => setCurrentPage((prev) => prev - 1)}
-            >
-              Anterior
-            </Button>
-          )}
-          <Spacer />
-          {
-            <Button variant="solid" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev + 1)}>
-              Siguiente
-            </Button>
-          }
-        </Flex>
+        <PaginationButtons
+          currentPage={currentPage}
+          hasResults={quotationsHasResults}
+          setCurrentPage={setCurrentPage}
+        />
       </Box>
     </Layout>
   );
