@@ -7,8 +7,6 @@ import {
   Tr,
   Th,
   Td,
-  Flex,
-  Spacer,
   Spinner,
   Modal,
   ModalOverlay,
@@ -34,7 +32,7 @@ import { ViewIcon } from '@chakra-ui/icons';
 import { GET_QUESTIONS_BY_MAKER_ID, GET_QUESTION_BY_ID } from '@/graphql/queries';
 import { UPDATE_QUESTION_BY_ID } from '@/graphql/mutations';
 import { usePagination } from '@/hooks/index';
-import { ErrorPage, LoadingPage } from '@/components/common';
+import { ErrorPage, LoadingPage, PaginationButtons } from '@/components/common';
 import { Layout } from '@/components/mybusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 import { useRouter } from 'next/router';
@@ -47,6 +45,7 @@ const Questions = ({}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
+  const questionsHasResults = data ? data.questions.length > 0 : false;
   const {
     handleSubmit,
     register,
@@ -180,22 +179,7 @@ const Questions = ({}) => {
             ))}
           </Tbody>
         </Table>
-        <Flex mt="5px">
-          {currentPage > 0 && (
-            <Button
-              size="md"
-              variant="outline"
-              colorScheme="facebook"
-              onClick={() => setCurrentPage((prev) => prev - 1)}
-            >
-              Anterior
-            </Button>
-          )}
-          <Spacer />
-          <Button variant="solid" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev + 1)}>
-            Siguiente
-          </Button>
-        </Flex>
+        <PaginationButtons currentPage={currentPage} hasResults={questionsHasResults} setCurrentPage={setCurrentPage} />
       </Box>
     </Layout>
   );

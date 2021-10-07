@@ -19,7 +19,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import { useContext, useState } from 'react';
 import { GET_SALES_BY_MAKER_ID } from '@/graphql/queries';
-import { ErrorPage, ReportProblemModal, LoadingPage } from '@/components/common';
+import { ErrorPage, ReportProblemModal, LoadingPage, PaginationButtons } from '@/components/common';
 import { usePagination } from '@/hooks/index';
 import { REPORT_PROBLEM } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
@@ -42,6 +42,7 @@ const SalesAdmin = ({}) => {
     reset: resetReportProblem,
   } = useForm();
 
+  const salesHasResults = data ? data.sales.length > 0 : false;
   const { isOpen: reportProblemIsOpen, onOpen: reportProblemOnOpen, onClose: reportProblemOnClose } = useDisclosure();
 
   const handleReportProblemClose = () => {
@@ -135,17 +136,7 @@ const SalesAdmin = ({}) => {
           ))}
         </Tbody>
       </Table>
-      <Flex mt="5px">
-        {currentPage > 0 && (
-          <Button size="md" variant="outline" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev - 1)}>
-            Anterior
-          </Button>
-        )}
-        <Spacer />
-        <Button variant="solid" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev + 1)}>
-          Siguiente
-        </Button>
-      </Flex>
+      <PaginationButtons currentPage={currentPage} hasResults={salesHasResults} setCurrentPage={setCurrentPage} />
     </Layout>
   );
 };

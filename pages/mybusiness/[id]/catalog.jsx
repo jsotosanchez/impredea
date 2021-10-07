@@ -24,7 +24,7 @@ import { DELETE_PRODUCT_BY_ID, EDIT_PRODUCT_BY_ID, INSERT_PRODUCT } from '@/grap
 import { GET_PRODUCTS_BY_MAKER_ID, GET_PRODUCT_BY_ID } from '@/graphql/queries';
 import { formatToStartsWith } from '@/graphql/utils';
 import { usePagination } from '@/hooks/index';
-import { EmptyResults, ErrorPage, LoadingPage, ManageProductModal } from '@/components/common';
+import { EmptyResults, ErrorPage, LoadingPage, ManageProductModal, PaginationButtons } from '@/components/common';
 import { Layout } from '@/components/mybusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 
@@ -243,24 +243,11 @@ const Catalog = ({}) => {
               ) : (
                 <EmptyResults />
               )}
-              <Flex mt="5px">
-                {currentPage > 0 && (
-                  <Button
-                    size="md"
-                    variant="outline"
-                    colorScheme="facebook"
-                    onClick={() => setCurrentPage((prev) => prev - 1)}
-                  >
-                    Anterior
-                  </Button>
-                )}
-                <Spacer />
-                {productsHasResults && (
-                  <Button variant="solid" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev + 1)}>
-                    Siguiente
-                  </Button>
-                )}
-              </Flex>
+              <PaginationButtons
+                currentPage={currentPage}
+                hasResults={productsHasResults}
+                setCurrentPage={setCurrentPage}
+              />
             </>
           )}
         </>

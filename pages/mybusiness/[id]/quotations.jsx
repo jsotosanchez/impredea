@@ -27,7 +27,6 @@ import {
   Tr,
   useDisclosure,
   useToast,
-  Spacer,
   Checkbox,
   HStack,
 } from '@chakra-ui/react';
@@ -38,7 +37,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_QUOTATIONS_BY_MAKER_ID, GET_QUOTATION_BY_PK, GET_QUOTATIONS_STATUSES } from '@/graphql/queries';
 import { SEND_QUOTATION } from '@/graphql/mutations';
 import { usePagination } from '@/hooks/index';
-import { ErrorPage, LoadingPage } from '@/components/common';
+import { ErrorPage, LoadingPage, PaginationButtons } from '@/components/common';
 import { Layout } from '@/components/mybusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 import { useRouter } from 'next/router';
@@ -61,6 +60,7 @@ const Quotations = ({ statuses }) => {
   const allChecked = checkedStatuses.every(Boolean);
   const isIndeterminate = checkedStatuses.some(Boolean) && !allChecked;
 
+  const quotationsHasResults = data ? data.quotations.length > 0 : false;
   const {
     handleSubmit,
     register,
@@ -307,22 +307,11 @@ const Quotations = ({ statuses }) => {
             ))}
           </Tbody>
         </Table>
-        <Flex mt="5px">
-          {currentPage > 0 && (
-            <Button
-              size="md"
-              variant="outline"
-              colorScheme="facebook"
-              onClick={() => setCurrentPage((prev) => prev - 1)}
-            >
-              Anterior
-            </Button>
-          )}
-          <Spacer />
-          <Button variant="solid" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev + 1)}>
-            Siguiente
-          </Button>
-        </Flex>
+        <PaginationButtons
+          currentPage={currentPage}
+          hasResults={quotationsHasResults}
+          setCurrentPage={setCurrentPage}
+        />
       </Box>
     </Layout>
   );
