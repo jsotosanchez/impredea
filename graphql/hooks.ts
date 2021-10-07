@@ -2,7 +2,7 @@ import { useLazyQuery, useQuery } from '@apollo/react-hooks';
 import { useCallback } from 'react';
 import { GET_MAKER_INFO_BY_ID, GET_USER_IDENTITY_BY_EMAIL, GET_QUOTATIONS_BY_MAKER_ID } from './queries';
 
-export const useGetMakerAdmin = (id) => {
+export const useGetMakerAdmin = (id: number) => {
   const { loading, error, data } = useQuery(GET_MAKER_INFO_BY_ID, { variables: { id } });
 
   if (!loading && data) {
@@ -46,7 +46,7 @@ export const useGetUserIdentity = () => {
   };
 };
 
-export const useGetQuotationsByMakerId = (id) => {
+export const useGetQuotationsByMakerId = (id: number) => {
   const { loading, error, data, refetch } = useQuery(GET_QUOTATIONS_BY_MAKER_ID, { variables: { id } });
 
   return {

@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { UnorderedList, useDisclosure, useToast, Button, Flex, Spacer, Box, He } from '@chakra-ui/react';
-import { EmptyResults, LoadingPage } from '@/components/common';
+import { UnorderedList, useDisclosure, useToast, Button, Flex, Spacer } from '@chakra-ui/react';
+import { EmptyResults, LoadingPage, PaginationButtons } from '@/components/common';
 import { MakeQuestionModal, Layout, QuestionCard } from '@/components/makerPage';
 import { useMutation, useQuery } from '@apollo/client';
 import { MAKE_QUESTION_TO_MAKER } from '@/graphql/mutations';
@@ -105,24 +105,7 @@ export default function Questions(): JSX.Element {
         ) : (
           <EmptyResults />
         )}
-        <Flex mt="5px">
-          {currentPage > 0 && (
-            <Button
-              size="md"
-              variant="outline"
-              colorScheme="facebook"
-              onClick={() => setCurrentPage((prev) => prev - 1)}
-            >
-              Anterior
-            </Button>
-          )}
-          <Spacer />
-          {questionsHasResults && (
-            <Button variant="solid" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev + 1)}>
-              Siguiente
-            </Button>
-          )}
-        </Flex>
+        <PaginationButtons currentPage={currentPage} hasResults={questionsHasResults} setCurrentPage={setCurrentPage} />
       </>
     </Layout>
   );
