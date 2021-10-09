@@ -101,7 +101,7 @@ const Product = ({}: Props): JSX.Element => {
 
   const handleOnClose = () => {
     reset();
-    router.push(`/maker/${makerId}/catalog`);
+    router.back();
   };
 
   useEffect(() => {

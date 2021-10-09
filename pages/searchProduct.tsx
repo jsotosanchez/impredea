@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import {
   Box,
   FormControl,
@@ -17,6 +18,36 @@ import client from '@/graphql/apollo-client';
 import { GET_PRODUCTS, GET_SEARCH_PRODUCT_DATA } from '@/graphql/queries';
 import { SideBarLayout, ProductSearchCard, ErrorPage, Layout, LoadingPage } from '@/components/common';
 import { formatToContains } from '@/graphql/utils';
+import { removeEmptyFields } from '@/utils/miscellaneous';
+
+interface Maker {
+  maker_name: string;
+  id: number;
+}
+
+interface Product {
+  id: number;
+  main_photo: string;
+  description: string;
+  maker: Maker;
+  name: string;
+}
+
+interface SelectOption {
+  id: number;
+  label: string;
+}
+
+interface Props {
+  quantities: SelectOption[];
+  categories: SelectOption[];
+}
+
+interface FormValues {
+  productName: string;
+  category: string;
+  quantity: string;
+}
 
 const EmptyResults = () => (
   <Center mt="20%">
@@ -24,11 +55,11 @@ const EmptyResults = () => (
   </Center>
 );
 
-const Search = ({ quantities, categories }) => {
+const Search = ({ quantities, categories }: Props) => {
   const router = useRouter();
   const { productName, quantity, category } = router.query;
   const { data, loading, error, refetch, fetchMore } = useQuery(GET_PRODUCTS, {
-    variables: { category, productName: formatToContains(productName), quantity },
+    variables: { category, productName: formatToContains(productName as string), quantity },
   });
 
   const {
@@ -36,20 +67,16 @@ const Search = ({ quantities, categories }) => {
     register,
     formState: { errors },
     getValues: getFormValues,
-  } = useForm();
+  } = useForm({ defaultValues: { productName, category: null, quantity } });
 
-  const onSubmit = ({ productName, ...rest }) => {
+  const onSubmit = ({ productName, ...rest }: FormValues) => {
     refetch({ productName: formatToContains(productName), ...rest });
   };
 
-  const handleOnClick = (id) => {
-    router.push({ pathname: `/maker/${id}` });
-  };
-
   const handleLoadMore = () => {
-    const { makerName, ...rest } = removeEmptyFields(getFormValues());
+    const { productName, ...rest } = removeEmptyFields(getFormValues());
     fetchMore({
-      variables: { makerName: `%${makerName}%`, ...rest, offset: data.user.length },
+      variables: { productName: `%${productName}%`, ...rest, offset: data.product.length },
     });
   };
 
@@ -81,7 +108,6 @@ const Search = ({ quantities, categories }) => {
               <Select
                 bg="white"
                 color="black"
-                defaultValue={quantity}
                 id="quantity"
                 {...register('quantity', {
                   required: 'Este campo es requerido',
@@ -97,8 +123,8 @@ const Search = ({ quantities, categories }) => {
             </FormControl>
             <FormControl isInvalid={errors.category}>
               <FormLabel color="brandBlue">Selecciona una categoria</FormLabel>
-              <Select bg="white" color="black" defaultValue={category} id="category" {...register('category')}>
-                <option value={null}>Cualquiera</option>
+              <Select bg="white" color="black" id="category" {...register('category')} defaultValue={category}>
+                <option value={''}>Cualquiera</option>
                 {categories.map((category) => (
                   <option value={category.id} key={category.id}>
                     {category.label}
@@ -118,19 +144,21 @@ const Search = ({ quantities, categories }) => {
           data.product.length ? (
             <>
               <UnorderedList m="3rem">
-                {data.product.map(({ id, main_photo, description, maker: { maker_name }, name }) => (
-                  <ProductSearchCard
-                    id={id}
-                    main_photo={main_photo}
-                    description={description}
-                    makerName={maker_name}
-                    productName={name}
-                    handleOnClick={() => handleOnClick(id)}
-                    key={id}
-                  />
-                ))}
+                {data.product.map(
+                  ({ id, main_photo, description, maker: { maker_name, id: makerId }, name }: Product) => (
+                    // <Link  href={`} passHref>
+                    <ProductSearchCard
+                      key={id}
+                      main_photo={main_photo}
+                      description={description}
+                      makerName={maker_name}
+                      productName={name}
+                      handleOnClick={() => router.push(`/maker/${makerId}/product/${id}`)}
+                    />
+                    // </Link>
+                  )
+                )}
               </UnorderedList>
-
               <Box>
                 <Button variant="solid" colorScheme="facebook" ml="75%" onClick={handleLoadMore} isLoading={loading}>
                   Cargar mas

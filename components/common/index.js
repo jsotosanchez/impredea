@@ -10,6 +10,7 @@ import SideBarLayout from './SideBarLayout';
 import EmptyResults from './EmptyResults';
 import ReportProblemModal from './ReportProblemModal';
 import PaginationButtons from './PaginationButtons';
+import ProductSearchCard from './ProductSearchCard';
 
 export {
   Authorization,
@@ -24,4 +25,5 @@ export {
   EmptyResults,
   ReportProblemModal,
   PaginationButtons,
+  ProductSearchCard,
 };
