@@ -8,7 +8,7 @@ import { MAKE_QUESTION_TO_MAKER } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
 import { GET_MAKER_QUESTIONS } from '@/graphql/queries';
 import { MAKER_SECTIONS } from '@/utils/constants';
-import { usePagination } from '@/hooks/usePagination';
+import { usePagination } from '@/hooks/index';
 
 interface ClientType {
   fullname: String;

@@ -102,8 +102,8 @@ export const GET_MAKER_QUESTIONS = gql`
 `;
 
 export const GET_MAKER_REVIEWS = gql`
-  query getMakerQuestions($id: Int!) {
-    reviews(where: { maker_id: { _eq: $id } }) {
+  query getMakerQuestions($id: Int!, $limit: Int = 10, $offset: Int = 0) {
+    reviews(where: { maker_id: { _eq: $id } }, limit: $limit, offset: $offset) {
       id
       text
       rating
