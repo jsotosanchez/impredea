@@ -1,21 +1,44 @@
+import { useContext } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Box, Flex, Heading, HStack, Spacer, Square, Stack, Text } from '@chakra-ui/react';
+import { Box, Flex, Heading, HStack, Spacer, Square, Stack, Text, Button, useToast } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 import { useQuery } from '@apollo/client';
 import { RenderRating, LoadingPage, Layout } from '@/components/common';
 import { MAKER_SECTIONS } from '@/utils/constants';
+import { SessionContext } from '@/context/sessionContext';
 import { GET_MAKER_BY_ID } from '@/graphql/queries';
 
 interface Props {
   children: JSX.Element;
   activeHeader: String;
+  onButtonClick?: () => void;
 }
 
-const MakerProfileLayout = ({ children, activeHeader }: Props): JSX.Element => {
+const MakerProfileLayout = ({ children, activeHeader, onButtonClick }: Props): JSX.Element => {
   const router = useRouter();
   const { id } = router.query;
   const { data, loading } = useQuery(GET_MAKER_BY_ID, { variables: { id } });
+  const toast = useToast();
+  const toastId = 'log-in-required';
+
+  const context = useContext(SessionContext);
+  const { id: currentUserId } = context.getUser();
+
+  const handleOnButtonClick = () => {
+    if (currentUserId) {
+      onButtonClick && onButtonClick();
+    } else {
+      if (!toast.isActive(toastId))
+        toast({
+          id: toastId,
+          title: 'Tienes que estar registrado para hacer una pregunta',
+          status: 'warning',
+          isClosable: true,
+          position: 'top-right',
+        });
+    }
+  };
 
   if (loading) return <LoadingPage />;
 
@@ -77,6 +100,12 @@ const MakerProfileLayout = ({ children, activeHeader }: Props): JSX.Element => {
                 Preguntas
               </Heading>
             </Link>
+            <Spacer />
+            {activeHeader === MAKER_SECTIONS.QUESTIONS && handleOnButtonClick && (
+              <Button colorScheme="facebook" onClick={handleOnButtonClick}>
+                Hacer Pregunta
+              </Button>
+            )}
           </HStack>
           {children}
         </Box>

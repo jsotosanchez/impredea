@@ -1,24 +1,38 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { UnorderedList, useDisclosure, useToast } from '@chakra-ui/react';
-import { LoadingPage } from '@/components/common';
+import { UnorderedList, useDisclosure, useToast, Button, Flex, Spacer } from '@chakra-ui/react';
+import { EmptyResults, LoadingPage, PaginationButtons } from '@/components/common';
 import { MakeQuestionModal, Layout, QuestionCard } from '@/components/makerPage';
 import { useMutation, useQuery } from '@apollo/client';
 import { MAKE_QUESTION_TO_MAKER } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
 import { GET_MAKER_QUESTIONS } from '@/graphql/queries';
 import { MAKER_SECTIONS } from '@/utils/constants';
+import { usePagination } from '@/hooks/index';
 
-export default function Questions() {
+interface ClientType {
+  fullname: String;
+}
+interface Question {
+  id: string;
+  question: string;
+  client: ClientType;
+  response: string;
+}
+
+export default function Questions(): JSX.Element {
   const router = useRouter();
   const { id } = router.query;
   const { data, loading, refetch } = useQuery(GET_MAKER_QUESTIONS, { variables: { id } });
 
+  const { currentPage, setCurrentPage } = usePagination(data, refetch);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [questionText, setQuestionText] = useState('');
   const toast = useToast();
   const context = useContext(SessionContext);
   const { id: currentUserId } = context.getUser();
+
+  const questionsHasResults = data ? data.questions.length > 0 : false;
 
   const [createQuestion] = useMutation(MAKE_QUESTION_TO_MAKER, {
     onError: () => {
@@ -68,7 +82,7 @@ export default function Questions() {
     );
 
   return (
-    <Layout activeHeader={MAKER_SECTIONS.QUESTIONS}>
+    <Layout activeHeader={MAKER_SECTIONS.QUESTIONS} onButtonClick={onOpen}>
       <>
         <MakeQuestionModal
           isOpen={isOpen}
@@ -77,16 +91,21 @@ export default function Questions() {
           setQuestionText={setQuestionText}
           onSubmit={handleSubmit}
         />
-        <UnorderedList>
-          {data.questions.map((question) => (
-            <QuestionCard
-              key={question.id}
-              question={question.question}
-              client={question.client}
-              response={question.response}
-            />
-          ))}
-        </UnorderedList>
+        {questionsHasResults ? (
+          <UnorderedList>
+            {data.questions.map((question: Question) => (
+              <QuestionCard
+                key={question.id}
+                question={question.question}
+                client={question.client}
+                response={question.response}
+              />
+            ))}
+          </UnorderedList>
+        ) : (
+          <EmptyResults />
+        )}
+        <PaginationButtons currentPage={currentPage} hasResults={questionsHasResults} setCurrentPage={setCurrentPage} />
       </>
     </Layout>
   );

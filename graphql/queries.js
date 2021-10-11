@@ -31,15 +31,7 @@ export const GET_SEARCH_PRODUCT_DATA = gql`
 `;
 
 export const GET_PRODUCTS = gql`
-  query getProducts($category: Int, $productName: String!, $quantity: Int!) {
-    maker_category {
-      id
-      label
-    }
-    order_quantity {
-      id
-      label
-    }
+  query getProducts($category: Int, $productName: String!, $quantity: Int!, $offset: Int = 0) {
     product(
       where: {
         name: { _ilike: $productName }
@@ -50,12 +42,14 @@ export const GET_PRODUCTS = gql`
         }
       }
       limit: 20
+      offset: $offset
     ) {
       id
       main_photo
       description
       maker {
         maker_name
+        id
       }
       name
     }
@@ -74,8 +68,8 @@ export const GET_MAKER_BY_ID = gql`
 `;
 
 export const GET_MAKER_CATALOG = gql`
-  query getMakerCatalog($id: Int!) {
-    product(where: { maker_id: { _eq: $id } }) {
+  query getMakerCatalog($id: Int!, $limit: Int = 10, $offset: Int = 0) {
+    product(where: { maker_id: { _eq: $id } }, limit: $limit, offset: $offset) {
       name
       id
     }
@@ -83,8 +77,13 @@ export const GET_MAKER_CATALOG = gql`
 `;
 
 export const GET_MAKER_QUESTIONS = gql`
-  query getMakerQuestions($id: Int!) {
-    questions(where: { maker_id: { _eq: $id }, response: { _is_null: false } }) {
+  query getMakerQuestions($id: Int!, $limit: Int = 10, $offset: Int = 0) {
+    questions(
+      where: { maker_id: { _eq: $id }, response: { _is_null: false } }
+      order_by: { created_at: asc }
+      limit: $limit
+      offset: $offset
+    ) {
       id
       question
       response
@@ -97,8 +96,8 @@ export const GET_MAKER_QUESTIONS = gql`
 `;
 
 export const GET_MAKER_REVIEWS = gql`
-  query getMakerQuestions($id: Int!) {
-    reviews(where: { maker_id: { _eq: $id } }) {
+  query getMakerQuestions($id: Int!, $limit: Int = 10, $offset: Int = 0) {
+    reviews(where: { maker_id: { _eq: $id } }, limit: $limit, offset: $offset) {
       id
       text
       rating

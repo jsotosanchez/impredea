@@ -9,6 +9,8 @@ import RenderRating from './RenderRating';
 import SideBarLayout from './SideBarLayout';
 import EmptyResults from './EmptyResults';
 import ReportProblemModal from './ReportProblemModal';
+import PaginationButtons from './PaginationButtons';
+import ProductSearchCard from './ProductSearchCard';
 
 export {
   Authorization,
@@ -22,4 +24,6 @@ export {
   SideBarLayout,
   EmptyResults,
   ReportProblemModal,
+  PaginationButtons,
+  ProductSearchCard,
 };

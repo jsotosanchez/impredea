@@ -20,14 +20,24 @@ import { Layout, LoadingPage } from '@/components/common';
 import { UPDATE_USER_BY_PK } from '@/graphql/mutations';
 import { GET_USER_BY_ID } from '@/graphql/queries';
 
-const MyProfile = () => {
+interface Form {
+  fullname: string;
+  document: string;
+  email: string;
+  province: string;
+  street: string;
+  location: string;
+  zip_code: string;
+}
+
+const MyProfile = (): JSX.Element => {
   const router = useRouter();
   const toast = useToast();
   const { id } = router.query;
 
   const { data, loading, refetch } = useQuery(GET_USER_BY_ID, { variables: { id } });
 
-  const [updateUserInfo, { loadingMutation }] = useMutation(UPDATE_USER_BY_PK, {
+  const [updateUserInfo] = useMutation(UPDATE_USER_BY_PK, {
     onCompleted: () => {
       toast({
         title: 'Se han guardado tus datos.',
@@ -52,9 +62,9 @@ const MyProfile = () => {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm();
+  } = useForm<Form>();
 
-  const onSubmit = (formData) => {
+  const onSubmit = (formData: Form) => {
     updateUserInfo({
       variables: { id, ...formData },
     });

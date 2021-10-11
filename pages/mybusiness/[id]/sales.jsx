@@ -1,30 +1,19 @@
 import { useRouter } from 'next/router';
-import {
-  Center,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tooltip,
-  Tr,
-  Flex,
-  Spacer,
-  Button,
-  useDisclosure,
-  useToast,
-} from '@chakra-ui/react';
+import { Center, Table, Tbody, Td, Th, Thead, Tooltip, Tr, useDisclosure, useToast } from '@chakra-ui/react';
 import { ChatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
 import { useMutation, useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import { useContext, useState } from 'react';
 import { GET_SALES_BY_MAKER_ID } from '@/graphql/queries';
-import { ErrorPage, ReportProblemModal, LoadingPage } from '@/components/common';
+import { ErrorPage, ReportProblemModal, LoadingPage, PaginationButtons } from '@/components/common';
 import { usePagination } from '@/hooks/index';
 import { REPORT_PROBLEM } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
 import { Layout } from '@/components/mybusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
+import { IMPREDEA_EMAIL } from '@/utils/constants';
+
+import { sendEmail } from '@/utils/miscellaneous';
 
 const SalesAdmin = ({}) => {
   const router = useRouter();
@@ -42,6 +31,7 @@ const SalesAdmin = ({}) => {
     reset: resetReportProblem,
   } = useForm();
 
+  const salesHasResults = data ? data.sales.length > 0 : false;
   const { isOpen: reportProblemIsOpen, onOpen: reportProblemOnOpen, onClose: reportProblemOnClose } = useDisclosure();
 
   const handleReportProblemClose = () => {
@@ -51,11 +41,18 @@ const SalesAdmin = ({}) => {
 
   const submitReportProblem = (formData) => {
     reportProblem({ variables: { ...formData, reporter: currentUser, related_sale: selectedSale } });
-    // TODO: SEND EMAIL TO IMPREDEA HELP DESK
+    const emailBody = {
+      to: 'jm.soto.sanchez@gmail.com',
+      from: IMPREDEA_EMAIL,
+      subject: `Problema reportado: ${formData.subject}`,
+      message: formData.description,
+    };
+
+    sendEmail(emailBody);
     handleReportProblemClose();
   };
 
-  const [reportProblem, { loadingReportProblem }] = useMutation(REPORT_PROBLEM, {
+  const [reportProblem] = useMutation(REPORT_PROBLEM, {
     onCompleted: () => {
       toast({
         title: 'Se ha reportado tu problema.',
@@ -135,17 +132,7 @@ const SalesAdmin = ({}) => {
           ))}
         </Tbody>
       </Table>
-      <Flex mt="5px">
-        {currentPage > 0 && (
-          <Button size="md" variant="outline" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev - 1)}>
-            Anterior
-          </Button>
-        )}
-        <Spacer />
-        <Button variant="solid" colorScheme="facebook" onClick={() => setCurrentPage((prev) => prev + 1)}>
-          Siguiente
-        </Button>
-      </Flex>
+      <PaginationButtons currentPage={currentPage} hasResults={salesHasResults} setCurrentPage={setCurrentPage} />
     </Layout>
   );
 };
