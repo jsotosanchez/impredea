@@ -12,6 +12,7 @@ import { Quotation } from 'types';
 import { useForm } from 'react-hook-form';
 import { REPORT_PROBLEM } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
+import { sendEmail } from '@/utils/miscellaneous';
 
 interface Props {}
 interface Sale {
@@ -35,6 +36,7 @@ const Purchases = ({}: Props) => {
     formState: { errors: reportProblemErrors },
     reset: resetReportProblem,
   } = useForm();
+
   const handleReportProblemClose = () => {
     resetReportProblem();
     reportProblemOnClose();
@@ -42,19 +44,14 @@ const Purchases = ({}: Props) => {
 
   const submitReportProblem = async (formData: any) => {
     reportProblem({ variables: { ...formData, reporter: currentUser, related_sale: selectedSale } });
+    const emailBody = {
+      to: 'jmsoto432@gmail.com',
+      from: 'jm.soto.sanchez@gmail.com',
+      subject: `Problema reportado: ${formData.subject}`,
+      message: formData.description,
+    };
 
-    await fetch('/api/sendgrid', {
-      body: JSON.stringify({
-        to: 'jmsoto432@gmail.com',
-        from: 'jm.soto.sanchez@gmail.com',
-        subject: formData.subject,
-        message: formData.description,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    });
+    sendEmail(emailBody);
 
     handleReportProblemClose();
   };

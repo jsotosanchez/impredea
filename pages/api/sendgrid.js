@@ -7,7 +7,7 @@ async function sendEmail(req, res) {
     await sendgrid.send({
       to: `${req.body.to}`,
       from: `${req.body.from}`,
-      subject: `Problema Reportado: ${req.body.subject}`,
+      subject: `${req.body.subject}`,
       html: `${req.body.message}`,
     });
   } catch (error) {

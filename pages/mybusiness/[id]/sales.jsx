@@ -1,19 +1,5 @@
 import { useRouter } from 'next/router';
-import {
-  Center,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tooltip,
-  Tr,
-  Flex,
-  Spacer,
-  Button,
-  useDisclosure,
-  useToast,
-} from '@chakra-ui/react';
+import { Center, Table, Tbody, Td, Th, Thead, Tooltip, Tr, useDisclosure, useToast } from '@chakra-ui/react';
 import { ChatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
 import { useMutation, useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
@@ -25,6 +11,8 @@ import { REPORT_PROBLEM } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
 import { Layout } from '@/components/mybusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
+
+import { sendEmail } from '@/utils/miscellaneous';
 
 const SalesAdmin = ({}) => {
   const router = useRouter();
@@ -52,7 +40,14 @@ const SalesAdmin = ({}) => {
 
   const submitReportProblem = (formData) => {
     reportProblem({ variables: { ...formData, reporter: currentUser, related_sale: selectedSale } });
-    // TODO: SEND EMAIL TO IMPREDEA HELP DESK
+    const emailBody = {
+      to: 'jmsoto432@gmail.com',
+      from: 'jm.soto.sanchez@gmail.com',
+      subject: `Problema reportado: ${formData.subject}`,
+      message: formData.description,
+    };
+
+    sendEmail(emailBody);
     handleReportProblemClose();
   };
 
