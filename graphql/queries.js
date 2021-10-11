@@ -218,6 +218,9 @@ export const GET_QUOTATIONS_BY_MAKER_ID = gql`
       quotation_status {
         label
       }
+      conversation {
+        id
+      }
     }
   }
 `;
@@ -235,6 +238,9 @@ export const GET_QUOTATIONS_BY_CLIENT_ID = gql`
       }
       maker {
         maker_name
+      }
+      conversation {
+        id
       }
     }
   }

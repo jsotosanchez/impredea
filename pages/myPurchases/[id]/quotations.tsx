@@ -266,7 +266,14 @@ const Quotations = ({}: Props) => {
                 <Td>{quotation.maker.maker_name}</Td>
                 <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
                 <Td>
-                  <ChatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                  <ChatIcon
+                    color="facebook"
+                    mr="20px"
+                    cursor="pointer"
+                    onClick={() => {
+                      router.push(`/conversation/${quotation.conversation.id}`);
+                    }}
+                  />
                   <ViewIcon
                     color="facebook"
                     mr="20px"

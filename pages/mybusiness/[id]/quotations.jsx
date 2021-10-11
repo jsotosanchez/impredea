@@ -29,8 +29,9 @@ import {
   useToast,
   Checkbox,
   HStack,
+  Tooltip,
 } from '@chakra-ui/react';
-import { EditIcon } from '@chakra-ui/icons';
+import { EditIcon, ChatIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
 import client from '@/graphql/apollo-client';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
@@ -292,16 +293,30 @@ const Quotations = ({ statuses }) => {
                 <Td>{quotation.updated_at.slice(0, 10)}</Td>
                 <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
                 <Td>
-                  {quotation.status_id === 1 && (
-                    <EditIcon
-                      color="facebook"
-                      mr="20px"
-                      cursor="pointer"
-                      onClick={() => {
-                        handleOnEdit(quotation.id);
-                      }}
-                    />
-                  )}
+                  <Center>
+                    {quotation.status_id === 1 && (
+                      <Tooltip hasArrow label="Responder">
+                        <EditIcon
+                          color="facebook"
+                          mr="20px"
+                          cursor="pointer"
+                          onClick={() => {
+                            handleOnEdit(quotation.id);
+                          }}
+                        />
+                      </Tooltip>
+                    )}
+                    <Tooltip hasArrow label="Ver conversacion">
+                      <ChatIcon
+                        color="facebook"
+                        mr="20px"
+                        cursor="pointer"
+                        onClick={() => {
+                          router.push(`/conversation/${quotation.conversation.id}`);
+                        }}
+                      />
+                    </Tooltip>
+                  </Center>
                 </Td>
               </Tr>
             ))}
