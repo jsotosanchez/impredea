@@ -165,3 +165,11 @@ export const REGISTER_USER = gql`
     }
   }
 `;
+
+export const CREATE_CONVERSATION = gql`
+  mutation MyMutation($quotationId: uuid!) {
+    insert_conversations_one(object: { quotation_id: $quotationId }) {
+      id
+    }
+  }
+`;
