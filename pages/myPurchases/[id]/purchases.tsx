@@ -45,7 +45,7 @@ const Purchases = ({}: Props) => {
   const submitReportProblem = async (formData: any) => {
     reportProblem({ variables: { ...formData, reporter: currentUser, related_sale: selectedSale } });
     const emailBody = {
-      to: 'jmsoto432@gmail.com',
+      to: 'jm.soto.sanchez@gmail.com',
       from: 'jm.soto.sanchez@gmail.com',
       subject: `Problema reportado: ${formData.subject}`,
       message: formData.description,
