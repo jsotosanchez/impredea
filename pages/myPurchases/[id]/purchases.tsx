@@ -1,13 +1,17 @@
+import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Button, Center, Flex, Table, Tbody, Td, Th, Thead, Tr, Tooltip, Spacer } from '@chakra-ui/react';
+import { Center, Table, Tbody, Td, Th, Thead, Tr, Tooltip, useToast, useDisclosure } from '@chakra-ui/react';
 import { ChatIcon, RepeatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { MY_PURCHASES_SECTIONS } from '@/utils/constants';
 import { Layout } from '@/components/myPurchases';
-import { LoadingPage, ErrorPage, PaginationButtons } from '@/components/common';
+import { LoadingPage, ErrorPage, PaginationButtons, ReportProblemModal } from '@/components/common';
 import { GET_SALES_BY_CLIENT_ID } from '@/graphql/queries';
 import { usePagination } from '@/hooks/index';
 import { Quotation } from 'types';
+import { useForm } from 'react-hook-form';
+import { REPORT_PROBLEM } from '@/graphql/mutations';
+import { SessionContext } from '@/context/sessionContext';
 
 interface Props {}
 interface Sale {
@@ -18,9 +22,63 @@ interface Sale {
 const Purchases = ({}: Props) => {
   const router = useRouter();
   const { id } = router.query;
+  const toast = useToast();
+  const context = useContext(SessionContext);
+  const { id: currentUser, email: currentUserEmail } = context.getUser();
+  const [selectedSale, setSelectedSale] = useState<string>();
   const { data, loading, error, refetch } = useQuery(GET_SALES_BY_CLIENT_ID, { variables: { id } });
   const { currentPage, setCurrentPage } = usePagination(data, refetch);
+  const { isOpen: reportProblemIsOpen, onOpen: reportProblemOnOpen, onClose: reportProblemOnClose } = useDisclosure();
+  const {
+    handleSubmit: handleReportProblemSubmit,
+    register: registerReportProblem,
+    formState: { errors: reportProblemErrors },
+    reset: resetReportProblem,
+  } = useForm();
+  const handleReportProblemClose = () => {
+    resetReportProblem();
+    reportProblemOnClose();
+  };
 
+  const submitReportProblem = async (formData: any) => {
+    reportProblem({ variables: { ...formData, reporter: currentUser, related_sale: selectedSale } });
+
+    await fetch('/api/sendgrid', {
+      body: JSON.stringify({
+        to: 'jmsoto432@gmail.com',
+        from: 'jm.soto.sanchez@gmail.com',
+        subject: formData.subject,
+        message: formData.description,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    });
+
+    handleReportProblemClose();
+  };
+
+  const [reportProblem] = useMutation(REPORT_PROBLEM, {
+    onCompleted: () => {
+      toast({
+        title: 'Se ha reportado tu problema.',
+        description: 'En breve te contactaremos para solucionarlo',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+    onError: () => {
+      toast({
+        title: 'Ha ocurrido un error',
+        description: 'Por favor intenta mas tarde',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+  });
   const salesHasResults = data ? data.sales.length > 0 : false;
   if (loading)
     return (
@@ -34,6 +92,13 @@ const Purchases = ({}: Props) => {
   return (
     <Layout activeTab={MY_PURCHASES_SECTIONS.PURCHASES}>
       <>
+        <ReportProblemModal
+          isOpen={reportProblemIsOpen}
+          handleOnClose={handleReportProblemClose}
+          onSubmit={handleReportProblemSubmit(submitReportProblem)}
+          errors={reportProblemErrors}
+          register={registerReportProblem}
+        />
         <Table variant="striped" colorScheme="gray">
           <Thead>
             <Tr>
@@ -63,7 +128,15 @@ const Purchases = ({}: Props) => {
                       <RepeatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
                     </Tooltip>
                     <Tooltip hasArrow label="Reportar un problema">
-                      <WarningIcon color="red" mr="20px" cursor="pointer" onClick={() => {}} />
+                      <WarningIcon
+                        color="red"
+                        mr="20px"
+                        cursor="pointer"
+                        onClick={() => {
+                          setSelectedSale(sale.id);
+                          reportProblemOnOpen();
+                        }}
+                      />
                     </Tooltip>
                   </Center>
                 </Td>

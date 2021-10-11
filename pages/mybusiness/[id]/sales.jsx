@@ -56,7 +56,7 @@ const SalesAdmin = ({}) => {
     handleReportProblemClose();
   };
 
-  const [reportProblem, { loadingReportProblem }] = useMutation(REPORT_PROBLEM, {
+  const [reportProblem] = useMutation(REPORT_PROBLEM, {
     onCompleted: () => {
       toast({
         title: 'Se ha reportado tu problema.',
