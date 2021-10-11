@@ -28,6 +28,8 @@ import { useForm } from 'react-hook-form';
 import { REQUEST_QUOTATION } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
 import { GET_PRODUCT_BY_ID } from '@/graphql/queries';
+import { sendEmail } from '@/utils/miscellaneous';
+import { IMPREDEA_EMAIL } from '@/utils/constants';
 
 interface Material {
   id: string;
@@ -96,7 +98,20 @@ const Product = ({}: Props): JSX.Element => {
 
   const onSubmit = (formData: Object) => {
     requestQuotation({ variables: { ...formData, productId: pid, clientId: user.id, makerId } });
-    handleOnClose();
+    try {
+      const emailBody = {
+        to: user.email,
+        from: IMPREDEA_EMAIL,
+        subject: `Te han solicitado una cotizacion!`,
+        message: `Un cliente te ha pedidoa una cotizacion. Recuerda responderle cuanto antes.`,
+      };
+
+      sendEmail(emailBody);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      handleOnClose();
+    }
   };
 
   const handleOnClose = () => {

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { Center, Table, Tbody, Td, Th, Thead, Tr, Tooltip, useToast, useDisclosure } from '@chakra-ui/react';
 import { ChatIcon, RepeatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
 import { useMutation, useQuery } from '@apollo/client';
-import { MY_PURCHASES_SECTIONS } from '@/utils/constants';
+import { IMPREDEA_EMAIL, MY_PURCHASES_SECTIONS } from '@/utils/constants';
 import { Layout } from '@/components/myPurchases';
 import { LoadingPage, ErrorPage, PaginationButtons, ReportProblemModal } from '@/components/common';
 import { GET_SALES_BY_CLIENT_ID } from '@/graphql/queries';
@@ -46,7 +46,7 @@ const Purchases = ({}: Props) => {
     reportProblem({ variables: { ...formData, reporter: currentUser, related_sale: selectedSale } });
     const emailBody = {
       to: 'jm.soto.sanchez@gmail.com',
-      from: 'jm.soto.sanchez@gmail.com',
+      from: IMPREDEA_EMAIL,
       subject: `Problema reportado: ${formData.subject}`,
       message: formData.description,
     };

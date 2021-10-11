@@ -25,3 +25,5 @@ export const GRAPHQL_SORT_ENUMS = {
 export const PAGINATION = {
   defaultSize: 10,
 };
+
+export const IMPREDEA_EMAIL = 'jm.soto.sanchez@gmail.com';

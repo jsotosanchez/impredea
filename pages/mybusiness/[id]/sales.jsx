@@ -11,6 +11,7 @@ import { REPORT_PROBLEM } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
 import { Layout } from '@/components/mybusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
+import { IMPREDEA_EMAIL } from '@/utils/constants';
 
 import { sendEmail } from '@/utils/miscellaneous';
 
@@ -42,7 +43,7 @@ const SalesAdmin = ({}) => {
     reportProblem({ variables: { ...formData, reporter: currentUser, related_sale: selectedSale } });
     const emailBody = {
       to: 'jm.soto.sanchez@gmail.com',
-      from: 'jm.soto.sanchez@gmail.com',
+      from: IMPREDEA_EMAIL,
       subject: `Problema reportado: ${formData.subject}`,
       message: formData.description,
     };
