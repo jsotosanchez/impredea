@@ -23,6 +23,16 @@ import {
 import { ArrowUpIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
 import { SessionContext } from '@/context/sessionContext';
+import { useSubscription } from '@apollo/client';
+import { MESSAGES_SUBSCRIPTION } from '@/graphql/subscriptions';
+
+interface Message {
+  sender_id: number;
+  text: string;
+  created_at: string;
+  read_at: string;
+  id: string;
+}
 
 interface Form {
   message: string;
@@ -51,11 +61,13 @@ const Conversation = ({}: Props): JSX.Element => {
   const { id: conversationId } = router.query;
   const context = useContext(SessionContext);
   const user = context.getUser();
-  const messages: any[] = [{ messageText: 'hi', user: { email: 'fake' } }];
+  // const messages: any[] = [{ messageText: 'hi', user: { email: 'fake' } }];
 
   const handleOnClose = () => {
     router.back();
   };
+
+  const { data, loading } = useSubscription(MESSAGES_SUBSCRIPTION, { variables: { conversationId } });
 
   const {
     handleSubmit,
@@ -92,9 +104,9 @@ const Conversation = ({}: Props): JSX.Element => {
                   },
                 }}
               >
-                {messages &&
-                  messages.map((msg, index) => (
-                    <Message key={index} message={msg.messageText} authorIsMe={user?.email === msg.user.email} />
+                {data &&
+                  data.messages.map((msg: Message) => (
+                    <Message key={msg.id} message={msg.text} authorIsMe={user?.id === msg.sender_id} />
                   ))}
               </Box>
             )}
