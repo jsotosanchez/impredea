@@ -25,7 +25,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { REQUEST_QUOTATION } from '@/graphql/mutations';
+import { CREATE_CONVERSATION, REQUEST_QUOTATION } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
 import { GET_PRODUCT_BY_ID } from '@/graphql/queries';
 import { sendEmail } from '@/utils/miscellaneous';
@@ -58,7 +58,7 @@ const Product = ({}: Props): JSX.Element => {
   const context = useContext(SessionContext);
   const user = context.getUser();
 
-  const [requestQuotation] = useMutation(REQUEST_QUOTATION, {
+  const [requestQuotation, { data: mutationResultData }] = useMutation(REQUEST_QUOTATION, {
     onCompleted: () => {
       toast({
         title: 'Se ha enviado tu solicitud al Maker',
@@ -77,6 +77,8 @@ const Product = ({}: Props): JSX.Element => {
       });
     },
   });
+
+  const [createConversation] = useMutation(CREATE_CONVERSATION);
 
   const qualities: Quality[] = [
     { id: '1', label: 'Baja' },
@@ -122,6 +124,11 @@ const Product = ({}: Props): JSX.Element => {
   useEffect(() => {
     refetch();
   }, [pid, refetch]);
+
+  useEffect(() => {
+    if (mutationResultData)
+      createConversation({ variables: { quotationId: mutationResultData.insert_quotations_one.id } });
+  }, [mutationResultData, createConversation]);
 
   return (
     <Modal isOpen={true} onClose={handleOnClose} size="4xl">

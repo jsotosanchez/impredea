@@ -110,7 +110,14 @@ const SalesAdmin = ({}) => {
               <Td>
                 <Center>
                   <Tooltip hasArrow label="Ver conversacion">
-                    <ChatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                    <ChatIcon
+                      color="facebook"
+                      mr="20px"
+                      cursor="pointer"
+                      onClick={() => {
+                        router.push(`/conversation/${sale.quotation.conversation.id}`);
+                      }}
+                    />
                   </Tooltip>
                   <Tooltip hasArrow label="Ver Venta">
                     <ViewIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />

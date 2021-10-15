@@ -116,7 +116,14 @@ const Purchases = ({}: Props) => {
                 <Td>
                   <Center>
                     <Tooltip hasArrow label="Ver Conversación">
-                      <ChatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                      <ChatIcon
+                        color="facebook"
+                        mr="20px"
+                        cursor="pointer"
+                        onClick={() => {
+                          router.push(`/conversation/${sale.quotation.conversation.id}`);
+                        }}
+                      />
                     </Tooltip>
                     <Tooltip hasArrow label="Ver Compra">
                       <ViewIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />

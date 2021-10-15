@@ -23,3 +23,24 @@ export const sendEmail = async (requestBody: EmailRequestBody) => {
 
   return await res.json();
 };
+
+export const uploadPhoto = async (e: any, fileName: string) => {
+  const file = e.target.files[0];
+  const res = await fetch(`/api/upload-url?file=${fileName}`);
+  const { url, fields } = await res.json();
+  const formData = new FormData();
+
+  Object.entries({ ...fields, file }).forEach(([key, value]) => {
+    formData.append(key, value);
+  });
+
+  const upload = await fetch(url, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (upload.ok) {
+    return { success: true };
+  }
+  return { error: true };
+};

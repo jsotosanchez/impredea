@@ -185,6 +185,7 @@ export const GET_MAKER_INFO_BY_ID = gql`
       maker_rating
       maker_sales
       maker_active
+      maker_picture_key
     }
   }
 `;
@@ -218,6 +219,9 @@ export const GET_QUOTATIONS_BY_MAKER_ID = gql`
       quotation_status {
         label
       }
+      conversation {
+        id
+      }
     }
   }
 `;
@@ -235,6 +239,9 @@ export const GET_QUOTATIONS_BY_CLIENT_ID = gql`
       }
       maker {
         maker_name
+      }
+      conversation {
+        id
       }
     }
   }

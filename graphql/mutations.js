@@ -76,8 +76,11 @@ export const UPDATE_QUESTION_BY_ID = gql`
 `;
 
 export const UPDATE_MAKER_INFO = gql`
-  mutation updateMakerInfo($id: Int!, $description: String!, $name: String!) {
-    update_user_by_pk(pk_columns: { id: $id }, _set: { maker_description: $description, maker_name: $name }) {
+  mutation updateMakerInfo($id: Int!, $description: String!, $name: String!, $pictureKey: String) {
+    update_user_by_pk(
+      pk_columns: { id: $id }
+      _set: { maker_description: $description, maker_name: $name, maker_picture_key: $pictureKey }
+    ) {
       id
     }
   }
@@ -162,6 +165,14 @@ export const REGISTER_USER = gql`
     insert_user_one(object: { email: $email, fullname: $fullname }) {
       id
       email
+    }
+  }
+`;
+
+export const CREATE_CONVERSATION = gql`
+  mutation MyMutation($quotationId: uuid!) {
+    insert_conversations_one(object: { quotation_id: $quotationId }) {
+      id
     }
   }
 `;

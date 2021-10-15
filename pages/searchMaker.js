@@ -88,7 +88,7 @@ const Search = ({ quantities, categories, provinces }) => {
             <FormControl isInvalid={errors.category}>
               <FormLabel color="brandBlue">Selecciona una categoria</FormLabel>
               <Select bg="white" color="black" defaultValue={category} id="category" {...register('category')}>
-                <option value={''}>Cualquiera</option>
+                <option value={''}>Todos</option>
                 {categories.map((category) => (
                   <option value={category.id} key={category.id}>
                     {category.label}
@@ -106,7 +106,7 @@ const Search = ({ quantities, categories, provinces }) => {
                 id="makerLocation"
                 {...register('makerLocation')}
               >
-                <option value={''}>Cualquiera</option>
+                <option value={''}>Todos</option>
                 {provinces.map((province) => (
                   <option value={province.id} key={province.id}>
                     {province.name}
