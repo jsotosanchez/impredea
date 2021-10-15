@@ -185,6 +185,7 @@ export const GET_MAKER_INFO_BY_ID = gql`
       maker_rating
       maker_sales
       maker_active
+      maker_picture_key
     }
   }
 `;

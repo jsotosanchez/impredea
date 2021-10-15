@@ -40,9 +40,7 @@ export const uploadPhoto = async (e: any, fileName: string) => {
   });
 
   if (upload.ok) {
-    console.log('Uploaded successfully!');
-  } else {
-    console.error('Upload failed.');
+    return { success: true };
   }
-  console.log(upload);
+  return { error: true };
 };
