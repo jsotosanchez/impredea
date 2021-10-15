@@ -124,7 +124,7 @@ const Search = ({ quantities, categories }: Props) => {
             <FormControl isInvalid={errors.category}>
               <FormLabel color="brandBlue">Selecciona una categoria</FormLabel>
               <Select bg="white" color="black" id="category" {...register('category')} defaultValue={category}>
-                <option value={''}>Cualquiera</option>
+                <option value={''}>Todos</option>
                 {categories.map((category) => (
                   <option value={category.id} key={category.id}>
                     {category.label}

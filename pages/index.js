@@ -71,7 +71,7 @@ const SearchProductForm = ({ quantities, categories }) => {
         <FormControl ml="5%" w="40%" isInvalid={errors.category}>
           <FormLabel color="brandBlue">Categoria:</FormLabel>
           <Select bg="white" color="black" defaultValue={''} id="category" {...register('category')}>
-            <option value={''}>Cualquiera</option>
+            <option value={''}>Todos</option>
             {categories.map((category) => (
               <option value={category.id} key={category.id}>
                 {category.label}
@@ -123,7 +123,7 @@ const SearchMakerForm = ({ categories, provinces, quantities }) => {
         <FormControl ml="5%" w="40%" isInvalid={errors.makerLocation}>
           <FormLabel color="brandBlue">Localidad:</FormLabel>
           <Select bg="white" color="black" id="makerLocation" {...register('makerLocation')}>
-            <option value={''}>Cualquiera</option>
+            <option value={''}>Todos</option>
             {provinces.map((province) => (
               <option value={province.id} key={province.id}>
                 {province.name}
@@ -137,7 +137,7 @@ const SearchMakerForm = ({ categories, provinces, quantities }) => {
         <FormControl ml="5%" w="40%" isInvalid={errors.category}>
           <FormLabel color="brandBlue">Categoria:</FormLabel>
           <Select bg="white" color="black" id="category" {...register('category')}>
-            <option value={''}>Cualquiera</option>
+            <option value={''}>Todos</option>
             {categories.map((category) => (
               <option value={category.id} key={category.id}>
                 {category.label}
