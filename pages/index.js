@@ -113,7 +113,7 @@ const SearchMakerForm = ({ categories, provinces, quantities }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Stack direction="row" spacing="10%">
-        <FormControl w="40%" ml="38px" isInvalid={errors.makerName}>
+        <FormControl w="40%" ml="5%" isInvalid={errors.makerName}>
           <FormLabel color="brandBlue" htmlFor="makerName">
             Nombre (Opcional):
           </FormLabel>
