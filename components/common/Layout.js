@@ -1,5 +1,6 @@
 import { useContext } from 'react';
-import { Box, Spacer, Flex, Heading, Button } from '@chakra-ui/react';
+import Image from 'next/image';
+import { Box, Spacer, Flex, Button, Heading } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { SessionContext } from '@/context/sessionContext';
 
@@ -26,11 +27,12 @@ export default function Layout({ children, ...rest }) {
         paddingRight="20"
         {...rest}
       >
-        <Box p="4" color="black">
-          <Heading as="h1" size="md" color="white" onClick={() => router.push('/')} cursor="pointer">
+        <Flex p="4" color="black">
+          <Image src="/logo.png" width="30" height="50" alt="" />
+          <Heading as="h1" size="md" color="white" onClick={() => router.push('/')} cursor="pointer" pt="3px">
             Impredea
           </Heading>
-        </Box>
+        </Flex>
         <Spacer />
         <Box pt="4">
           {maker_active && (
