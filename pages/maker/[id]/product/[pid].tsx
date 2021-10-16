@@ -78,7 +78,11 @@ const Product = ({}: Props): JSX.Element => {
     },
   });
 
-  const [createConversation] = useMutation(CREATE_CONVERSATION);
+  const [createConversation] = useMutation(CREATE_CONVERSATION, {
+    onCompleted: () => {
+      handleOnClose();
+    },
+  });
 
   const qualities: Quality[] = [
     { id: '1', label: 'Baja' },
@@ -111,8 +115,6 @@ const Product = ({}: Props): JSX.Element => {
       sendEmail(emailBody);
     } catch (error) {
       console.log(error);
-    } finally {
-      handleOnClose();
     }
   };
 
