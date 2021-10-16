@@ -363,3 +363,33 @@ export const GET_QUOTATIONS_STATUSES = gql`
     }
   }
 `;
+
+export const GET_SALE_BY_PK = gql`
+  query MyQuery($id: uuid!) {
+    sales_by_pk(id: $id) {
+      quotation {
+        estimated_date
+        client_instructions
+        price
+        information
+        quantity
+        product {
+          main_photo
+          name
+        }
+        product_quality {
+          label
+        }
+        material {
+          label
+        }
+        maker {
+          maker_name
+        }
+        client {
+          fullname
+        }
+      }
+    }
+  }
+`;
