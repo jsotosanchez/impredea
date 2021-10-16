@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import {
   Box,
   FormControl,
@@ -27,7 +26,6 @@ interface Maker {
 
 interface Product {
   id: number;
-  main_photo: string;
   description: string;
   maker: Maker;
   name: string;
@@ -144,18 +142,16 @@ const Search = ({ quantities, categories }: Props) => {
           data.product.length ? (
             <>
               <UnorderedList m="3rem">
-                {data.product.map(
-                  ({ id, main_photo, description, maker: { maker_name, id: makerId }, name }: Product) => (
-                    <ProductSearchCard
-                      key={id}
-                      main_photo={main_photo}
-                      description={description}
-                      makerName={maker_name}
-                      productName={name}
-                      handleOnClick={() => router.push(`/maker/${makerId}/product/${id}`)}
-                    />
-                  )
-                )}
+                {data.product.map(({ id, description, maker: { maker_name, id: makerId }, name }: Product) => (
+                  <ProductSearchCard
+                    key={id}
+                    main_photo={id}
+                    description={description}
+                    makerName={maker_name}
+                    productName={name}
+                    handleOnClick={() => router.push(`/maker/${makerId}/product/${id}`)}
+                  />
+                ))}
               </UnorderedList>
               <Box>
                 <Button variant="solid" colorScheme="facebook" ml="75%" onClick={handleLoadMore} isLoading={loading}>
