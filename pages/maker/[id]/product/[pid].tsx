@@ -3,7 +3,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation } from '@apollo/client';
 import {
-  Box,
   Text,
   Modal,
   ModalOverlay,
