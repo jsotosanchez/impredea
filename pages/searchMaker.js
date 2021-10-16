@@ -52,9 +52,12 @@ const Search = ({ quantities, categories, provinces }) => {
       variables: { makerName: `%${makerName}%`, ...rest, offset: data.user.length, minRep },
     });
   };
-
+  console.log(data);
   if (loading) return <LoadingPage />;
-  if (error) return <ErrorPage />;
+  if (error) {
+    console.log(error);
+    return <ErrorPage />;
+  }
   return (
     <Layout>
       <SideBarLayout
@@ -140,13 +143,14 @@ const Search = ({ quantities, categories, provinces }) => {
           data.user.length ? (
             <>
               <UnorderedList m="3rem">
-                {data.user.map(({ maker_name, maker_description, maker_rating, id }) => (
+                {data.user.map(({ maker_name, maker_description, maker_rating, id, maker_picture_key }) => (
                   <MakerCard
                     name={maker_name}
                     description={maker_description}
                     rating={maker_rating}
                     handleOnClick={() => handleOnClick(id)}
                     key={id}
+                    picKey={maker_picture_key}
                   />
                 ))}
               </UnorderedList>

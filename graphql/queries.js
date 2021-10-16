@@ -114,6 +114,7 @@ export const GET_PRODUCT_BY_ID = gql`
       description
       instructions
       name
+      id
     }
   }
 `;
@@ -351,6 +352,7 @@ export const GET_MAKERS = gql`
       maker_name
       maker_rating
       id
+      maker_picture_key
     }
   }
 `;

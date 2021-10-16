@@ -1,15 +1,17 @@
-import { Flex, Stack, Text, Center, Heading } from '@chakra-ui/react';
+import { Flex, Stack, Text, Box, Heading } from '@chakra-ui/react';
 import RenderRating from './RenderRating';
-
+import Image from 'next/image';
+import { BUCKET_FILES_URL } from '@/utils/constants';
 interface Props {
   name: string;
   description: string;
   rating: number;
   // sales: number;
   handleOnClick: () => void;
+  picKey: string;
 }
 
-const MakerCard = ({ name, description, rating, handleOnClick }: Props): JSX.Element => {
+const MakerCard = ({ name, description, rating, handleOnClick, picKey }: Props): JSX.Element => {
   return (
     <Flex
       bg="brandGray.100"
@@ -22,9 +24,9 @@ const MakerCard = ({ name, description, rating, handleOnClick }: Props): JSX.Ele
       cursor="pointer"
       onClick={handleOnClick}
     >
-      <Center h="140px" w="20%" mr="2rem" bg="whatsapp.300">
-        Picture goes here
-      </Center>
+      <Box mr="15px">
+        <Image src={`${BUCKET_FILES_URL}${picKey}`} width="200px" height="140px" alt="" />
+      </Box>
       <Stack w="50%">
         <Heading as="h2" color="brandBlue" size="md" fontWeight="black">
           {name}

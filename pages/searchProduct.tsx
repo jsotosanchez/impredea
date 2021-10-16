@@ -146,7 +146,6 @@ const Search = ({ quantities, categories }: Props) => {
               <UnorderedList m="3rem">
                 {data.product.map(
                   ({ id, main_photo, description, maker: { maker_name, id: makerId }, name }: Product) => (
-                    // <Link  href={`} passHref>
                     <ProductSearchCard
                       key={id}
                       main_photo={main_photo}
@@ -155,7 +154,6 @@ const Search = ({ quantities, categories }: Props) => {
                       productName={name}
                       handleOnClick={() => router.push(`/maker/${makerId}/product/${id}`)}
                     />
-                    // </Link>
                   )
                 )}
               </UnorderedList>
