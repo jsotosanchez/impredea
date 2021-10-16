@@ -38,7 +38,7 @@ export const GET_PRODUCTS = gql`
         maker: {
           maker_active: { _eq: true }
           maker_category_id: { _eq: $category }
-          maker_capacity: { _lte: $quantity }
+          maker_capacity: { _gte: $quantity }
         }
       }
       limit: 20
