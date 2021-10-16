@@ -271,7 +271,6 @@ export const GET_QUOTATION_BY_PK = gql`
         label
       }
       product {
-        main_photo
         name
         id
       }

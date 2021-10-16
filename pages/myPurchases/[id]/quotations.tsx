@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import {
   Box,
@@ -29,7 +30,7 @@ import {
 } from '@chakra-ui/react';
 import { ChatIcon, ViewIcon } from '@chakra-ui/icons';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { MY_PURCHASES_SECTIONS } from '@/utils/constants';
+import { BUCKET_FILES_URL, MY_PURCHASES_SECTIONS } from '@/utils/constants';
 import { EmptyResults, LoadingPage, PaginationButtons } from '@/components/common';
 import { Layout } from '@/components/myPurchases';
 import { GET_QUOTATIONS_BY_CLIENT_ID, GET_QUOTATION_BY_PK } from '@/graphql/queries';
@@ -150,7 +151,14 @@ const Quotations = ({}: Props) => {
                   <Flex w="100%">
                     <Stack w="40%" mr="5%">
                       <Center>
-                        <Box bg="tomato" height="80px" w="300px"></Box>
+                        {quotation && (
+                          <Image
+                            src={`${BUCKET_FILES_URL}products/${quotation.quotations_by_pk.product.id}`}
+                            width="300px"
+                            height="250px"
+                            alt=""
+                          />
+                        )}
                       </Center>
                       <FormLabel color="brandBlue" htmlFor="quantity">
                         Cantidad:
