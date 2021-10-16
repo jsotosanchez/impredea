@@ -23,6 +23,8 @@ import {
 import { BUCKET_FILES_URL } from '@/utils/constants';
 
 const ManageProductModal = ({ isOpen, handleOnClose, onSubmit, product, errors, register, loading }) => {
+  const generateFileName = () => `products/76`;
+  product && console.log(product.id);
   return (
     <Modal isOpen={isOpen} onClose={handleOnClose} size="4xl">
       <ModalOverlay />
@@ -38,8 +40,10 @@ const ManageProductModal = ({ isOpen, handleOnClose, onSubmit, product, errors, 
             <ModalBody>
               <Flex>
                 <Center w="40%">
-                  {/* <Image src={`${BUCKET_FILES_URL}products/test`} width="400px" height="300px" alt="" /> */}
-                  <Image src={`/empty.jpeg`} width="400px" height="300px" alt="" />
+                  {product && (
+                    <Image src={`${BUCKET_FILES_URL}products/${product.id}`} width="400px" height="300px" alt="" />
+                  )}
+                  {!product && <Image src="/empty.jpeg" width="400px" height="300px" alt="" />}
                 </Center>
                 <Stack w="60%" pl="5%">
                   <FormControl isInvalid={errors.name}>

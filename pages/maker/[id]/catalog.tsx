@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useQuery } from '@apollo/client';
 import { Box, Text, SimpleGrid } from '@chakra-ui/react';
 import { GET_MAKER_CATALOG } from '@/graphql/queries';
 import { Layout } from '@/components/makerPage';
 import { EmptyResults, LoadingPage, PaginationButtons } from '@/components/common';
-import { MAKER_SECTIONS } from '@/utils/constants';
+import { BUCKET_FILES_URL, MAKER_SECTIONS } from '@/utils/constants';
 import { Product } from 'types';
 import { usePagination } from '@/hooks/usePagination';
 
@@ -33,11 +34,11 @@ export default function Catalog(): JSX.Element {
     <Layout activeHeader={MAKER_SECTIONS.PRODUCTS}>
       <>
         {catalogHasResults ? (
-          <SimpleGrid columns={3} spacing={10}>
+          <SimpleGrid columns={3} spacing={7}>
             {data.product.map(({ name, id: pid }: Product) => (
               <Link key={pid} href={`/maker/${id}/product/${pid}`} passHref>
                 <Box cursor="pointer">
-                  <Box bg="red.100" height="180px"></Box>
+                  <Image src={`${BUCKET_FILES_URL}products/${pid}`} width="280px" height="170px" alt="" />
                   <Text noOfLines={1} align="center">
                     {name}
                   </Text>
