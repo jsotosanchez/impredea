@@ -30,23 +30,7 @@ const client = new ApolloClient({
   uri: 'https://impredea.hasura.app/v1/graphql',
   cache: new InMemoryCache({
     typePolicies: {
-      Query: {
-        fields: {
-          // merge fetchMore results with cached results
-          user: {
-            keyArgs: false,
-            merge(existing = [], incoming) {
-              return [...existing, ...incoming];
-            },
-          },
-          product: {
-            keyArgs: false,
-            merge(existing = [], incoming) {
-              return [...existing, ...incoming];
-            },
-          },
-        },
-      },
+      Query: {},
     },
   }),
   headers: {
