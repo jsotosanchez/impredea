@@ -380,7 +380,7 @@ export const GET_SALE_BY_PK = gql`
         information
         quantity
         product {
-          main_photo
+          id
           name
         }
         product_quality {

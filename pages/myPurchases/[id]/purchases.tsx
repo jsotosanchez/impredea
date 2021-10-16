@@ -1,8 +1,8 @@
 import { useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import {
   Tooltip,
-  Box,
   Flex,
   FormLabel,
   Input,
@@ -28,7 +28,7 @@ import {
 } from '@chakra-ui/react';
 import { ChatIcon, RepeatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { IMPREDEA_EMAIL, MY_PURCHASES_SECTIONS } from '@/utils/constants';
+import { BUCKET_FILES_URL, IMPREDEA_EMAIL, MY_PURCHASES_SECTIONS } from '@/utils/constants';
 import { Layout } from '@/components/myPurchases';
 import { LoadingPage, ErrorPage, PaginationButtons, ReportProblemModal, EmptyResults } from '@/components/common';
 import { GET_SALES_BY_CLIENT_ID, GET_SALE_BY_PK } from '@/graphql/queries';
@@ -154,7 +154,14 @@ const Purchases = ({}: Props) => {
                     <Flex w="100%">
                       <Stack w="40%" mr="5%">
                         <Center>
-                          <Box bg="tomato" height="80px" w="300px"></Box>
+                          {currentPurchase.sales_by_pk.quotation.product && (
+                            <Image
+                              src={`${BUCKET_FILES_URL}products/${currentPurchase.sales_by_pk.quotation.product.id}`}
+                              width="400px"
+                              height="300px"
+                              alt=""
+                            />
+                          )}
                         </Center>
                         <FormLabel color="brandBlue" htmlFor="quantity">
                           Cantidad:
