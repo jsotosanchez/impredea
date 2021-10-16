@@ -1,4 +1,5 @@
 import { useContext, useEffect } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation } from '@apollo/client';
 import {
@@ -29,7 +30,7 @@ import { CREATE_CONVERSATION, REQUEST_QUOTATION } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
 import { GET_PRODUCT_BY_ID } from '@/graphql/queries';
 import { sendEmail } from '@/utils/miscellaneous';
-import { IMPREDEA_EMAIL } from '@/utils/constants';
+import { BUCKET_FILES_URL, IMPREDEA_EMAIL } from '@/utils/constants';
 
 interface Material {
   id: string;
@@ -146,7 +147,7 @@ const Product = ({}: Props): JSX.Element => {
               <Flex w="100%">
                 <Stack w="40%" mr="5%">
                   <Center>
-                    <Box bg="red.100" height="250px" w="250px"></Box>
+                    <Image src={`${BUCKET_FILES_URL}products/${pid}`} width="280px" height="250px" alt="" />
                   </Center>
                   <FormControl isInvalid={errors.quantity}>
                     <FormLabel color="brandBlue" htmlFor="quantity">
