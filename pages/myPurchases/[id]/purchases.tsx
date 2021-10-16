@@ -5,7 +5,7 @@ import { ChatIcon, RepeatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
 import { useMutation, useQuery } from '@apollo/client';
 import { IMPREDEA_EMAIL, MY_PURCHASES_SECTIONS } from '@/utils/constants';
 import { Layout } from '@/components/myPurchases';
-import { LoadingPage, ErrorPage, PaginationButtons, ReportProblemModal } from '@/components/common';
+import { LoadingPage, ErrorPage, PaginationButtons, ReportProblemModal, EmptyResults } from '@/components/common';
 import { GET_SALES_BY_CLIENT_ID } from '@/graphql/queries';
 import { usePagination } from '@/hooks/index';
 import { Quotation } from 'types';
@@ -96,60 +96,64 @@ const Purchases = ({}: Props) => {
           errors={reportProblemErrors}
           register={registerReportProblem}
         />
-        <Table variant="striped" colorScheme="gray">
-          <Thead>
-            <Tr>
-              <Th>Producto</Th>
-              <Th>Fecha de Entrega</Th>
-              <Th>Maker</Th>
-              <Th>Precio</Th>
-              <Th>Acciones</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {data?.sales.map((sale: Sale) => (
-              <Tr key={sale.id}>
-                <Td>{sale.quotation.product.name}</Td>
-                <Td>{sale.quotation.estimated_date.slice(0, 10)}</Td>
-                <Td>{sale.quotation.maker.maker_name}</Td>
-                <Td>{sale.quotation.price}</Td>
-                <Td>
-                  <Center>
-                    <Tooltip hasArrow label="Ver Conversación">
-                      <ChatIcon
-                        color="facebook"
-                        mr="20px"
-                        cursor="pointer"
-                        onClick={() => {
-                          router.push(
-                            `/conversation/${sale.quotation.conversation.id}/name/${sale.quotation.maker.maker_name}`
-                          );
-                        }}
-                      />
-                    </Tooltip>
-                    <Tooltip hasArrow label="Ver Compra">
-                      <ViewIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
-                    </Tooltip>
-                    <Tooltip hasArrow label="Repetir Compra">
-                      <RepeatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
-                    </Tooltip>
-                    <Tooltip hasArrow label="Reportar un problema">
-                      <WarningIcon
-                        color="red"
-                        mr="20px"
-                        cursor="pointer"
-                        onClick={() => {
-                          setSelectedSale(sale.id);
-                          reportProblemOnOpen();
-                        }}
-                      />
-                    </Tooltip>
-                  </Center>
-                </Td>
+        {salesHasResults ? (
+          <Table variant="striped" colorScheme="gray">
+            <Thead>
+              <Tr>
+                <Th>Producto</Th>
+                <Th>Fecha de Entrega</Th>
+                <Th>Maker</Th>
+                <Th>Precio</Th>
+                <Th>Acciones</Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
+            </Thead>
+            <Tbody>
+              {data?.sales.map((sale: Sale) => (
+                <Tr key={sale.id}>
+                  <Td>{sale.quotation.product.name}</Td>
+                  <Td>{sale.quotation.estimated_date.slice(0, 10)}</Td>
+                  <Td>{sale.quotation.maker.maker_name}</Td>
+                  <Td>{sale.quotation.price}</Td>
+                  <Td>
+                    <Center>
+                      <Tooltip hasArrow label="Ver Conversación">
+                        <ChatIcon
+                          color="facebook"
+                          mr="20px"
+                          cursor="pointer"
+                          onClick={() => {
+                            router.push(
+                              `/conversation/${sale.quotation.conversation.id}/name/${sale.quotation.maker.maker_name}`
+                            );
+                          }}
+                        />
+                      </Tooltip>
+                      <Tooltip hasArrow label="Ver Compra">
+                        <ViewIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                      </Tooltip>
+                      <Tooltip hasArrow label="Repetir Compra">
+                        <RepeatIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                      </Tooltip>
+                      <Tooltip hasArrow label="Reportar un problema">
+                        <WarningIcon
+                          color="red"
+                          mr="20px"
+                          cursor="pointer"
+                          onClick={() => {
+                            setSelectedSale(sale.id);
+                            reportProblemOnOpen();
+                          }}
+                        />
+                      </Tooltip>
+                    </Center>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        ) : (
+          <EmptyResults />
+        )}
         <PaginationButtons currentPage={currentPage} hasResults={salesHasResults} setCurrentPage={setCurrentPage} />
       </>
     </Layout>

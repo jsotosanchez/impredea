@@ -31,7 +31,7 @@ import {
 import { ChatIcon, ViewIcon } from '@chakra-ui/icons';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { MY_PURCHASES_SECTIONS } from '@/utils/constants';
-import { LoadingPage, PaginationButtons } from '@/components/common';
+import { EmptyResults, LoadingPage, PaginationButtons } from '@/components/common';
 import { Layout } from '@/components/myPurchases';
 import { GET_QUOTATIONS_BY_CLIENT_ID, GET_QUOTATION_BY_PK } from '@/graphql/queries';
 import { ACCEPT_QUOTATION, CREATE_SALE, DECLINE_QUOTATION } from '@/graphql/mutations';
@@ -248,45 +248,49 @@ const Quotations = ({}: Props) => {
             )}
           </ModalContent>
         </Modal>
-        <Table variant="striped" colorScheme="gray">
-          <Thead>
-            <Tr>
-              <Th>Producto</Th>
-              <Th>Fecha de Pedido</Th>
-              <Th>Maker</Th>
-              <Th>Estado</Th>
-              <Th>Acciones</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {data.quotations.map((quotation: Quotation) => (
-              <Tr key={quotation.id}>
-                <Td>{quotation.product.name}</Td>
-                <Td>{quotation.updated_at.slice(0, 10)}</Td>
-                <Td>{quotation.maker.maker_name}</Td>
-                <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
-                <Td>
-                  <ChatIcon
-                    color="facebook"
-                    mr="20px"
-                    cursor="pointer"
-                    onClick={() => {
-                      router.push(`/conversation/${quotation.conversation.id}/name/${quotation.maker.maker_name}`);
-                    }}
-                  />
-                  <ViewIcon
-                    color="facebook"
-                    mr="20px"
-                    cursor="pointer"
-                    onClick={() => {
-                      handleOnEdit(quotation.id);
-                    }}
-                  />
-                </Td>
+        {quotationsHasResults ? (
+          <Table variant="striped" colorScheme="gray">
+            <Thead>
+              <Tr>
+                <Th>Producto</Th>
+                <Th>Fecha de Pedido</Th>
+                <Th>Maker</Th>
+                <Th>Estado</Th>
+                <Th>Acciones</Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
+            </Thead>
+            <Tbody>
+              {data.quotations.map((quotation: Quotation) => (
+                <Tr key={quotation.id}>
+                  <Td>{quotation.product.name}</Td>
+                  <Td>{quotation.updated_at.slice(0, 10)}</Td>
+                  <Td>{quotation.maker.maker_name}</Td>
+                  <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
+                  <Td>
+                    <ChatIcon
+                      color="facebook"
+                      mr="20px"
+                      cursor="pointer"
+                      onClick={() => {
+                        router.push(`/conversation/${quotation.conversation.id}/name/${quotation.maker.maker_name}`);
+                      }}
+                    />
+                    <ViewIcon
+                      color="facebook"
+                      mr="20px"
+                      cursor="pointer"
+                      onClick={() => {
+                        handleOnEdit(quotation.id);
+                      }}
+                    />
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        ) : (
+          <EmptyResults />
+        )}
         <PaginationButtons
           currentPage={currentPage}
           hasResults={quotationsHasResults}
