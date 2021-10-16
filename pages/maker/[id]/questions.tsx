@@ -25,7 +25,7 @@ export default function Questions(): JSX.Element {
   const { id } = router.query;
   const { data, loading, refetch } = useQuery(GET_MAKER_QUESTIONS, { variables: { id } });
 
-  const { currentPage, setCurrentPage } = usePagination(data, refetch);
+  const { currentPage, setCurrentPage } = usePagination(data, refetch, 4);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [questionText, setQuestionText] = useState('');
   const toast = useToast();

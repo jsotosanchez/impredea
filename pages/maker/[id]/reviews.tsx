@@ -24,7 +24,7 @@ export default function Reviews(): JSX.Element {
   const { data, loading, refetch } = useQuery(GET_MAKER_REVIEWS, { variables: { id } });
 
   const questionsHasResults = data ? data.reviews.length > 0 : false;
-  const { currentPage, setCurrentPage } = usePagination(data, refetch);
+  const { currentPage, setCurrentPage } = usePagination(data, refetch, 5);
   useEffect(() => {
     refetch();
   }, [refetch]);
