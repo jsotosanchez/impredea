@@ -23,7 +23,7 @@ import {
 import { BUCKET_FILES_URL } from '@/utils/constants';
 
 const ManageProductModal = ({ isOpen, handleOnClose, onSubmit, product, errors, register, loading }) => {
-  const generateFileName = () => `products/76`;
+  const generateFileName = () => `products/77`;
   product && console.log(product.id);
   return (
     <Modal isOpen={isOpen} onClose={handleOnClose} size="4xl">
