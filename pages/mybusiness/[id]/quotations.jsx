@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import Image from 'next/image';
 import {
   Box,
   Button,
@@ -41,7 +43,7 @@ import { usePagination } from '@/hooks/index';
 import { ErrorPage, LoadingPage, PaginationButtons, EmptyResults } from '@/components/common';
 import { Layout } from '@/components/mybusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
-import { useRouter } from 'next/router';
+import { BUCKET_FILES_URL } from '@/utils/constants';
 
 const Quotations = ({ statuses }) => {
   const router = useRouter();
@@ -143,7 +145,14 @@ const Quotations = ({ statuses }) => {
                   <Flex w="100%">
                     <Stack w="40%" mr="5%">
                       <Center>
-                        <Box bg="tomato" height="80px" w="300px"></Box>
+                        {quotation && (
+                          <Image
+                            src={`${BUCKET_FILES_URL}products/${quotation.quotations_by_pk.product.id}`}
+                            width="300px"
+                            height="250px"
+                            alt=""
+                          />
+                        )}
                       </Center>
                       <FormLabel color="brandBlue" htmlFor="quantity">
                         Cantidad:
