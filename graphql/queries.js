@@ -320,6 +320,9 @@ export const GET_SALES_BY_MAKER_ID = gql`
         client {
           fullname
         }
+        conversation {
+          id
+        }
       }
     }
   }

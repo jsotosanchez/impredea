@@ -117,7 +117,7 @@ const SalesAdmin = ({}) => {
                         cursor="pointer"
                         onClick={() => {
                           router.push(
-                            `/conversation/${sale.quotation.conversation.id}/name/${quotation.client.fullname}`
+                            `/conversation/${sale.quotation.conversation.id}/name/${sale.quotation.client.fullname}`
                           );
                         }}
                       />
