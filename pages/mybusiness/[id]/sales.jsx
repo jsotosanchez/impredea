@@ -5,7 +5,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import { useContext, useState } from 'react';
 import { GET_SALES_BY_MAKER_ID } from '@/graphql/queries';
-import { ErrorPage, ReportProblemModal, LoadingPage, PaginationButtons } from '@/components/common';
+import { ErrorPage, ReportProblemModal, LoadingPage, PaginationButtons, EmptyResults } from '@/components/common';
 import { usePagination } from '@/hooks/index';
 import { REPORT_PROBLEM } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
@@ -90,57 +90,61 @@ const SalesAdmin = ({}) => {
         errors={reportProblemErrors}
         register={registerReportProblem}
       />
-      <Table variant="striped" colorScheme="gray">
-        <Thead>
-          <Tr>
-            <Th>Producto</Th>
-            <Th>Fecha de Entrega</Th>
-            <Th>Cliente</Th>
-            <Th>Precio</Th>
-            <Th>Acciones</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {data?.sales.map((sale) => (
-            <Tr key={sale.id}>
-              <Td>{sale.quotation.product.name}</Td>
-              <Td>{sale.quotation.estimated_date.slice(0, 10)}</Td>
-              <Td>{sale.quotation.client.fullname}</Td>
-              <Td>{sale.quotation.price}</Td>
-              <Td>
-                <Center>
-                  <Tooltip hasArrow label="Ver conversacion">
-                    <ChatIcon
-                      color="facebook"
-                      mr="20px"
-                      cursor="pointer"
-                      onClick={() => {
-                        router.push(
-                          `/conversation/${sale.quotation.conversation.id}/name/${quotation.client.fullname}`
-                        );
-                      }}
-                    />
-                  </Tooltip>
-                  <Tooltip hasArrow label="Ver Venta">
-                    <ViewIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
-                  </Tooltip>
-                  <Tooltip hasArrow label="Reportar Problema">
-                    <WarningIcon
-                      color="red"
-                      mr="20px"
-                      cursor="pointer"
-                      onClick={() => {
-                        setSelectedSale(sale.id);
-                        reportProblemOnOpen();
-                      }}
-                    />
-                  </Tooltip>
-                </Center>
-              </Td>
+      {salesHasResults ? (
+        <Table variant="striped" colorScheme="gray">
+          <Thead>
+            <Tr>
+              <Th>Producto</Th>
+              <Th>Fecha de Entrega</Th>
+              <Th>Cliente</Th>
+              <Th>Precio</Th>
+              <Th>Acciones</Th>
             </Tr>
-          ))}
-        </Tbody>
-      </Table>
+          </Thead>
+          <Tbody>
+            {data?.sales.map((sale) => (
+              <Tr key={sale.id}>
+                <Td>{sale.quotation.product.name}</Td>
+                <Td>{sale.quotation.estimated_date.slice(0, 10)}</Td>
+                <Td>{sale.quotation.client.fullname}</Td>
+                <Td>{sale.quotation.price}</Td>
+                <Td>
+                  <Center>
+                    <Tooltip hasArrow label="Ver conversacion">
+                      <ChatIcon
+                        color="facebook"
+                        mr="20px"
+                        cursor="pointer"
+                        onClick={() => {
+                          router.push(
+                            `/conversation/${sale.quotation.conversation.id}/name/${quotation.client.fullname}`
+                          );
+                        }}
+                      />
+                    </Tooltip>
+                    <Tooltip hasArrow label="Ver Venta">
+                      <ViewIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                    </Tooltip>
+                    <Tooltip hasArrow label="Reportar Problema">
+                      <WarningIcon
+                        color="red"
+                        mr="20px"
+                        cursor="pointer"
+                        onClick={() => {
+                          setSelectedSale(sale.id);
+                          reportProblemOnOpen();
+                        }}
+                      />
+                    </Tooltip>
+                  </Center>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      ) : (
+        <EmptyResults />
+      )}
       <PaginationButtons currentPage={currentPage} hasResults={salesHasResults} setCurrentPage={setCurrentPage} />
     </Layout>
   );

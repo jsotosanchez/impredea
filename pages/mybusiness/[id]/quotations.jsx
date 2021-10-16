@@ -38,7 +38,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_QUOTATIONS_BY_MAKER_ID, GET_QUOTATION_BY_PK, GET_QUOTATIONS_STATUSES } from '@/graphql/queries';
 import { SEND_QUOTATION } from '@/graphql/mutations';
 import { usePagination } from '@/hooks/index';
-import { ErrorPage, LoadingPage, PaginationButtons } from '@/components/common';
+import { ErrorPage, LoadingPage, PaginationButtons, EmptyResults } from '@/components/common';
 import { Layout } from '@/components/mybusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 import { useRouter } from 'next/router';
@@ -57,7 +57,7 @@ const Quotations = ({ statuses }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
-  const [checkedStatuses, setCheckedStatuses] = useState([true, true, true, true]);
+  const [checkedStatuses, setCheckedStatuses] = useState([true, true, true, false]);
   const allChecked = checkedStatuses.every(Boolean);
   const isIndeterminate = checkedStatuses.some(Boolean) && !allChecked;
 
@@ -277,51 +277,55 @@ const Quotations = ({ statuses }) => {
             ))}
           </HStack>
         </>
-        <Table variant="striped" colorScheme="gray">
-          <Thead>
-            <Tr>
-              <Th>Producto</Th>
-              <Th>Fecha de Pedido</Th>
-              <Th>Estado</Th>
-              <Th>Acciones</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {data.quotations.map((quotation) => (
-              <Tr key={quotation.id}>
-                <Td>{quotation.product.name}</Td>
-                <Td>{quotation.updated_at.slice(0, 10)}</Td>
-                <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
-                <Td>
-                  <Center>
-                    {quotation.status_id === 1 && (
-                      <Tooltip hasArrow label="Responder">
-                        <EditIcon
+        {quotationsHasResults ? (
+          <Table variant="striped" colorScheme="gray">
+            <Thead>
+              <Tr>
+                <Th>Producto</Th>
+                <Th>Fecha de Pedido</Th>
+                <Th>Estado</Th>
+                <Th>Acciones</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {data.quotations.map((quotation) => (
+                <Tr key={quotation.id}>
+                  <Td>{quotation.product.name}</Td>
+                  <Td>{quotation.updated_at.slice(0, 10)}</Td>
+                  <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
+                  <Td>
+                    <Center>
+                      {quotation.status_id === 1 && (
+                        <Tooltip hasArrow label="Responder">
+                          <EditIcon
+                            color="facebook"
+                            mr="20px"
+                            cursor="pointer"
+                            onClick={() => {
+                              handleOnEdit(quotation.id);
+                            }}
+                          />
+                        </Tooltip>
+                      )}
+                      <Tooltip hasArrow label="Ver conversacion">
+                        <ChatIcon
                           color="facebook"
                           mr="20px"
                           cursor="pointer"
                           onClick={() => {
-                            handleOnEdit(quotation.id);
+                            router.push(`/conversation/${quotation.conversation.id}/name/${quotation.client.fullname}`);
                           }}
                         />
                       </Tooltip>
-                    )}
-                    <Tooltip hasArrow label="Ver conversacion">
-                      <ChatIcon
-                        color="facebook"
-                        mr="20px"
-                        cursor="pointer"
-                        onClick={() => {
-                          router.push(`/conversation/${quotation.conversation.id}/name/${quotation.client.fullname}`);
-                        }}
-                      />
-                    </Tooltip>
-                  </Center>
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
+                    </Center>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        ) : (
+          <EmptyResults />
+        )}
         <PaginationButtons
           currentPage={currentPage}
           hasResults={quotationsHasResults}

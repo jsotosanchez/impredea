@@ -160,11 +160,6 @@ const Catalog = ({}) => {
   };
 
   useEffect(() => {
-    debouncedSearch();
-    setCurrentPage(0);
-  }, [filter, debouncedSearch, setCurrentPage]);
-
-  useEffect(() => {
     getProduct();
   }, [currentProductId, getProduct]);
 
