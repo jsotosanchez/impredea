@@ -134,7 +134,7 @@ const Product = ({}: Props): JSX.Element => {
     <Modal isOpen={true} onClose={handleOnClose} size="4xl">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader></ModalHeader>
+        <ModalHeader>{data && data.product_by_pk.name}</ModalHeader>
         <ModalCloseButton />
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalBody>
