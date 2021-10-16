@@ -26,7 +26,6 @@ import {
   useDisclosure,
   useToast,
   Text,
-  Spacer,
 } from '@chakra-ui/react';
 import { ChatIcon, ViewIcon } from '@chakra-ui/icons';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
@@ -123,6 +122,9 @@ const Quotations = ({}: Props) => {
     refetch();
   };
 
+  const quotationHasBeenResponded =
+    quotation && quotation.quotations_by_pk.quotation_status.label.toUpperCase() === 'RESPONDIDO';
+
   if (loading)
     return (
       <Layout activeTab={MY_PURCHASES_SECTIONS.QUOTATIONS}>
@@ -136,7 +138,7 @@ const Quotations = ({}: Props) => {
         <Modal isOpen={isOpen} onClose={handleOnClose} size="4xl">
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Cotización</ModalHeader>
+            <ModalHeader>Cotización{quotationHasBeenResponded ? `` : `- Pendiente a respuesta`}</ModalHeader>
             {loadingQuotation ? (
               <Center>
                 <Spinner />
@@ -237,12 +239,16 @@ const Quotations = ({}: Props) => {
                   </Flex>
                 </ModalBody>
                 <ModalFooter>
-                  <Button colorScheme="facebook" mr={3} onClick={handleComprar}>
-                    Comprar
-                  </Button>
-                  <Button variant="ghost" colorScheme="red" onClick={handleRechazar}>
-                    Rechazar
-                  </Button>
+                  {quotationHasBeenResponded && (
+                    <>
+                      <Button colorScheme="facebook" mr={3} onClick={handleComprar}>
+                        Comprar
+                      </Button>
+                      <Button variant="ghost" colorScheme="red" onClick={handleRechazar}>
+                        Rechazar
+                      </Button>
+                    </>
+                  )}
                 </ModalFooter>
               </>
             )}

@@ -231,7 +231,12 @@ export const GET_QUOTATIONS_BY_MAKER_ID = gql`
 
 export const GET_QUOTATIONS_BY_CLIENT_ID = gql`
   query getQuotationsByMakerId($id: Int!, $limit: Int = 10, $offset: Int = 0) {
-    quotations(where: { client_id: { _eq: $id }, status_id: { _eq: 2 } }, limit: $limit, offset: $offset) {
+    quotations(
+      where: { client_id: { _eq: $id }, status_id: { _in: [1, 2] } }
+      limit: $limit
+      offset: $offset
+      order_by: { created_at: asc, status_id: asc }
+    ) {
       id
       updated_at
       product {
@@ -272,6 +277,9 @@ export const GET_QUOTATION_BY_PK = gql`
       }
       client {
         fullname
+      }
+      quotation_status {
+        label
       }
     }
   }
