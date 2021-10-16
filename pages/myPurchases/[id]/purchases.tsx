@@ -45,8 +45,8 @@ const Purchases = ({}: Props) => {
   const submitReportProblem = async (formData: any) => {
     reportProblem({ variables: { ...formData, reporter: currentUser, related_sale: selectedSale } });
     const emailBody = {
-      to: 'jm.soto.sanchez@gmail.com',
-      from: IMPREDEA_EMAIL,
+      to: IMPREDEA_EMAIL,
+      from: currentUserEmail,
       subject: `Problema reportado: ${formData.subject}`,
       message: formData.description,
     };
@@ -121,7 +121,9 @@ const Purchases = ({}: Props) => {
                         mr="20px"
                         cursor="pointer"
                         onClick={() => {
-                          router.push(`/conversation/${sale.quotation.conversation.id}`);
+                          router.push(
+                            `/conversation/${sale.quotation.conversation.id}/name/${sale.quotation.maker.maker_name}`
+                          );
                         }}
                       />
                     </Tooltip>

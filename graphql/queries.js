@@ -222,6 +222,9 @@ export const GET_QUOTATIONS_BY_MAKER_ID = gql`
       conversation {
         id
       }
+      client {
+        fullname
+      }
     }
   }
 `;

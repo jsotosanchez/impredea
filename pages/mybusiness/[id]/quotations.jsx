@@ -312,7 +312,7 @@ const Quotations = ({ statuses }) => {
                         mr="20px"
                         cursor="pointer"
                         onClick={() => {
-                          router.push(`/conversation/${quotation.conversation.id}`);
+                          router.push(`/conversation/${quotation.conversation.id}/name/${quotation.client.fullname}`);
                         }}
                       />
                     </Tooltip>

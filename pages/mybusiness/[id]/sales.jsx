@@ -115,7 +115,9 @@ const SalesAdmin = ({}) => {
                       mr="20px"
                       cursor="pointer"
                       onClick={() => {
-                        router.push(`/conversation/${sale.quotation.conversation.id}`);
+                        router.push(
+                          `/conversation/${sale.quotation.conversation.id}/name/${quotation.client.fullname}`
+                        );
                       }}
                     />
                   </Tooltip>

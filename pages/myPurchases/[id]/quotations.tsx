@@ -271,7 +271,7 @@ const Quotations = ({}: Props) => {
                     mr="20px"
                     cursor="pointer"
                     onClick={() => {
-                      router.push(`/conversation/${quotation.conversation.id}`);
+                      router.push(`/conversation/${quotation.conversation.id}/name/${quotation.maker.maker_name}`);
                     }}
                   />
                   <ViewIcon
