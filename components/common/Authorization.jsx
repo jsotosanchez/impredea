@@ -7,7 +7,7 @@ import { useGetUserIdentity } from '@/graphql/hooks';
 import { REGISTER_USER } from '@/graphql/mutations';
 
 export default function Authorization({ children }) {
-  const { user, error, isLoading } = useUser();
+  const { user } = useUser();
   const toast = useToast();
   const context = useContext(SessionContext);
   const userCreated = useRef(false);

@@ -1,15 +1,18 @@
 import { useContext } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Box, Spacer, Flex, Button, Heading } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { SessionContext } from '@/context/sessionContext';
 
-export default function Layout({ children, ...rest }) {
+interface Props {
+  children: React.ReactNode;
+}
+
+export default function Layout({ children }: Props) {
   const router = useRouter();
   const context = useContext(SessionContext);
-
-  const { id, maker_active } = context.getUser();
-
+  const currentUser = context.getUser();
   return (
     <>
       <Flex
@@ -25,7 +28,6 @@ export default function Layout({ children, ...rest }) {
         height="4rem"
         paddingLeft="20"
         paddingRight="20"
-        {...rest}
       >
         <Flex p="4" color="black">
           <Image src="/logo.png" width="30" height="50" alt="" />
@@ -35,56 +37,59 @@ export default function Layout({ children, ...rest }) {
         </Flex>
         <Spacer />
         <Box pt="4">
-          {maker_active && (
+          {currentUser && currentUser.maker_active && (
             <Button
               variant="link"
               colorScheme="white"
               color="white"
               mr="5"
-              onClick={() => router.push(`/mybusiness/${id}/catalog`)}
+              onClick={() => router.push(`/mybusiness/${currentUser.id}/catalog`)}
             >
               Mi negocio
             </Button>
           )}
-          {id && (
+          {currentUser && currentUser.id && (
             <Button
               variant="link"
               colorScheme="white"
               color="white"
               mr="5"
-              onClick={() => router.push(`/myPurchases/${id}/purchases`)}
+              onClick={() => router.push(`/myPurchases/${currentUser.id}/purchases`)}
             >
               Mis Compras
             </Button>
           )}
-          {id && (
+          {currentUser && currentUser.id && (
             <Button
               variant="link"
               colorScheme="white"
               color="white"
               mr="5"
-              onClick={() => router.push(`/myProfile/${id}`)}
+              onClick={() => router.push(`/myProfile/${currentUser.id}`)}
             >
               Mi perfil
             </Button>
           )}
-          {!id && (
+          {
             <>
-              <Button variant="link" colorScheme="white" color="white" mr="5">
-                {/* TODO: change for next/link */}
-                <a href="/api/auth/login">Registrarme</a>
-              </Button>
-              <Button variant="link" colorScheme="white" color="white" mr="5">
-                {/* TODO: change for next/link */}
-                <a href="/api/auth/login">Contectarse</a>
-              </Button>
+              <Link href="/api/auth/login" passHref>
+                <Button variant="link" colorScheme="white" color="white" mr="5">
+                  Registrarme
+                </Button>
+              </Link>
+              <Link href="/api/auth/login" passHref>
+                <Button variant="link" colorScheme="white" color="white" mr="5">
+                  Contectarse
+                </Button>
+              </Link>
             </>
-          )}
-          {id && (
-            <Button variant="link" colorScheme="white" color="white" mr="5">
-              {/* TODO: change for next/link */}
-              <a href="/api/auth/logout">Desconectarse</a>
-            </Button>
+          }
+          {currentUser && currentUser.id && (
+            <Link href="/api/auth/logout" passHref>
+              <Button variant="link" colorScheme="white" color="white" mr="5">
+                Desconectarse
+              </Button>
+            </Link>
           )}
         </Box>
       </Flex>
