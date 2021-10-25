@@ -6,12 +6,15 @@ import { SessionContext } from '@/context/sessionContext';
 import { useGetUserIdentity } from '@/graphql/hooks';
 import { REGISTER_USER } from '@/graphql/mutations';
 
-export default function Authorization({ children }) {
+interface Props {
+  children: React.ReactNode;
+}
+
+export default function Authorization({ children }: Props) {
   const { user } = useUser();
   const toast = useToast();
   const context = useContext(SessionContext);
-  const userCreated = useRef(false);
-  const { getIdentity, loading, error: userIdentityError, data: userIdentity } = useGetUserIdentity();
+  const { getIdentity, data: userIdentity } = useGetUserIdentity();
 
   const [registerUser] = useMutation(REGISTER_USER, {
     onCompleted: () => {

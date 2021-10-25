@@ -1,5 +1,4 @@
 import Authorization from './Authorization';
-import ClientOnly from './ClientOnly';
 import ErrorPage from './ErrorPage';
 import Layout from './Layout';
 import LoadingPage from './LoadingPage';
@@ -14,7 +13,6 @@ import ProductSearchCard from './ProductSearchCard';
 
 export {
   Authorization,
-  ClientOnly,
   ErrorPage,
   Layout,
   LoadingPage,

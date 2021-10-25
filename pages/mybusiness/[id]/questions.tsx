@@ -1,4 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useForm } from 'react-hook-form';
+import { ViewIcon } from '@chakra-ui/icons';
 import {
   Box,
   Table,
@@ -27,15 +30,26 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { useForm } from 'react-hook-form';
-import { ViewIcon } from '@chakra-ui/icons';
 import { GET_QUESTIONS_BY_MAKER_ID, GET_QUESTION_BY_ID } from '@/graphql/queries';
 import { UPDATE_QUESTION_BY_ID } from '@/graphql/mutations';
 import { usePagination } from '@/hooks/index';
 import { ErrorPage, LoadingPage, PaginationButtons, EmptyResults } from '@/components/common';
 import { Layout } from '@/components/mybusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
-import { useRouter } from 'next/router';
+
+interface FormValues {
+  response: string;
+}
+
+interface Client {
+  fullname: string;
+}
+
+interface Question {
+  id: number;
+  client: Client;
+  created_at: string;
+}
 
 const Questions = ({}) => {
   const router = useRouter();
@@ -51,9 +65,9 @@ const Questions = ({}) => {
     register,
     formState: { errors },
     reset,
-  } = useForm();
+  } = useForm<FormValues>();
 
-  const [currentQuestionId, setCurrentQuestionId] = useState();
+  const [currentQuestionId, setCurrentQuestionId] = useState<number>();
   const [getQuestion, { loading: loadingQuestion, data: question }] = useLazyQuery(GET_QUESTION_BY_ID, {
     variables: { id: currentQuestionId },
   });
@@ -89,12 +103,12 @@ const Questions = ({}) => {
     getQuestion();
   }, [currentQuestionId, getQuestion]);
 
-  const handleViewQuestion = (id) => {
+  const handleViewQuestion = (id: number) => {
     setCurrentQuestionId(id);
     onOpen();
   };
 
-  const onSubmit = (formData) => {
+  const onSubmit = (formData: FormValues) => {
     const now = new Date().toISOString();
     updateQuestion({
       variables: { id: currentQuestionId, ...formData, answered_at: now },
@@ -128,7 +142,7 @@ const Questions = ({}) => {
                 <ModalCloseButton />
                 <ModalBody>
                   <Text>{question?.questions_by_pk.question}</Text>
-                  <FormControl isInvalid={errors.response}>
+                  <FormControl isInvalid={errors.response != undefined}>
                     <FormLabel color="brandBlue" htmlFor="response">
                       Responde a la pregunta aqui:
                     </FormLabel>
@@ -161,7 +175,7 @@ const Questions = ({}) => {
               </Tr>
             </Thead>
             <Tbody>
-              {data.questions.map((question) => (
+              {data.questions.map((question: Question) => (
                 <Tr key={question.id}>
                   <Td>{question.client.fullname}</Td>
                   <Td>{question.created_at}</Td>

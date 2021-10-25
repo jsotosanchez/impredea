@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, DetailedHTMLProps, InputHTMLAttributes } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import {
@@ -25,20 +25,28 @@ import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 import { BUCKET_FILES_URL } from '@/utils/constants';
 import { uploadPhoto } from '@/utils/miscellaneous';
 
+interface ProfileForm {
+  name: string;
+  description: string;
+}
+
 const Profile = ({}) => {
   const router = useRouter();
-  const [picture, setPicture] = useState(null);
+  const [picture, setPicture] = useState<DetailedHTMLProps<
+    InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
+  > | null>(null);
   const { id } = router.query;
   const {
     handleSubmit,
     register,
     formState: { errors },
-  } = useForm();
+  } = useForm<ProfileForm>();
 
   const toast = useToast();
-  const { loading, error, data } = useGetMakerAdmin(id);
+  const { loading, error, data } = useGetMakerAdmin(parseInt(id as string));
 
-  const [updateInfo, { loadingUpdateInfo }] = useMutation(UPDATE_MAKER_INFO, {
+  const [updateInfo, { loading: loadingUpdateInfo }] = useMutation(UPDATE_MAKER_INFO, {
     onCompleted: () => {
       toast({
         title: 'Se han guardado tus datos.',
@@ -58,7 +66,7 @@ const Profile = ({}) => {
     },
   });
 
-  const onSubmit = async (formData) => {
+  const onSubmit = async (formData: ProfileForm) => {
     const { error } = await uploadPhoto(picture, `maker/${id}`);
     if (error) {
       toast({
@@ -123,7 +131,7 @@ const Profile = ({}) => {
           </Stack>
           <Spacer />
           <Stack w="40%">
-            <FormControl isInvalid={errors.name}>
+            <FormControl isInvalid={errors.name != undefined}>
               <FormLabel color="brandBlue" htmlFor="name">
                 Nombre:
               </FormLabel>
@@ -137,7 +145,7 @@ const Profile = ({}) => {
               />
               <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
             </FormControl>
-            <FormControl isInvalid={errors.description}>
+            <FormControl isInvalid={errors.description != undefined}>
               <FormLabel color="brandBlue" htmlFor="description">
                 Descripcion de mi empresa:
               </FormLabel>
@@ -148,7 +156,7 @@ const Profile = ({}) => {
                 {...register('description', {
                   required: 'Este campo es requerido',
                 })}
-                rows="10"
+                rows={10}
               />
               <FormErrorMessage>{errors.description && errors.description.message}</FormErrorMessage>
             </FormControl>

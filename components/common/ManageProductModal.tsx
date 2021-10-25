@@ -21,10 +21,29 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import { BUCKET_FILES_URL } from '@/utils/constants';
+import { DeepMap, FieldError, UseFormRegister, FieldValues } from 'react-hook-form';
+import { ManageProductForm } from '@/types/product';
 
-const ManageProductModal = ({ isOpen, handleOnClose, onSubmit, product, errors, register, loading }) => {
+interface Product {
+  id: number;
+  name: string;
+  updated_at: string;
+  description: string;
+  instructions: string;
+}
+
+interface Props {
+  isOpen: boolean;
+  handleOnClose: () => void;
+  onSubmit: () => void;
+  product?: Product;
+  errors: DeepMap<FieldValues, FieldError>;
+  register: UseFormRegister<ManageProductForm>;
+  loading?: boolean;
+}
+
+const ManageProductModal = ({ isOpen, handleOnClose, onSubmit, product, errors, register, loading }: Props) => {
   const generateFileName = () => `products/77`;
-  product && console.log(product.id);
   return (
     <Modal isOpen={isOpen} onClose={handleOnClose} size="4xl">
       <ModalOverlay />
