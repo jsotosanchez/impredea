@@ -1,6 +1,5 @@
 import { useContext } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Box, Spacer, Flex, Button, Heading } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { SessionContext } from '@/context/sessionContext';
@@ -70,26 +69,38 @@ export default function Layout({ children }: Props) {
               Mi perfil
             </Button>
           )}
-          {
+          {currentUser && !currentUser.id && (
             <>
-              <Link href="/api/auth/login" passHref>
-                <Button variant="link" colorScheme="white" color="white" mr="5">
-                  Registrarme
-                </Button>
-              </Link>
-              <Link href="/api/auth/login" passHref>
-                <Button variant="link" colorScheme="white" color="white" mr="5">
-                  Contectarse
-                </Button>
-              </Link>
-            </>
-          }
-          {currentUser && currentUser.id && (
-            <Link href="/api/auth/logout" passHref>
-              <Button variant="link" colorScheme="white" color="white" mr="5">
-                Desconectarse
+              <Button
+                variant="link"
+                colorScheme="white"
+                color="white"
+                mr="5"
+                onClick={() => window.location.replace('/api/auth/login')}
+              >
+                Registrarme
               </Button>
-            </Link>
+              <Button
+                variant="link"
+                colorScheme="white"
+                color="white"
+                mr="5"
+                onClick={() => window.location.replace('/api/auth/login')}
+              >
+                Contectarse
+              </Button>
+            </>
+          )}
+          {currentUser && currentUser.id && (
+            <Button
+              variant="link"
+              colorScheme="white"
+              color="white"
+              mr="5"
+              onClick={() => window.location.replace('/api/auth/logout')}
+            >
+              Desconectarse
+            </Button>
           )}
         </Box>
       </Flex>
