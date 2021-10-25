@@ -16,12 +16,17 @@ import {
 } from '@chakra-ui/react';
 import { DeepMap, FieldError, FieldValues, UseFormRegister } from 'react-hook-form';
 
+interface FormValues {
+  subject: string;
+  description: string;
+}
+
 interface Props {
   isOpen: boolean;
   handleOnClose: () => void;
   onSubmit: any;
   errors: DeepMap<FieldValues, FieldError>;
-  register: UseFormRegister<FieldValues>;
+  register: UseFormRegister<FormValues>;
 }
 
 const ReportProbleModal = ({ isOpen, handleOnClose, onSubmit, errors, register }: Props): JSX.Element => {

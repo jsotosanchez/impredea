@@ -28,6 +28,7 @@ interface Form {
   street: string;
   location: string;
   zip_code: string;
+  maker_active: boolean;
 }
 
 const MyProfile = (): JSX.Element => {
@@ -82,7 +83,7 @@ const MyProfile = (): JSX.Element => {
             </Heading>
             <form onSubmit={handleSubmit(onSubmit)}>
               <Stack>
-                <FormControl isInvalid={errors.fullname}>
+                <FormControl isInvalid={errors.fullname != undefined}>
                   <FormLabel color="brandBlue" htmlFor="fullname">
                     Nombre y apellido:
                   </FormLabel>
@@ -97,7 +98,7 @@ const MyProfile = (): JSX.Element => {
                   />
                   <FormErrorMessage>{errors.fullname && errors.fullname.message}</FormErrorMessage>
                 </FormControl>
-                <FormControl isInvalid={errors.document}>
+                <FormControl isInvalid={errors.document != undefined}>
                   <FormLabel color="brandBlue" htmlFor="document">
                     Documento:
                   </FormLabel>
@@ -113,7 +114,7 @@ const MyProfile = (): JSX.Element => {
                   />
                   <FormErrorMessage>{errors.document && errors.document.message}</FormErrorMessage>
                 </FormControl>
-                <FormControl isInvalid={errors.email}>
+                <FormControl isInvalid={errors.email != undefined}>
                   <FormLabel color="brandBlue" htmlFor="email">
                     Email:
                   </FormLabel>
@@ -133,7 +134,7 @@ const MyProfile = (): JSX.Element => {
                 </Heading>
                 <Flex>
                   <Stack w="45%">
-                    <FormControl isInvalid={errors.province}>
+                    <FormControl isInvalid={errors.province != undefined}>
                       <FormLabel color="brandBlue" htmlFor="province">
                         Provincia:
                       </FormLabel>
@@ -148,7 +149,7 @@ const MyProfile = (): JSX.Element => {
                       />
                       <FormErrorMessage>{errors.province && errors.province.message}</FormErrorMessage>
                     </FormControl>
-                    <FormControl isInvalid={errors.street}>
+                    <FormControl isInvalid={errors.street != undefined}>
                       <FormLabel color="brandBlue" htmlFor="street">
                         Calle y numero:
                       </FormLabel>
@@ -167,7 +168,7 @@ const MyProfile = (): JSX.Element => {
                   </Stack>
                   <Spacer />
                   <Stack w="45%">
-                    <FormControl isInvalid={errors.location}>
+                    <FormControl isInvalid={errors.location != undefined}>
                       <FormLabel color="brandBlue" htmlFor="location">
                         Localidad
                       </FormLabel>
@@ -182,7 +183,7 @@ const MyProfile = (): JSX.Element => {
                       />
                       <FormErrorMessage>{errors.location && errors.location.message}</FormErrorMessage>
                     </FormControl>
-                    <FormControl isInvalid={errors.zip_code}>
+                    <FormControl isInvalid={errors.zip_code != undefined}>
                       <FormLabel color="brandBlue" htmlFor="zip_code">
                         Codigo Postal:
                       </FormLabel>

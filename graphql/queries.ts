@@ -38,7 +38,7 @@ export const GET_PRODUCTS = gql`
         maker: {
           maker_active: { _eq: true }
           maker_category_id: { _eq: $category }
-          maker_capacity: { _lte: $quantity }
+          maker_capacity: { _gte: $quantity }
         }
       }
       limit: 20
@@ -63,6 +63,7 @@ export const GET_MAKER_BY_ID = gql`
       maker_name
       maker_rating
       maker_sales
+      maker_picture_key
     }
   }
 `;
@@ -77,7 +78,7 @@ export const GET_MAKER_CATALOG = gql`
 `;
 
 export const GET_MAKER_QUESTIONS = gql`
-  query getMakerQuestions($id: Int!, $limit: Int = 10, $offset: Int = 0) {
+  query getMakerQuestions($id: Int!, $limit: Int = 4, $offset: Int = 0) {
     questions(
       where: { maker_id: { _eq: $id }, response: { _is_null: false } }
       order_by: { created_at: asc }
@@ -96,7 +97,7 @@ export const GET_MAKER_QUESTIONS = gql`
 `;
 
 export const GET_MAKER_REVIEWS = gql`
-  query getMakerQuestions($id: Int!, $limit: Int = 10, $offset: Int = 0) {
+  query getMakerQuestions($id: Int!, $limit: Int = 5, $offset: Int = 0) {
     reviews(where: { maker_id: { _eq: $id } }, limit: $limit, offset: $offset) {
       id
       text
@@ -114,6 +115,7 @@ export const GET_PRODUCT_BY_ID = gql`
       description
       instructions
       name
+      id
     }
   }
 `;
@@ -222,13 +224,21 @@ export const GET_QUOTATIONS_BY_MAKER_ID = gql`
       conversation {
         id
       }
+      client {
+        fullname
+      }
     }
   }
 `;
 
 export const GET_QUOTATIONS_BY_CLIENT_ID = gql`
   query getQuotationsByMakerId($id: Int!, $limit: Int = 10, $offset: Int = 0) {
-    quotations(where: { client_id: { _eq: $id }, status_id: { _eq: 2 } }, limit: $limit, offset: $offset) {
+    quotations(
+      where: { client_id: { _eq: $id }, status_id: { _in: [1, 2] } }
+      limit: $limit
+      offset: $offset
+      order_by: { created_at: asc, status_id: asc }
+    ) {
       id
       updated_at
       product {
@@ -261,14 +271,17 @@ export const GET_QUOTATION_BY_PK = gql`
         label
       }
       product {
-        main_photo
         name
+        id
       }
       product_quality {
         label
       }
       client {
         fullname
+      }
+      quotation_status {
+        label
       }
     }
   }
@@ -307,6 +320,9 @@ export const GET_SALES_BY_MAKER_ID = gql`
         client {
           fullname
         }
+        conversation {
+          id
+        }
       }
     }
   }
@@ -340,6 +356,7 @@ export const GET_MAKERS = gql`
       maker_name
       maker_rating
       id
+      maker_picture_key
     }
   }
 `;
@@ -349,6 +366,36 @@ export const GET_QUOTATIONS_STATUSES = gql`
     quotation_statuses {
       id
       label
+    }
+  }
+`;
+
+export const GET_SALE_BY_PK = gql`
+  query MyQuery($id: uuid!) {
+    sales_by_pk(id: $id) {
+      quotation {
+        estimated_date
+        client_instructions
+        price
+        information
+        quantity
+        product {
+          id
+          name
+        }
+        product_quality {
+          label
+        }
+        material {
+          label
+        }
+        maker {
+          maker_name
+        }
+        client {
+          fullname
+        }
+      }
     }
   }
 `;

@@ -1,8 +1,8 @@
 import { useContext, useEffect } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation } from '@apollo/client';
 import {
-  Box,
   Text,
   Modal,
   ModalOverlay,
@@ -29,7 +29,7 @@ import { CREATE_CONVERSATION, REQUEST_QUOTATION } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
 import { GET_PRODUCT_BY_ID } from '@/graphql/queries';
 import { sendEmail } from '@/utils/miscellaneous';
-import { IMPREDEA_EMAIL } from '@/utils/constants';
+import { BUCKET_FILES_URL, IMPREDEA_EMAIL } from '@/utils/constants';
 
 interface Material {
   id: string;
@@ -56,7 +56,7 @@ const Product = ({}: Props): JSX.Element => {
   const toast = useToast();
   const { data, loading, refetch } = useQuery(GET_PRODUCT_BY_ID, { variables: { id: pid } });
   const context = useContext(SessionContext);
-  const user = context.getUser();
+  const user = context.getUser()!;
 
   const [requestQuotation, { data: mutationResultData }] = useMutation(REQUEST_QUOTATION, {
     onCompleted: () => {
@@ -78,7 +78,11 @@ const Product = ({}: Props): JSX.Element => {
     },
   });
 
-  const [createConversation] = useMutation(CREATE_CONVERSATION);
+  const [createConversation] = useMutation(CREATE_CONVERSATION, {
+    onCompleted: () => {
+      handleOnClose();
+    },
+  });
 
   const qualities: Quality[] = [
     { id: '1', label: 'Baja' },
@@ -105,14 +109,12 @@ const Product = ({}: Props): JSX.Element => {
         to: user.email,
         from: IMPREDEA_EMAIL,
         subject: `Te han solicitado una cotizacion!`,
-        message: `Un cliente te ha pedidoa una cotizacion. Recuerda responderle cuanto antes.`,
+        message: `Un cliente te ha pedido una cotizacion. Recuerda responderle cuanto antes.`,
       };
 
       sendEmail(emailBody);
     } catch (error) {
       console.log(error);
-    } finally {
-      handleOnClose();
     }
   };
 
@@ -134,7 +136,7 @@ const Product = ({}: Props): JSX.Element => {
     <Modal isOpen={true} onClose={handleOnClose} size="4xl">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader></ModalHeader>
+        <ModalHeader>{data && data.product_by_pk.name}</ModalHeader>
         <ModalCloseButton />
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalBody>
@@ -146,9 +148,9 @@ const Product = ({}: Props): JSX.Element => {
               <Flex w="100%">
                 <Stack w="40%" mr="5%">
                   <Center>
-                    <Box bg="red.100" height="250px" w="250px"></Box>
+                    <Image src={`${BUCKET_FILES_URL}products/${pid}`} width="280px" height="250px" alt="" />
                   </Center>
-                  <FormControl isInvalid={errors.quantity}>
+                  <FormControl isInvalid={errors.quantity != undefined}>
                     <FormLabel color="brandBlue" htmlFor="quantity">
                       Cantidad
                     </FormLabel>
@@ -164,7 +166,7 @@ const Product = ({}: Props): JSX.Element => {
                     />
                     <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
                   </FormControl>
-                  <FormControl isInvalid={errors.qualityId}>
+                  <FormControl isInvalid={errors.qualityId != undefined}>
                     <FormLabel color="brandBlue">Calidad</FormLabel>
                     <Select
                       bg="white"
@@ -182,7 +184,7 @@ const Product = ({}: Props): JSX.Element => {
                     </Select>
                     <FormErrorMessage>{errors.qualityId && errors.qualityId.message}</FormErrorMessage>
                   </FormControl>
-                  <FormControl isInvalid={errors.materialId}>
+                  <FormControl isInvalid={errors.materialId != undefined}>
                     <FormLabel color="brandBlue">Material</FormLabel>
                     <Select
                       bg="white"
@@ -208,7 +210,7 @@ const Product = ({}: Props): JSX.Element => {
                     Indicaciones:
                   </Text>
                   <Text>{data && data.product_by_pk.instructions}</Text>
-                  <FormControl isInvalid={errors.clientInstructions}>
+                  <FormControl isInvalid={errors.clientInstructions != undefined}>
                     <FormLabel color="brandBlue" htmlFor="clientInstructions">
                       Informacion para el Maker:
                     </FormLabel>

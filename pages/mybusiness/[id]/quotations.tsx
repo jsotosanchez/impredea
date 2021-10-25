@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import Image from 'next/image';
 import {
   Box,
   Button,
@@ -38,12 +40,49 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_QUOTATIONS_BY_MAKER_ID, GET_QUOTATION_BY_PK, GET_QUOTATIONS_STATUSES } from '@/graphql/queries';
 import { SEND_QUOTATION } from '@/graphql/mutations';
 import { usePagination } from '@/hooks/index';
-import { ErrorPage, LoadingPage, PaginationButtons } from '@/components/common';
+import { ErrorPage, LoadingPage, PaginationButtons, EmptyResults } from '@/components/common';
 import { Layout } from '@/components/mybusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
-import { useRouter } from 'next/router';
+import { BUCKET_FILES_URL } from '@/utils/constants';
 
-const Quotations = ({ statuses }) => {
+interface FormValues {
+  price: number;
+  estimated_date: string;
+  information: string;
+}
+
+interface Product {
+  name: string;
+}
+
+interface Client {
+  fullname: string;
+}
+
+interface Conversation {
+  id: string;
+}
+
+interface Quotation {
+  id: number;
+  product: Product;
+  updated_at: string;
+  status_id: number;
+  quotation_status: QuotationStatus;
+  client: Client;
+  conversation: Conversation;
+}
+
+interface QuotationStatus {
+  id: number;
+  label: string;
+}
+
+interface Props {
+  statuses: QuotationStatus[];
+}
+
+const Quotations = ({ statuses }: Props) => {
   const router = useRouter();
   const { id } = router.query;
   const {
@@ -51,13 +90,13 @@ const Quotations = ({ statuses }) => {
     loading,
     refetch: refetchQuotations,
     error,
-  } = useQuery(GET_QUOTATIONS_BY_MAKER_ID, { variables: { id } });
+  } = useQuery(GET_QUOTATIONS_BY_MAKER_ID, { variables: { id, statuses: statuses.map((s) => s.id + 1) } });
   const { currentPage, setCurrentPage } = usePagination(data, refetchQuotations);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
-  const [checkedStatuses, setCheckedStatuses] = useState([true, true, true, true]);
+  const [checkedStatuses, setCheckedStatuses] = useState([true, true, true, false]);
   const allChecked = checkedStatuses.every(Boolean);
   const isIndeterminate = checkedStatuses.some(Boolean) && !allChecked;
 
@@ -67,11 +106,11 @@ const Quotations = ({ statuses }) => {
     register,
     formState: { errors },
     reset,
-  } = useForm();
+  } = useForm<FormValues>();
 
   const [queryQuotation, { loading: loadingQuotation, data: quotation }] = useLazyQuery(GET_QUOTATION_BY_PK);
 
-  const handleOnEdit = (id) => {
+  const handleOnEdit = (id: number) => {
     queryQuotation({ variables: { id } });
     onOpen();
   };
@@ -103,7 +142,7 @@ const Quotations = ({ statuses }) => {
     refetchQuotations();
   };
 
-  const onSubmit = (formData) => {
+  const onSubmit = (formData: FormValues) => {
     updateQuotation({ variables: { ...formData, id: quotation?.quotations_by_pk.id } });
   };
 
@@ -143,7 +182,14 @@ const Quotations = ({ statuses }) => {
                   <Flex w="100%">
                     <Stack w="40%" mr="5%">
                       <Center>
-                        <Box bg="tomato" height="80px" w="300px"></Box>
+                        {quotation && (
+                          <Image
+                            src={`${BUCKET_FILES_URL}products/${quotation.quotations_by_pk.product.id}`}
+                            width="300px"
+                            height="250px"
+                            alt=""
+                          />
+                        )}
                       </Center>
                       <FormLabel color="brandBlue" htmlFor="quantity">
                         Cantidad:
@@ -189,7 +235,7 @@ const Quotations = ({ statuses }) => {
                         defaultValue={quotation?.quotations_by_pk.client_instructions}
                         readOnly
                       />
-                      <FormControl isInvalid={errors.price}>
+                      <FormControl isInvalid={errors.price != undefined}>
                         <FormLabel color="brandBlue" htmlFor="price">
                           Indica el precio:
                         </FormLabel>
@@ -204,7 +250,7 @@ const Quotations = ({ statuses }) => {
                         />
                         <FormErrorMessage>{errors.price && errors.price.message}</FormErrorMessage>
                       </FormControl>
-                      <FormControl isInvalid={errors.estimated_date}>
+                      <FormControl isInvalid={errors.estimated_date != undefined}>
                         <FormLabel color="brandBlue" htmlFor="estimated_date">
                           Indica la fecha estimada:
                         </FormLabel>
@@ -225,7 +271,7 @@ const Quotations = ({ statuses }) => {
                         />
                         <FormErrorMessage>{errors.estimated_date && errors.estimated_date.message}</FormErrorMessage>
                       </FormControl>
-                      <FormControl isInvalid={errors.price}>
+                      <FormControl isInvalid={errors.price != undefined}>
                         <FormLabel color="brandBlue" htmlFor="information">
                           Informacion adicional:
                         </FormLabel>
@@ -277,51 +323,55 @@ const Quotations = ({ statuses }) => {
             ))}
           </HStack>
         </>
-        <Table variant="striped" colorScheme="gray">
-          <Thead>
-            <Tr>
-              <Th>Producto</Th>
-              <Th>Fecha de Pedido</Th>
-              <Th>Estado</Th>
-              <Th>Acciones</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {data.quotations.map((quotation) => (
-              <Tr key={quotation.id}>
-                <Td>{quotation.product.name}</Td>
-                <Td>{quotation.updated_at.slice(0, 10)}</Td>
-                <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
-                <Td>
-                  <Center>
-                    {quotation.status_id === 1 && (
-                      <Tooltip hasArrow label="Responder">
-                        <EditIcon
+        {quotationsHasResults ? (
+          <Table variant="striped" colorScheme="gray">
+            <Thead>
+              <Tr>
+                <Th>Producto</Th>
+                <Th>Fecha de Pedido</Th>
+                <Th>Estado</Th>
+                <Th>Acciones</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {data.quotations.map((quotation: Quotation) => (
+                <Tr key={quotation.id}>
+                  <Td>{quotation.product.name}</Td>
+                  <Td>{quotation.updated_at.slice(0, 10)}</Td>
+                  <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
+                  <Td>
+                    <Center>
+                      {quotation.status_id === 1 && (
+                        <Tooltip hasArrow label="Responder">
+                          <EditIcon
+                            color="facebook"
+                            mr="20px"
+                            cursor="pointer"
+                            onClick={() => {
+                              handleOnEdit(quotation.id);
+                            }}
+                          />
+                        </Tooltip>
+                      )}
+                      <Tooltip hasArrow label="Ver conversacion">
+                        <ChatIcon
                           color="facebook"
                           mr="20px"
                           cursor="pointer"
                           onClick={() => {
-                            handleOnEdit(quotation.id);
+                            router.push(`/conversation/${quotation.conversation.id}/name/${quotation.client.fullname}`);
                           }}
                         />
                       </Tooltip>
-                    )}
-                    <Tooltip hasArrow label="Ver conversacion">
-                      <ChatIcon
-                        color="facebook"
-                        mr="20px"
-                        cursor="pointer"
-                        onClick={() => {
-                          router.push(`/conversation/${quotation.conversation.id}`);
-                        }}
-                      />
-                    </Tooltip>
-                  </Center>
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
+                    </Center>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        ) : (
+          <EmptyResults />
+        )}
         <PaginationButtons
           currentPage={currentPage}
           hasResults={quotationsHasResults}

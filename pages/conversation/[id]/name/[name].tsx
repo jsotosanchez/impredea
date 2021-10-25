@@ -58,7 +58,7 @@ interface Props {}
 
 const Conversation = ({}: Props): JSX.Element => {
   const router = useRouter();
-  const { id: conversationId } = router.query;
+  const { id: conversationId, name } = router.query;
   const context = useContext(SessionContext);
   const user = context.getUser();
   // const messages: any[] = [{ messageText: 'hi', user: { email: 'fake' } }];
@@ -85,7 +85,9 @@ const Conversation = ({}: Props): JSX.Element => {
     <Modal isOpen={true} onClose={handleOnClose} size="4xl">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader></ModalHeader>
+        <ModalHeader>
+          <Text size="xs">Estas hablando con: {name}</Text>
+        </ModalHeader>
         <ModalCloseButton />
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalBody>

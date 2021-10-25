@@ -27,13 +27,25 @@ import { usePagination } from '@/hooks/index';
 import { EmptyResults, ErrorPage, LoadingPage, ManageProductModal, PaginationButtons } from '@/components/common';
 import { Layout } from '@/components/mybusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
+import { ManageProductForm } from '@/types/product';
+
+interface Product {
+  id: number;
+  name: string;
+  updated_at: string;
+}
 
 const Catalog = ({}) => {
   const router = useRouter();
   const { id } = router.query;
-  const [currentProductId, setCurrentProductId] = useState();
+  const [currentProductId, setCurrentProductId] = useState<number>();
   const [filter, setFilter] = useState('');
-  const { data, loading: loadingProducts, error, refetch } = useQuery(GET_PRODUCTS_BY_MAKER_ID, { variables: { id } });
+  const {
+    data,
+    loading: loadingProducts,
+    error,
+    refetch,
+  } = useQuery(GET_PRODUCTS_BY_MAKER_ID, { variables: { id, filter } });
   const [getProduct, { loading: loadingGetProduct, data: currentProduct }] = useLazyQuery(GET_PRODUCT_BY_ID, {
     variables: { id: currentProductId },
   });
@@ -47,13 +59,13 @@ const Catalog = ({}) => {
     register: registerAddModal,
     formState: { errors: addModalErrors },
     reset: resetAddModal,
-  } = useForm();
+  } = useForm<ManageProductForm>();
   const {
     handleSubmit: handleEditModalSubmit,
     register: registerEditModal,
     formState: { errors: editModalErrors },
     reset: resetEditModal,
-  } = useForm();
+  } = useForm<ManageProductForm>();
 
   const productsHasResults = data ? data.product.length > 0 : false;
 
@@ -121,27 +133,27 @@ const Catalog = ({}) => {
 
   const debouncedSearch = _.debounce(() => refetch({ id, filter: formatToStartsWith(filter) }), 250);
 
-  const onAddSubmit = (formData) => {
+  const onAddSubmit = (formData: ManageProductForm) => {
     insertProduct({
       variables: { makerId: id, ...formData },
     });
     handleAddOnClose();
   };
 
-  const onEditSubmit = (formData) => {
+  const onEditSubmit = (formData: ManageProductForm) => {
     editProduct({
       variables: { id: currentProductId, ...formData },
     });
     editModalOnClose();
   };
 
-  const handleEdit = (id) => {
+  const handleEdit = (id: number) => {
     setCurrentProductId(id);
     editModalOnOpen();
   };
 
-  const handleFilterChange = (e) => {
-    setFilter(e.target.value);
+  const handleFilterChange = (newValue: string) => {
+    setFilter(newValue);
   };
 
   const handleAddOnClose = () => {
@@ -154,15 +166,10 @@ const Catalog = ({}) => {
     editModalOnClose();
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = (id: number) => {
     deleteProduct({ variables: { id } });
     refetch();
   };
-
-  useEffect(() => {
-    debouncedSearch();
-    setCurrentPage(0);
-  }, [filter, debouncedSearch, setCurrentPage]);
 
   useEffect(() => {
     getProduct();
@@ -201,7 +208,12 @@ const Catalog = ({}) => {
             <FormLabel color="brandBlue" pt="5px">
               Buscar por nombre
             </FormLabel>
-            <Input w="20%" value={filter} onChange={handleFilterChange} onBlur={debouncedSearch} />
+            <Input
+              w="20%"
+              value={filter}
+              onChange={(e) => handleFilterChange(e.target.value)}
+              onBlur={debouncedSearch}
+            />
             <Spacer />
             <Button variant="solid" colorScheme="facebook" onClick={addModalOnOpen}>
               Agregar Producto
@@ -223,7 +235,7 @@ const Catalog = ({}) => {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {data.product.map((product) => (
+                    {data.product.map((product: Product) => (
                       <Tr key={product.id}>
                         <Td>{product.name}</Td>
                         <Td>{product.updated_at}</Td>

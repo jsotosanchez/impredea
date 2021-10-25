@@ -1,7 +1,9 @@
-import { Flex, Stack, Text, Center, Heading, Spacer } from '@chakra-ui/react';
+import Image from 'next/image';
+import { Flex, Stack, Text, Heading, Spacer, Box } from '@chakra-ui/react';
+import { BUCKET_FILES_URL } from '@/utils/constants';
 
 interface Props {
-  main_photo: string;
+  main_photo: number;
   description: string;
   makerName: string;
   productName: string;
@@ -21,9 +23,9 @@ const ProductSearchCard = ({ main_photo, description, makerName, productName, ha
       cursor="pointer"
       onClick={handleOnClick}
     >
-      <Center h="140px" w="20%" mr="2rem" bg="whatsapp.300">
-        Picture goes here
-      </Center>
+      <Box mr="15px">
+        <Image src={`${BUCKET_FILES_URL}products/${main_photo}`} width="300px" height="200px" alt="" />
+      </Box>
       <Stack w="80%">
         <Flex mr="10%">
           <Heading as="h2" color="brandBlue" size="md" fontWeight="black">

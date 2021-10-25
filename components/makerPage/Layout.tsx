@@ -1,11 +1,12 @@
 import { useContext } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Box, Flex, Heading, HStack, Spacer, Square, Stack, Text, Button, useToast } from '@chakra-ui/react';
+import Image from 'next/image';
+import { Box, Flex, Heading, HStack, Spacer, Stack, Text, Button, useToast } from '@chakra-ui/react';
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 import { useQuery } from '@apollo/client';
 import { RenderRating, LoadingPage, Layout } from '@/components/common';
-import { MAKER_SECTIONS } from '@/utils/constants';
+import { BUCKET_FILES_URL, MAKER_SECTIONS } from '@/utils/constants';
 import { SessionContext } from '@/context/sessionContext';
 import { GET_MAKER_BY_ID } from '@/graphql/queries';
 
@@ -23,7 +24,7 @@ const MakerProfileLayout = ({ children, activeHeader, onButtonClick }: Props): J
   const toastId = 'log-in-required';
 
   const context = useContext(SessionContext);
-  const { id: currentUserId } = context.getUser();
+  const currentUserId = context.getUser()?.id;
 
   const handleOnButtonClick = () => {
     if (currentUserId) {
@@ -57,7 +58,13 @@ const MakerProfileLayout = ({ children, activeHeader, onButtonClick }: Props): J
                 Volver
               </Text>
             </Flex>
-            <Square h="200px" w="200px" bg="whatsapp.300"></Square>
+            <Image
+              src={`${BUCKET_FILES_URL}${data.user_by_pk.maker_picture_key}`}
+              width="200px"
+              height="250px"
+              alt=""
+            />
+
             <Flex>
               <Heading as="h1" color="brandBlue" size="md">
                 {data && data.user_by_pk.maker_name}

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import {
   Box,
@@ -26,12 +27,11 @@ import {
   useDisclosure,
   useToast,
   Text,
-  Spacer,
 } from '@chakra-ui/react';
 import { ChatIcon, ViewIcon } from '@chakra-ui/icons';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { MY_PURCHASES_SECTIONS } from '@/utils/constants';
-import { LoadingPage, PaginationButtons } from '@/components/common';
+import { BUCKET_FILES_URL, MY_PURCHASES_SECTIONS } from '@/utils/constants';
+import { EmptyResults, LoadingPage, PaginationButtons } from '@/components/common';
 import { Layout } from '@/components/myPurchases';
 import { GET_QUOTATIONS_BY_CLIENT_ID, GET_QUOTATION_BY_PK } from '@/graphql/queries';
 import { ACCEPT_QUOTATION, CREATE_SALE, DECLINE_QUOTATION } from '@/graphql/mutations';
@@ -123,6 +123,9 @@ const Quotations = ({}: Props) => {
     refetch();
   };
 
+  const quotationHasBeenResponded =
+    quotation && quotation.quotations_by_pk.quotation_status.label.toUpperCase() === 'RESPONDIDO';
+
   if (loading)
     return (
       <Layout activeTab={MY_PURCHASES_SECTIONS.QUOTATIONS}>
@@ -136,7 +139,7 @@ const Quotations = ({}: Props) => {
         <Modal isOpen={isOpen} onClose={handleOnClose} size="4xl">
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Cotización</ModalHeader>
+            <ModalHeader>Cotización{quotationHasBeenResponded ? `` : `- Pendiente a respuesta`}</ModalHeader>
             {loadingQuotation ? (
               <Center>
                 <Spinner />
@@ -148,7 +151,14 @@ const Quotations = ({}: Props) => {
                   <Flex w="100%">
                     <Stack w="40%" mr="5%">
                       <Center>
-                        <Box bg="tomato" height="80px" w="300px"></Box>
+                        {quotation && (
+                          <Image
+                            src={`${BUCKET_FILES_URL}products/${quotation.quotations_by_pk.product.id}`}
+                            width="300px"
+                            height="250px"
+                            alt=""
+                          />
+                        )}
                       </Center>
                       <FormLabel color="brandBlue" htmlFor="quantity">
                         Cantidad:
@@ -237,56 +247,64 @@ const Quotations = ({}: Props) => {
                   </Flex>
                 </ModalBody>
                 <ModalFooter>
-                  <Button colorScheme="facebook" mr={3} onClick={handleComprar}>
-                    Comprar
-                  </Button>
-                  <Button variant="ghost" colorScheme="red" onClick={handleRechazar}>
-                    Rechazar
-                  </Button>
+                  {quotationHasBeenResponded && (
+                    <>
+                      <Button colorScheme="facebook" mr={3} onClick={handleComprar}>
+                        Comprar
+                      </Button>
+                      <Button variant="ghost" colorScheme="red" onClick={handleRechazar}>
+                        Rechazar
+                      </Button>
+                    </>
+                  )}
                 </ModalFooter>
               </>
             )}
           </ModalContent>
         </Modal>
-        <Table variant="striped" colorScheme="gray">
-          <Thead>
-            <Tr>
-              <Th>Producto</Th>
-              <Th>Fecha de Pedido</Th>
-              <Th>Maker</Th>
-              <Th>Estado</Th>
-              <Th>Acciones</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {data.quotations.map((quotation: Quotation) => (
-              <Tr key={quotation.id}>
-                <Td>{quotation.product.name}</Td>
-                <Td>{quotation.updated_at.slice(0, 10)}</Td>
-                <Td>{quotation.maker.maker_name}</Td>
-                <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
-                <Td>
-                  <ChatIcon
-                    color="facebook"
-                    mr="20px"
-                    cursor="pointer"
-                    onClick={() => {
-                      router.push(`/conversation/${quotation.conversation.id}`);
-                    }}
-                  />
-                  <ViewIcon
-                    color="facebook"
-                    mr="20px"
-                    cursor="pointer"
-                    onClick={() => {
-                      handleOnEdit(quotation.id);
-                    }}
-                  />
-                </Td>
+        {quotationsHasResults ? (
+          <Table variant="striped" colorScheme="gray">
+            <Thead>
+              <Tr>
+                <Th>Producto</Th>
+                <Th>Fecha de Pedido</Th>
+                <Th>Maker</Th>
+                <Th>Estado</Th>
+                <Th>Acciones</Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
+            </Thead>
+            <Tbody>
+              {data.quotations.map((quotation: Quotation) => (
+                <Tr key={quotation.id}>
+                  <Td>{quotation.product.name}</Td>
+                  <Td>{quotation.updated_at.slice(0, 10)}</Td>
+                  <Td>{quotation.maker.maker_name}</Td>
+                  <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
+                  <Td>
+                    <ChatIcon
+                      color="facebook"
+                      mr="20px"
+                      cursor="pointer"
+                      onClick={() => {
+                        router.push(`/conversation/${quotation.conversation.id}/name/${quotation.maker.maker_name}`);
+                      }}
+                    />
+                    <ViewIcon
+                      color="facebook"
+                      mr="20px"
+                      cursor="pointer"
+                      onClick={() => {
+                        handleOnEdit(quotation.id);
+                      }}
+                    />
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        ) : (
+          <EmptyResults />
+        )}
         <PaginationButtons
           currentPage={currentPage}
           hasResults={quotationsHasResults}
