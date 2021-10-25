@@ -25,15 +25,35 @@ import { Layout, Authorization } from '@/components/common';
 import { GET_SEARCHFORM_QUERY } from '@/graphql/queries';
 import { removeEmptyFields } from '@/utils/miscellaneous';
 
-const SearchProductForm = ({ quantities, categories }) => {
+interface Province {
+  id: number;
+  name: string;
+}
+interface Option {
+  id: number;
+  label: string;
+}
+
+interface SearchProductProps {
+  quantities: Option[];
+  categories: Option[];
+}
+
+interface SearchProductValues {
+  productName: string;
+  category: number | null;
+  quantity: number;
+}
+
+const SearchProductForm = ({ quantities, categories }: SearchProductProps) => {
   const router = useRouter();
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-  } = useForm({ defaultValues: { productName: '', category: null } });
+  } = useForm<SearchProductValues>({ defaultValues: { productName: '', category: null } });
 
-  const onSubmit = (formData) => {
+  const onSubmit = (formData: SearchProductValues) => {
     const query = removeEmptyFields(formData);
     router.push({ pathname: '/searchProduct', query });
   };
@@ -41,7 +61,7 @@ const SearchProductForm = ({ quantities, categories }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Stack direction="row" spacing="10%">
-        <FormControl w="40%" ml="5%" isInvalid={errors.productName}>
+        <FormControl w="40%" ml="5%" isInvalid={errors.productName != undefined}>
           <FormLabel color="brandBlue" htmlFor="productName">
             Que buscas?
           </FormLabel>
@@ -55,7 +75,7 @@ const SearchProductForm = ({ quantities, categories }) => {
           />
           <FormErrorMessage>{errors.productName && errors.productName.message}</FormErrorMessage>
         </FormControl>
-        <FormControl w="40%" isInvalid={errors.quantity}>
+        <FormControl w="40%" isInvalid={errors.quantity != undefined}>
           <FormLabel color="brandBlue">Cantidad:</FormLabel>
           <Select bg="white" color="black" defaultValue="1" id="quantity" {...register('quantity')}>
             {quantities.map((option) => (
@@ -68,7 +88,7 @@ const SearchProductForm = ({ quantities, categories }) => {
         </FormControl>
       </Stack>
       <Stack direction="row" spacing="10%" mt="25px" pb="20px">
-        <FormControl ml="5%" w="40%" isInvalid={errors.category}>
+        <FormControl ml="5%" w="40%" isInvalid={errors.category != undefined}>
           <FormLabel color="brandBlue">Categoria:</FormLabel>
           <Select bg="white" color="black" defaultValue={''} id="category" {...register('category')}>
             <option value={''}>Todos</option>
@@ -97,15 +117,28 @@ const SearchProductForm = ({ quantities, categories }) => {
   );
 };
 
-const SearchMakerForm = ({ categories, provinces, quantities }) => {
+interface SearchMakerProps {
+  categories: Option[];
+  provinces: Province[];
+  quantities: Option[];
+}
+
+interface SearchMakerValues {
+  makerName: string;
+  category: number | null;
+  quantity: number;
+  makerLocation: number | null;
+}
+
+const SearchMakerForm = ({ categories, provinces, quantities }: SearchMakerProps) => {
   const router = useRouter();
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
-  } = useForm({ defaultValues: { makerName: '', category: null, makerLocation: null } });
+  } = useForm<SearchMakerValues>({ defaultValues: { makerName: '', category: null, makerLocation: null } });
 
-  const onSubmit = (formData) => {
+  const onSubmit = (formData: SearchMakerValues) => {
     const query = removeEmptyFields(formData);
     router.push({ pathname: '/searchMaker', query });
   };
@@ -113,14 +146,14 @@ const SearchMakerForm = ({ categories, provinces, quantities }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Stack direction="row" spacing="10%">
-        <FormControl w="40%" ml="5%" isInvalid={errors.makerName}>
+        <FormControl w="40%" ml="5%" isInvalid={errors.makerName != undefined}>
           <FormLabel color="brandBlue" htmlFor="makerName">
             Nombre (Opcional):
           </FormLabel>
           <Input bg="white" color="black" id="makerName" {...register('makerName', {})} />
           <FormErrorMessage>{errors.makerName && errors.makerName.message}</FormErrorMessage>
         </FormControl>
-        <FormControl ml="5%" w="40%" isInvalid={errors.makerLocation}>
+        <FormControl ml="5%" w="40%" isInvalid={errors.makerLocation != undefined}>
           <FormLabel color="brandBlue">Localidad:</FormLabel>
           <Select bg="white" color="black" id="makerLocation" {...register('makerLocation')}>
             <option value={''}>Todos</option>
@@ -134,7 +167,7 @@ const SearchMakerForm = ({ categories, provinces, quantities }) => {
         </FormControl>
       </Stack>
       <Stack direction="row" spacing="10%" mt="25px" pb="20px">
-        <FormControl ml="5%" w="40%" isInvalid={errors.category}>
+        <FormControl ml="5%" w="40%" isInvalid={errors.category != undefined}>
           <FormLabel color="brandBlue">Categoria:</FormLabel>
           <Select bg="white" color="black" id="category" {...register('category')}>
             <option value={''}>Todos</option>
@@ -146,7 +179,7 @@ const SearchMakerForm = ({ categories, provinces, quantities }) => {
           </Select>
           <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
         </FormControl>
-        <FormControl w="40%" isInvalid={errors.quantity}>
+        <FormControl w="40%" isInvalid={errors.quantity != undefined}>
           <FormLabel color="brandBlue">Cantidad:</FormLabel>
           <Select bg="white" color="black" defaultValue="1" id="quantity" {...register('quantity')}>
             {quantities.map((option) => (
@@ -174,7 +207,13 @@ const SearchMakerForm = ({ categories, provinces, quantities }) => {
   );
 };
 
-export default function Home({ quantities, categories, provinces }) {
+interface Props {
+  categories: Option[];
+  provinces: Province[];
+  quantities: Option[];
+}
+
+export default function Home({ quantities, categories, provinces }: Props) {
   return (
     <Authorization>
       <Layout>
