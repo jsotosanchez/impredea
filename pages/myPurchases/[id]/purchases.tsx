@@ -39,6 +39,11 @@ import { REPORT_PROBLEM } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
 import { sendEmail } from '@/utils/miscellaneous';
 
+interface FormValues {
+  subject: string;
+  description: string;
+}
+
 interface Props {}
 interface Sale {
   quotation: Quotation;
@@ -51,7 +56,7 @@ const Purchases = ({}: Props) => {
   const [currentPurchaseId, setCurrentPurchaseId] = useState();
   const toast = useToast();
   const context = useContext(SessionContext);
-  const { id: currentUser, email: currentUserEmail } = context.getUser();
+  const { id: currentUser, email: currentUserEmail } = context.getUser()!;
   const [selectedSale, setSelectedSale] = useState<string>();
   const { data, loading, error, refetch } = useQuery(GET_SALES_BY_CLIENT_ID, { variables: { id } });
   const [getPurchase, { loading: loadingGetPurchase, data: currentPurchase }] = useLazyQuery(GET_SALE_BY_PK, {
@@ -65,7 +70,7 @@ const Purchases = ({}: Props) => {
     register: registerReportProblem,
     formState: { errors: reportProblemErrors },
     reset: resetReportProblem,
-  } = useForm();
+  } = useForm<FormValues>();
 
   const handleReportProblemClose = () => {
     resetReportProblem();
