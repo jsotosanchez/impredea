@@ -56,7 +56,7 @@ const Purchases = ({}: Props) => {
   const [currentPurchaseId, setCurrentPurchaseId] = useState();
   const toast = useToast();
   const context = useContext(SessionContext);
-  const { id: currentUser, email: currentUserEmail } = context.getUser()!;
+  const currentUser = context.getUser();
   const [selectedSale, setSelectedSale] = useState<string>();
   const { data, loading, error, refetch } = useQuery(GET_SALES_BY_CLIENT_ID, { variables: { id } });
   const [getPurchase, { loading: loadingGetPurchase, data: currentPurchase }] = useLazyQuery(GET_SALE_BY_PK, {
@@ -77,16 +77,18 @@ const Purchases = ({}: Props) => {
     reportProblemOnClose();
   };
 
-  const submitReportProblem = async (formData: any) => {
-    reportProblem({ variables: { ...formData, reporter: currentUser, related_sale: selectedSale } });
-    const emailBody = {
-      to: IMPREDEA_EMAIL,
-      from: currentUserEmail,
-      subject: `Problema reportado: ${formData.subject}`,
-      message: formData.description,
-    };
+  const submitReportProblem = async (formData: FormValues) => {
+    if (currentUser) {
+      reportProblem({ variables: { ...formData, reporter: currentUser.id, related_sale: selectedSale } });
+      const emailBody = {
+        to: IMPREDEA_EMAIL,
+        from: currentUser.email,
+        subject: `Problema reportado: ${formData.subject}`,
+        message: formData.description,
+      };
 
-    sendEmail(emailBody);
+      sendEmail(emailBody);
+    }
 
     handleReportProblemClose();
   };
