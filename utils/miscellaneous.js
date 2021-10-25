@@ -1,13 +1,6 @@
-interface EmailRequestBody {
-  to: string;
-  from: string;
-  subject: string;
-  message: string;
-}
-export const removeEmptyFields = (object: Object) =>
-  Object.fromEntries(Object.entries(object).filter(([_, v]) => v != null));
+export const removeEmptyFields = (object) => Object.fromEntries(Object.entries(object).filter(([_, v]) => v != null));
 
-export const sendEmail = async (requestBody: EmailRequestBody) => {
+export const sendEmail = async (requestBody) => {
   const res = await fetch('/api/sendgrid', {
     body: JSON.stringify({
       to: requestBody.to,
@@ -24,7 +17,7 @@ export const sendEmail = async (requestBody: EmailRequestBody) => {
   return await res.json();
 };
 
-export const uploadPhoto = async (e: any, fileName: string) => {
+export const uploadPhoto = async (e, fileName) => {
   const file = e.target.files[0];
   const res = await fetch(`/api/upload-url?file=${fileName}`);
   const { url, fields } = await res.json();
