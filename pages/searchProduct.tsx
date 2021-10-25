@@ -86,7 +86,7 @@ const Search = ({ quantities, categories }: Props) => {
       <SideBarLayout
         sideBarChildren={
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl isInvalid={errors.productName} pb="5px">
+            <FormControl isInvalid={errors.productName != undefined} pb="5px">
               <FormLabel color="brandBlue" htmlFor="productName">
                 Que buscas?
               </FormLabel>
@@ -101,7 +101,7 @@ const Search = ({ quantities, categories }: Props) => {
               />
               <FormErrorMessage>{errors.productName && errors.productName.message}</FormErrorMessage>
             </FormControl>
-            <FormControl isInvalid={errors.quantity}>
+            <FormControl isInvalid={errors.quantity != undefined}>
               <FormLabel color="brandBlue">Que Cantidad?</FormLabel>
               <Select
                 bg="white"
@@ -119,7 +119,7 @@ const Search = ({ quantities, categories }: Props) => {
               </Select>
               <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
             </FormControl>
-            <FormControl isInvalid={errors.category}>
+            <FormControl isInvalid={errors.category != undefined}>
               <FormLabel color="brandBlue">Selecciona una categoria</FormLabel>
               <Select bg="white" color="black" id="category" {...register('category')} defaultValue={category}>
                 <option value={''}>Todos</option>
