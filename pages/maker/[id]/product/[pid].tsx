@@ -56,7 +56,7 @@ const Product = ({}: Props): JSX.Element => {
   const toast = useToast();
   const { data, loading, refetch } = useQuery(GET_PRODUCT_BY_ID, { variables: { id: pid } });
   const context = useContext(SessionContext);
-  const user = context.getUser();
+  const user = context.getUser()!;
 
   const [requestQuotation, { data: mutationResultData }] = useMutation(REQUEST_QUOTATION, {
     onCompleted: () => {
@@ -109,7 +109,7 @@ const Product = ({}: Props): JSX.Element => {
         to: user.email,
         from: IMPREDEA_EMAIL,
         subject: `Te han solicitado una cotizacion!`,
-        message: `Un cliente te ha pedidoa una cotizacion. Recuerda responderle cuanto antes.`,
+        message: `Un cliente te ha pedido una cotizacion. Recuerda responderle cuanto antes.`,
       };
 
       sendEmail(emailBody);
@@ -150,7 +150,7 @@ const Product = ({}: Props): JSX.Element => {
                   <Center>
                     <Image src={`${BUCKET_FILES_URL}products/${pid}`} width="280px" height="250px" alt="" />
                   </Center>
-                  <FormControl isInvalid={errors.quantity}>
+                  <FormControl isInvalid={errors.quantity != undefined}>
                     <FormLabel color="brandBlue" htmlFor="quantity">
                       Cantidad
                     </FormLabel>
@@ -166,7 +166,7 @@ const Product = ({}: Props): JSX.Element => {
                     />
                     <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
                   </FormControl>
-                  <FormControl isInvalid={errors.qualityId}>
+                  <FormControl isInvalid={errors.qualityId != undefined}>
                     <FormLabel color="brandBlue">Calidad</FormLabel>
                     <Select
                       bg="white"
@@ -184,7 +184,7 @@ const Product = ({}: Props): JSX.Element => {
                     </Select>
                     <FormErrorMessage>{errors.qualityId && errors.qualityId.message}</FormErrorMessage>
                   </FormControl>
-                  <FormControl isInvalid={errors.materialId}>
+                  <FormControl isInvalid={errors.materialId != undefined}>
                     <FormLabel color="brandBlue">Material</FormLabel>
                     <Select
                       bg="white"
@@ -210,7 +210,7 @@ const Product = ({}: Props): JSX.Element => {
                     Indicaciones:
                   </Text>
                   <Text>{data && data.product_by_pk.instructions}</Text>
-                  <FormControl isInvalid={errors.clientInstructions}>
+                  <FormControl isInvalid={errors.clientInstructions != undefined}>
                     <FormLabel color="brandBlue" htmlFor="clientInstructions">
                       Informacion para el Maker:
                     </FormLabel>
