@@ -24,7 +24,7 @@ const MakerProfileLayout = ({ children, activeHeader, onButtonClick }: Props): J
   const toastId = 'log-in-required';
 
   const context = useContext(SessionContext);
-  const { id: currentUserId } = context.getUser();
+  const currentUserId = context.getUser()?.id;
 
   const handleOnButtonClick = () => {
     if (currentUserId) {

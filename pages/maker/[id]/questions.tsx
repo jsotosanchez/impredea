@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { UnorderedList, useDisclosure, useToast, Button, Flex, Spacer } from '@chakra-ui/react';
+import { UnorderedList, useDisclosure, useToast } from '@chakra-ui/react';
 import { EmptyResults, LoadingPage, PaginationButtons } from '@/components/common';
 import { MakeQuestionModal, Layout, QuestionCard } from '@/components/makerPage';
 import { useMutation, useQuery } from '@apollo/client';
@@ -30,7 +30,7 @@ export default function Questions(): JSX.Element {
   const [questionText, setQuestionText] = useState('');
   const toast = useToast();
   const context = useContext(SessionContext);
-  const { id: currentUserId } = context.getUser();
+  const currentUserId = context.getUser()?.id;
 
   const questionsHasResults = data ? data.questions.length > 0 : false;
 

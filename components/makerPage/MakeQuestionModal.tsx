@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from 'react';
 import {
   Button,
   Modal,
@@ -9,7 +10,16 @@ import {
   ModalCloseButton,
   Textarea,
 } from '@chakra-ui/react';
-const MakeQuestionModal = ({ isOpen, onClose, questionText, setQuestionText, onSubmit }) => {
+
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+  questionText: string;
+  setQuestionText: Dispatch<SetStateAction<string>>;
+  onSubmit: () => void;
+}
+
+const MakeQuestionModal = ({ isOpen, onClose, questionText, setQuestionText, onSubmit }: Props) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
