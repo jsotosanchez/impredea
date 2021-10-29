@@ -124,8 +124,6 @@ const Purchases = ({}: Props) => {
     getPurchase();
   }, [currentPurchaseId, getPurchase]);
 
-  console.log(currentPurchase);
-
   if (loading)
     return (
       <Layout activeTab={MY_PURCHASES_SECTIONS.PURCHASES}>

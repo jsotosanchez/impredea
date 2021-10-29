@@ -37,3 +37,16 @@ export const uploadPhoto = async (e, fileName) => {
   }
   return { error: true };
 };
+
+export const createMercadoPagoLink = async (requestBody) => {
+  const res = await fetch('/api/payment', {
+    body: JSON.stringify({
+      items: requestBody.items,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+  });
+  return await res.json();
+};

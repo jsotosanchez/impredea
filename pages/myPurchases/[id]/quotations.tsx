@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import {
@@ -37,12 +37,13 @@ import { GET_QUOTATIONS_BY_CLIENT_ID, GET_QUOTATION_BY_PK } from '@/graphql/quer
 import { ACCEPT_QUOTATION, CREATE_SALE, DECLINE_QUOTATION } from '@/graphql/mutations';
 import { usePagination } from '@/hooks/index';
 import { Quotation } from 'types';
-
+import { createMercadoPagoLink } from '@/utils/miscellaneous';
 interface Props {}
 
 const Quotations = ({}: Props) => {
   const router = useRouter();
   const { id } = router.query;
+  const [mpResponse, setMPResponse] = useState<any>();
   const { data, loading, refetch } = useQuery(GET_QUOTATIONS_BY_CLIENT_ID, { variables: { id } });
   const { currentPage, setCurrentPage } = usePagination(data, refetch);
 
@@ -108,9 +109,47 @@ const Quotations = ({}: Props) => {
     }
   }, [acceptQuotationResponse, createSale]);
 
+  useEffect(() => {
+    // status id => 2 === respondido
+    if (loading || loadingQuotation || !mpResponse || (quotation && quotation.quotations_by_pk.status_id !== 2)) return;
+    const MercadoPago = (window as any).MercadoPago;
+
+    const mp = new MercadoPago('TEST-60ef5b82-f889-4c3a-940d-f76f382391d8', {
+      locale: 'es-AR',
+    });
+
+    setTimeout(() => {
+      mp.checkout({
+        preference: {
+          id: mpResponse.response.id,
+        },
+        render: {
+          container: '.cho-container',
+          label: 'Pagar',
+        },
+      });
+      console.log('creating mp button');
+    });
+  }, [mpResponse, loading, loadingQuotation, quotation]);
+
+  useEffect(() => {
+    if (quotation) {
+      createMercadoPagoLink({
+        items: [
+          {
+            title: quotation.quotations_by_pk.product.name,
+            unit_price: quotation.quotations_by_pk.price,
+            quantity: 1,
+            picture_url: `${BUCKET_FILES_URL}products/${quotation.quotations_by_pk.product.id}`,
+          },
+        ],
+      }).then(setMPResponse);
+    }
+  }, [quotation]);
+
   const handleComprar = () => {
-    const quotationId = quotation.quotations_by_pk.id;
-    acceptQuotation({ variables: { id: quotationId } });
+    // const quotationId = quotation.quotations_by_pk.id;
+    // acceptQuotation({ variables: { id: quotationId } });
   };
 
   const handleRechazar = () => {
@@ -249,9 +288,10 @@ const Quotations = ({}: Props) => {
                 <ModalFooter>
                   {quotationHasBeenResponded && (
                     <>
-                      <Button colorScheme="facebook" mr={3} onClick={handleComprar}>
+                      {/* <Button colorScheme="facebook" mr={3} onClick={handleComprar}>
                         Comprar
-                      </Button>
+                      </Button> */}
+                      <div className="cho-container"></div>
                       <Button variant="ghost" colorScheme="red" onClick={handleRechazar}>
                         Rechazar
                       </Button>

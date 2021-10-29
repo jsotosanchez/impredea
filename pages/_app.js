@@ -1,3 +1,4 @@
+import Script from 'next/script';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { ApolloProvider } from '@apollo/client';
 import client from '@/graphql/apollo-client';
@@ -17,15 +18,18 @@ const theme = extendTheme({ colors });
 
 function MyApp({ Component, pageProps }) {
   return (
-    <UserProvider>
-      <SessionProvider>
-        <ApolloProvider client={client}>
-          <ChakraProvider theme={theme}>
-            <Component {...pageProps} />
-          </ChakraProvider>
-        </ApolloProvider>
-      </SessionProvider>
-    </UserProvider>
+    <>
+      <Script src="https://sdk.mercadopago.com/js/v2" strategy="beforeInteractive"></Script>
+      <UserProvider>
+        <SessionProvider>
+          <ApolloProvider client={client}>
+            <ChakraProvider theme={theme}>
+              <Component {...pageProps} />
+            </ChakraProvider>
+          </ApolloProvider>
+        </SessionProvider>
+      </UserProvider>
+    </>
   );
 }
 
