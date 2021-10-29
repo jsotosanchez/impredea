@@ -58,27 +58,6 @@ const Quotations = ({}: Props) => {
     onOpen();
   };
 
-  const [acceptQuotation, { data: acceptQuotationResponse }] = useMutation(ACCEPT_QUOTATION, {
-    onError: () => {
-      toast({
-        title: 'No se pudo aceptar la cotización',
-        description: 'Por favor intenta mas tarde.',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-    },
-    onCompleted: () => {
-      toast({
-        title: 'Se realizo la compra exitosamente',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      });
-      handleOnClose();
-    },
-  });
-
   const [declineQuotation] = useMutation(DECLINE_QUOTATION, {
     onError: () => {
       toast({
@@ -99,15 +78,6 @@ const Quotations = ({}: Props) => {
       handleOnClose();
     },
   });
-
-  const [createSale] = useMutation(CREATE_SALE);
-
-  useEffect(() => {
-    if (acceptQuotationResponse) {
-      const { client_id, maker_id, id } = acceptQuotationResponse.update_quotations_by_pk;
-      createSale({ variables: { client_id, maker_id, id } });
-    }
-  }, [acceptQuotationResponse, createSale]);
 
   useEffect(() => {
     // status id => 2 === respondido
@@ -143,14 +113,10 @@ const Quotations = ({}: Props) => {
             picture_url: `${BUCKET_FILES_URL}products/${quotation.quotations_by_pk.product.id}`,
           },
         ],
+        quotationId: quotation.quotations_by_pk.id,
       }).then(setMPResponse);
     }
   }, [quotation]);
-
-  const handleComprar = () => {
-    // const quotationId = quotation.quotations_by_pk.id;
-    // acceptQuotation({ variables: { id: quotationId } });
-  };
 
   const handleRechazar = () => {
     const quotationId = quotation.quotations_by_pk.id;

@@ -13,13 +13,13 @@ const configureMercadoPago = () => {
 export default async function payment(req, res) {
   configureMercadoPago();
 
-  const { items } = req.body;
+  const { items, quotationId } = req.body;
   const preferences = {
     items,
     back_urls: {
-      success: 'http://localhost:3000',
-      failure: 'http://localhost:3000',
-      pending: 'http://localhost:3000',
+      success: `http://localhost:3000/handlePayment/quotation/${quotationId}`,
+      failure: `http://localhost:3000/handlePayment/quotation/${quotationId}`,
+      pending: `http://localhost:3000/handlePayment/quotation/${quotationId}`,
     },
     auto_return: 'approved',
   };

@@ -42,6 +42,7 @@ export const createMercadoPagoLink = async (requestBody) => {
   const res = await fetch('/api/payment', {
     body: JSON.stringify({
       items: requestBody.items,
+      quotationId: requestBody.quotationId,
     }),
     headers: {
       'Content-Type': 'application/json',
