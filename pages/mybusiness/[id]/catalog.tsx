@@ -45,7 +45,7 @@ const Catalog = ({}) => {
     loading: loadingProducts,
     error,
     refetch,
-  } = useQuery(GET_PRODUCTS_BY_MAKER_ID, { variables: { id, filter } });
+  } = useQuery(GET_PRODUCTS_BY_MAKER_ID, { variables: { id, filter: formatToStartsWith(filter) } });
   const [getProduct, { loading: loadingGetProduct, data: currentProduct }] = useLazyQuery(GET_PRODUCT_BY_ID, {
     variables: { id: currentProductId },
   });
@@ -176,13 +176,6 @@ const Catalog = ({}) => {
   }, [currentProductId, getProduct]);
 
   if (error) return <ErrorPage route={`/`} />;
-
-  if (loadingProducts)
-    return (
-      <Layout activeHeader={MY_BUSINESS_SECTIONS.PRODUCTS}>
-        <LoadingPage />
-      </Layout>
-    );
 
   return (
     <Layout activeHeader={MY_BUSINESS_SECTIONS.PRODUCTS}>
