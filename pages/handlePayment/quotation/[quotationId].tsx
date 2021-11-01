@@ -1,12 +1,15 @@
+import { SessionContext } from '@/context/sessionContext';
 import { ACCEPT_QUOTATION, CREATE_SALE } from '@/graphql/mutations';
 import { useMutation } from '@apollo/client';
 import { Center, Heading } from '@chakra-ui/layout';
 import { useToast } from '@chakra-ui/toast';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 
 interface Props {}
 const HandleQuotationPayment = ({}: Props): JSX.Element => {
+  const context = useContext(SessionContext);
+  const currentUser = context.getUser();
   const toast = useToast();
   const router = useRouter();
   const { quotationId, status, payment_id } = router.query;
@@ -19,7 +22,7 @@ const HandleQuotationPayment = ({}: Props): JSX.Element => {
         duration: 3000,
         isClosable: true,
       });
-      router.push(`myPurchases/31/purchases`);
+      router.push(`myPurchases/${currentUser?.id}/purchases`);
     },
   });
 
