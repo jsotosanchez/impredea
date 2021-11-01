@@ -2,7 +2,7 @@
 
 ## Impredea
 
-Plataforma web que facilita interacción entre prestadores de servicios de impresión trimidensional y sus posibles clientes en buenos aires.
+Plataforma de servicios de impresión tridimensional y manufactura aditiva dentro de Buenos Aires en 2021
 
 Integrantes:
 
