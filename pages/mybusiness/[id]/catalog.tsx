@@ -89,11 +89,10 @@ const Catalog = ({}) => {
     onCompleted: () => {
       toast({
         title: 'Estamos guardando tu producto...',
-        status: 'success',
+        status: 'info',
         duration: 3000,
         isClosable: true,
       });
-      refetch();
     },
   });
 
@@ -108,13 +107,21 @@ const Catalog = ({}) => {
       });
     },
     onCompleted: () => {
-      toast({
-        title: 'Estamos guardando tu producto....',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      });
-      refetch();
+      if (picture)
+        toast({
+          title: 'Estamos guardando tu producto...',
+          status: 'info',
+          duration: 3000,
+          isClosable: true,
+        });
+      else {
+        toast({
+          title: 'Se ha guardado tu producto de forma exitosa!',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+      }
     },
   });
   const [deleteProduct] = useMutation(DELETE_PRODUCT_BY_ID, {
@@ -150,6 +157,18 @@ const Catalog = ({}) => {
     editProduct({
       variables: { id: currentProductId, ...formData },
     });
+    if (currentProductId && picture)
+      uploadPhoto(picture, generateFileName(`${currentProductId}`)).then(() => {
+        handleAddOnClose();
+        setPicture(null);
+        toast({
+          title: 'Se ha guardado tu producto de forma exitosa!',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+    refetch();
     editModalOnClose();
   };
 
@@ -187,8 +206,15 @@ const Catalog = ({}) => {
     uploadPhoto(picture, generateFileName(productId)).then(() => {
       handleAddOnClose();
       setPicture(null);
+      toast({
+        title: 'Se ha guardado tu producto de forma exitosa!',
+        status: 'info',
+        duration: 3000,
+        isClosable: true,
+      });
+      refetch();
     });
-  }, [insertResult, picture, handleAddOnClose]);
+  }, [insertResult, picture, handleAddOnClose, toast, refetch]);
 
   if (error) return <ErrorPage route={`/`} />;
 
