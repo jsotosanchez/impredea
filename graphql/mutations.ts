@@ -143,8 +143,10 @@ export const DECLINE_QUOTATION = gql`
 `;
 
 export const CREATE_SALE = gql`
-  mutation createSale($client_id: Int!, $maker_id: Int!, $id: uuid!) {
-    insert_sales_one(object: { client_id: $client_id, quotation_id: $id, maker_id: $maker_id }) {
+  mutation createSale($client_id: Int!, $maker_id: Int!, $id: uuid!, $paymentId: String!) {
+    insert_sales_one(
+      object: { client_id: $client_id, quotation_id: $id, maker_id: $maker_id, mp_payment_id: $paymentId }
+    ) {
       id
     }
   }

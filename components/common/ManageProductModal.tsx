@@ -23,6 +23,7 @@ import {
 import { BUCKET_FILES_URL } from '@/utils/constants';
 import { DeepMap, FieldError, UseFormRegister, FieldValues } from 'react-hook-form';
 import { ManageProductForm } from '@/types/product';
+import { DetailedHTMLProps, Dispatch, InputHTMLAttributes, SetStateAction, useState } from 'react';
 
 interface Product {
   id: number;
@@ -40,10 +41,21 @@ interface Props {
   errors: DeepMap<FieldValues, FieldError>;
   register: UseFormRegister<ManageProductForm>;
   loading?: boolean;
+  setPicture?: Dispatch<
+    SetStateAction<DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> | null>
+  >;
 }
 
-const ManageProductModal = ({ isOpen, handleOnClose, onSubmit, product, errors, register, loading }: Props) => {
-  const generateFileName = () => `products/77`;
+const ManageProductModal = ({
+  isOpen,
+  handleOnClose,
+  onSubmit,
+  product,
+  errors,
+  register,
+  loading,
+  setPicture,
+}: Props) => {
   return (
     <Modal isOpen={isOpen} onClose={handleOnClose} size="4xl">
       <ModalOverlay />
@@ -116,11 +128,7 @@ const ManageProductModal = ({ isOpen, handleOnClose, onSubmit, product, errors, 
                     <FormLabel color="brandBlue" htmlFor="logo">
                       Imagen del producto:
                     </FormLabel>
-                    <input
-                      onChange={(e) => uploadPhoto(e, generateFileName())}
-                      type="file"
-                      accept="image/png, image/jpeg"
-                    ></input>
+                    <input onChange={setPicture} type="file" accept="image/png, image/jpeg"></input>
                   </FormControl>
                 </Stack>
               </Flex>

@@ -44,7 +44,7 @@ const Profile = ({}) => {
   } = useForm<ProfileForm>();
 
   const toast = useToast();
-  const { loading, error, data } = useGetMakerAdmin(parseInt(id as string));
+  const { loading, error, data, refetch: refetchProfileData } = useGetMakerAdmin(parseInt(id as string));
 
   const [updateInfo, { loading: loadingUpdateInfo }] = useMutation(UPDATE_MAKER_INFO, {
     onCompleted: () => {
@@ -54,6 +54,7 @@ const Profile = ({}) => {
         duration: 3000,
         isClosable: true,
       });
+      refetchProfileData();
     },
     onError: () => {
       toast({
@@ -67,18 +68,20 @@ const Profile = ({}) => {
   });
 
   const onSubmit = async (formData: ProfileForm) => {
-    const { error } = await uploadPhoto(picture, `maker/${id}`);
-    if (error) {
-      toast({
-        title: 'Ha ocurrido un error',
-        description: 'Por favor intenta mas tarde',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
+    if (picture) {
+      const { error } = await uploadPhoto(picture, `maker/${id}`);
+      if (error) {
+        toast({
+          title: 'Ha ocurrido un error subiendo tu foto',
+          description: 'Por favor intenta mas tarde',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
+        return;
+      }
     }
-    const pictureKey = picture ? `maker/${id}` : null;
+    const pictureKey = `maker/${id}`;
     updateInfo({
       variables: { id, pictureKey, ...formData },
     });

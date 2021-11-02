@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { GET_MAKER_INFO_BY_ID, GET_USER_IDENTITY_BY_EMAIL, GET_QUOTATIONS_BY_MAKER_ID } from './queries';
 
 export const useGetMakerAdmin = (id: number) => {
-  const { loading, error, data } = useQuery(GET_MAKER_INFO_BY_ID, { variables: { id } });
+  const { loading, error, data, refetch } = useQuery(GET_MAKER_INFO_BY_ID, { variables: { id } });
 
   if (!loading && data) {
     return {
@@ -12,6 +12,7 @@ export const useGetMakerAdmin = (id: number) => {
       data: {
         user: data.user_by_pk,
       },
+      refetch,
     };
   }
 
@@ -19,6 +20,7 @@ export const useGetMakerAdmin = (id: number) => {
     loading,
     error,
     data,
+    refetch,
   };
 };
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { DetailedHTMLProps, InputHTMLAttributes, useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
   Box,
@@ -28,6 +28,9 @@ import { EmptyResults, ErrorPage, LoadingPage, ManageProductModal, PaginationBut
 import { Layout } from '@/components/mybusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 import { ManageProductForm } from '@/types/product';
+import { uploadPhoto } from '@/utils/miscellaneous';
+
+const generateFileName = (productId: string) => `products/${productId}`;
 
 interface Product {
   id: number;
@@ -40,12 +43,16 @@ const Catalog = ({}) => {
   const { id } = router.query;
   const [currentProductId, setCurrentProductId] = useState<number>();
   const [filter, setFilter] = useState('');
+  const [picture, setPicture] = useState<DetailedHTMLProps<
+    InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
+  > | null>(null);
   const {
     data,
     loading: loadingProducts,
     error,
     refetch,
-  } = useQuery(GET_PRODUCTS_BY_MAKER_ID, { variables: { id, filter } });
+  } = useQuery(GET_PRODUCTS_BY_MAKER_ID, { variables: { id, filter: formatToStartsWith(filter) } });
   const [getProduct, { loading: loadingGetProduct, data: currentProduct }] = useLazyQuery(GET_PRODUCT_BY_ID, {
     variables: { id: currentProductId },
   });
@@ -69,7 +76,7 @@ const Catalog = ({}) => {
 
   const productsHasResults = data ? data.product.length > 0 : false;
 
-  const [insertProduct] = useMutation(INSERT_PRODUCT, {
+  const [insertProduct, { data: insertResult }] = useMutation(INSERT_PRODUCT, {
     onError: () => {
       toast({
         title: 'No se pudo guardar tu producto',
@@ -81,12 +88,11 @@ const Catalog = ({}) => {
     },
     onCompleted: () => {
       toast({
-        title: 'Tu producto se guardo con exito.',
-        status: 'success',
+        title: 'Estamos guardando tu producto...',
+        status: 'info',
         duration: 3000,
         isClosable: true,
       });
-      refetch();
     },
   });
 
@@ -101,13 +107,21 @@ const Catalog = ({}) => {
       });
     },
     onCompleted: () => {
-      toast({
-        title: 'Tu producto se guardo con exito.',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      });
-      refetch();
+      if (picture)
+        toast({
+          title: 'Estamos guardando tu producto...',
+          status: 'info',
+          duration: 3000,
+          isClosable: true,
+        });
+      else {
+        toast({
+          title: 'Se ha guardado tu producto de forma exitosa!',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+      }
     },
   });
   const [deleteProduct] = useMutation(DELETE_PRODUCT_BY_ID, {
@@ -137,13 +151,24 @@ const Catalog = ({}) => {
     insertProduct({
       variables: { makerId: id, ...formData },
     });
-    handleAddOnClose();
   };
 
   const onEditSubmit = (formData: ManageProductForm) => {
     editProduct({
       variables: { id: currentProductId, ...formData },
     });
+    if (currentProductId && picture)
+      uploadPhoto(picture, generateFileName(`${currentProductId}`)).then(() => {
+        handleAddOnClose();
+        setPicture(null);
+        toast({
+          title: 'Se ha guardado tu producto de forma exitosa!',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+      });
+    refetch();
     editModalOnClose();
   };
 
@@ -156,10 +181,10 @@ const Catalog = ({}) => {
     setFilter(newValue);
   };
 
-  const handleAddOnClose = () => {
+  const handleAddOnClose = useCallback(() => {
     resetAddModal();
     addModalOnClose();
-  };
+  }, [addModalOnClose, resetAddModal]);
 
   const handleEditOnClose = () => {
     resetEditModal();
@@ -175,14 +200,23 @@ const Catalog = ({}) => {
     getProduct();
   }, [currentProductId, getProduct]);
 
-  if (error) return <ErrorPage route={`/`} />;
+  useEffect(() => {
+    if (!insertResult || !picture) return;
+    const productId = insertResult.insert_product_one.id;
+    uploadPhoto(picture, generateFileName(productId)).then(() => {
+      handleAddOnClose();
+      setPicture(null);
+      toast({
+        title: 'Se ha guardado tu producto de forma exitosa!',
+        status: 'info',
+        duration: 3000,
+        isClosable: true,
+      });
+      refetch();
+    });
+  }, [insertResult, picture, handleAddOnClose, toast, refetch]);
 
-  if (loadingProducts)
-    return (
-      <Layout activeHeader={MY_BUSINESS_SECTIONS.PRODUCTS}>
-        <LoadingPage />
-      </Layout>
-    );
+  if (error) return <ErrorPage route={`/`} />;
 
   return (
     <Layout activeHeader={MY_BUSINESS_SECTIONS.PRODUCTS}>
@@ -194,6 +228,7 @@ const Catalog = ({}) => {
             onSubmit={handleAddModalSubmit(onAddSubmit)}
             errors={addModalErrors}
             register={registerAddModal}
+            setPicture={setPicture}
           />
           <ManageProductModal
             isOpen={editModalIsOpen}
@@ -203,6 +238,7 @@ const Catalog = ({}) => {
             onSubmit={handleEditModalSubmit(onEditSubmit)}
             errors={editModalErrors}
             register={registerEditModal}
+            setPicture={setPicture}
           />
           <Flex mt="20px">
             <FormLabel color="brandBlue" pt="5px">
