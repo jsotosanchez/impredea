@@ -69,7 +69,7 @@ export default function Layout({ children }: Props) {
               Mi perfil
             </Button>
           )}
-          {!currentUser && (
+          {currentUser && !currentUser.id && (
             <>
               <Button
                 variant="link"

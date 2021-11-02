@@ -7,7 +7,7 @@ interface ContextType {
 }
 
 const initialContext: ContextType = {
-  setIdentity: () => {},
+  setIdentity: () => DEFAULT_IDENTITY,
   getUser: () => DEFAULT_IDENTITY,
 };
 
