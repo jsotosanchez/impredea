@@ -15,11 +15,25 @@ Tutor: Galuppo, Guido
 
 [Impredea](https://impredea.vercel.app/)
 
-## Requisitos para usar:
+# Requisitos para usar:
 
 - Una cuenta de google, para poder crear registarse en la aplicación.
 
----
+# Datos de prueba:
+
+Correo de Google: impredeatestmaker@gmail.com
+
+Contraseña: superpassword
+
+### Tarjetas de prueba:
+
+Numero: 5031 7557 3453 0604
+
+CVV: 123
+
+Fecha Exp: 11/25
+
+Nombre: APRO
 
 ---
 
