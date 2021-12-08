@@ -141,7 +141,14 @@ const SalesAdmin = ({}) => {
                         />
                       </Tooltip>
                       <Tooltip hasArrow label="Ver Venta">
-                        <ViewIcon color="facebook" mr="20px" cursor="pointer" onClick={() => {}} />
+                        <ViewIcon
+                          color="facebook"
+                          mr="20px"
+                          cursor="pointer"
+                          onClick={() => {
+                            router.push(`/myBusiness/${currentUser}/sales/${sale.id}`);
+                          }}
+                        />
                       </Tooltip>
                       <Tooltip hasArrow label="Reportar Problema">
                         <WarningIcon
