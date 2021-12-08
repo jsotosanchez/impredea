@@ -15,17 +15,31 @@ Tutor: Galuppo, Guido
 
 [Impredea](https://impredea.vercel.app/)
 
-## Requisitos para usar:
+# Requisitos para usar:
 
 - Una cuenta de google, para poder crear registarse en la aplicación.
 
----
+# Datos de prueba:
+
+Correo de Google: impredeatestmaker@gmail.com
+
+Contraseña: superpassword
+
+### Tarjetas de prueba:
+
+Numero: 5031 7557 3453 0604
+
+CVV: 123
+
+Fecha Exp: 11/25
+
+Nombre: APRO
 
 ---
 
 # Como ejecutar la aplicación en ambiente propio
 
-# Spanish
+# Español
 
 Primero necesitas configurar una cuenta en los siguientes proveedores
 
@@ -68,7 +82,13 @@ Debe configurar su depósito como público y agregar la siguiente política.
 
 Dicha bucket solo debe usarse para imágenes públicas, ya que cualquier persona tendrá acceso al contenido del mismo.
 
-Por ultimo ejecutar el siguiente comando:
+Por ultimo ejecutar el siguiente comando para instalar las dependencias:
+
+```bash
+yarn install
+```
+
+Luego para levantar la aplicación, ejecutar:
 
 ```bash
 yarn dev
@@ -119,7 +139,11 @@ You need to set up your bucket as public, and add the following policy.
 
 Said bucket should only be used for public images, since anyone will have access to the content of it.
 
-Lastly, run the development server:
+Lastly, install dependencies and run the development server:
+
+```bash
+yarn install
+```
 
 ```bash
 yarn dev

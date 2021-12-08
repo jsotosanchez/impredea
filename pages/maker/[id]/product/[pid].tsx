@@ -29,7 +29,7 @@ import { CREATE_CONVERSATION, REQUEST_QUOTATION } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
 import { GET_PRODUCT_BY_ID } from '@/graphql/queries';
 import { sendEmail } from '@/utils/miscellaneous';
-import { BUCKET_FILES_URL, IMPREDEA_EMAIL } from '@/utils/constants';
+import { BUCKET_FILES_URL, IMPREDEA_EMAIL, logInToastId } from '@/utils/constants';
 
 interface Material {
   id: string;
@@ -103,6 +103,17 @@ const Product = ({}: Props): JSX.Element => {
   } = useForm<Form>();
 
   const onSubmit = (formData: Object) => {
+    if (!toast.isActive(logInToastId)) {
+      toast({
+        id: logInToastId,
+        title: 'Tienes que estar registrado para hacer una pregunta',
+        status: 'warning',
+        isClosable: true,
+        position: 'top-right',
+      });
+      return;
+    }
+
     requestQuotation({ variables: { ...formData, productId: pid, clientId: user.id, makerId } });
     try {
       const emailBody = {

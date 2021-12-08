@@ -6,7 +6,7 @@ import { Box, Flex, Heading, HStack, Spacer, Stack, Text, Button, useToast } fro
 import { ArrowLeftIcon } from '@chakra-ui/icons';
 import { useQuery } from '@apollo/client';
 import { RenderRating, LoadingPage, Layout } from '@/components/common';
-import { BUCKET_FILES_URL, MAKER_SECTIONS } from '@/utils/constants';
+import { BUCKET_FILES_URL, logInToastId, MAKER_SECTIONS } from '@/utils/constants';
 import { SessionContext } from '@/context/sessionContext';
 import { GET_MAKER_BY_ID } from '@/graphql/queries';
 
@@ -21,7 +21,6 @@ const MakerProfileLayout = ({ children, activeHeader, onButtonClick }: Props): J
   const { id } = router.query;
   const { data, loading } = useQuery(GET_MAKER_BY_ID, { variables: { id } });
   const toast = useToast();
-  const toastId = 'log-in-required';
 
   const context = useContext(SessionContext);
   const currentUserId = context.getUser()?.id;
@@ -30,9 +29,9 @@ const MakerProfileLayout = ({ children, activeHeader, onButtonClick }: Props): J
     if (currentUserId) {
       onButtonClick && onButtonClick();
     } else {
-      if (!toast.isActive(toastId))
+      if (!toast.isActive(logInToastId))
         toast({
-          id: toastId,
+          id: logInToastId,
           title: 'Tienes que estar registrado para hacer una pregunta',
           status: 'warning',
           isClosable: true,

@@ -29,3 +29,5 @@ export const PAGINATION = {
 export const IMPREDEA_EMAIL = 'jm.soto.sanchez@gmail.com';
 
 export const BUCKET_FILES_URL = 'https://impredea-images.s3.amazonaws.com/';
+
+export const logInToastId = 'log-in-required';
