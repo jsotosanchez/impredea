@@ -41,7 +41,7 @@ import { GET_QUOTATIONS_BY_MAKER_ID, GET_QUOTATION_BY_PK, GET_QUOTATIONS_STATUSE
 import { SEND_QUOTATION } from '@/graphql/mutations';
 import { usePagination } from '@/hooks/index';
 import { ErrorPage, LoadingPage, PaginationButtons, EmptyResults } from '@/components/common';
-import { Layout } from '@/components/mybusiness';
+import { Layout } from '@/components/myBusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 import { BUCKET_FILES_URL } from '@/utils/constants';
 

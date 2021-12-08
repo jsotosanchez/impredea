@@ -9,7 +9,7 @@ import { ErrorPage, ReportProblemModal, LoadingPage, PaginationButtons, EmptyRes
 import { usePagination } from '@/hooks/index';
 import { REPORT_PROBLEM } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
-import { Layout } from '@/components/mybusiness';
+import { Layout } from '@/components/myBusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 import { IMPREDEA_EMAIL } from '@/utils/constants';
 import { sendEmail } from '@/utils/miscellaneous';

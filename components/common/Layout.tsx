@@ -42,7 +42,7 @@ export default function Layout({ children }: Props) {
               colorScheme="white"
               color="white"
               mr="5"
-              onClick={() => router.push(`/mybusiness/${currentUser.id}/catalog`)}
+              onClick={() => router.push(`/myBusiness/${currentUser.id}/catalog`)}
             >
               Mi negocio
             </Button>

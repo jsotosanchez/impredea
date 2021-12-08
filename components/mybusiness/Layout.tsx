@@ -17,7 +17,7 @@ const MyBusinessLayout = ({ children, activeHeader }: Props): JSX.Element => {
     <Layout>
       <Box w="70%" pl="20px" mt="7%" ml="12%">
         <HStack spacing="20px" pb="20px">
-          <Link href={`/mybusiness/${id}/catalog`} passHref>
+          <Link href={`/myBusiness/${id}/catalog`} passHref>
             <Heading
               as="h3"
               size="md"
@@ -27,7 +27,7 @@ const MyBusinessLayout = ({ children, activeHeader }: Props): JSX.Element => {
               Catalogo
             </Heading>
           </Link>
-          <Link href={`/mybusiness/${id}/quotations`} passHref>
+          <Link href={`/myBusiness/${id}/quotations`} passHref>
             <Heading
               as="h3"
               size="md"
@@ -37,7 +37,7 @@ const MyBusinessLayout = ({ children, activeHeader }: Props): JSX.Element => {
               Cotizaciones
             </Heading>
           </Link>
-          <Link href={`/mybusiness/${id}/questions`} passHref>
+          <Link href={`/myBusiness/${id}/questions`} passHref>
             <Heading
               as="h3"
               size="md"
@@ -47,7 +47,7 @@ const MyBusinessLayout = ({ children, activeHeader }: Props): JSX.Element => {
               Preguntas
             </Heading>
           </Link>
-          <Link href={`/mybusiness/${id}/sales`} passHref>
+          <Link href={`/myBusiness/${id}/sales`} passHref>
             <Heading
               as="h3"
               size="md"
@@ -57,7 +57,7 @@ const MyBusinessLayout = ({ children, activeHeader }: Props): JSX.Element => {
               Ventas
             </Heading>
           </Link>
-          <Link href={`/mybusiness/${id}/profile`} passHref>
+          <Link href={`/myBusiness/${id}/profile`} passHref>
             <Heading
               as="h3"
               size="md"

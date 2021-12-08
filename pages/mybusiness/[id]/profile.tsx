@@ -20,7 +20,7 @@ import { ErrorPage, LoadingPage } from '@/components/common';
 import { useGetMakerAdmin } from '@/graphql/hooks';
 import { useMutation } from '@apollo/client';
 import { UPDATE_MAKER_INFO } from '@/graphql/mutations';
-import { Layout } from '@/components/mybusiness';
+import { Layout } from '@/components/myBusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 import { BUCKET_FILES_URL } from '@/utils/constants';
 import { uploadPhoto } from '@/utils/miscellaneous';

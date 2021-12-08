@@ -25,7 +25,7 @@ import { GET_PRODUCTS_BY_MAKER_ID, GET_PRODUCT_BY_ID } from '@/graphql/queries';
 import { formatToStartsWith } from '@/graphql/utils';
 import { usePagination } from '@/hooks/index';
 import { EmptyResults, ErrorPage, LoadingPage, ManageProductModal, PaginationButtons } from '@/components/common';
-import { Layout } from '@/components/mybusiness';
+import { Layout } from '@/components/myBusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 import { ManageProductForm } from '@/types/product';
 import { uploadPhoto } from '@/utils/miscellaneous';

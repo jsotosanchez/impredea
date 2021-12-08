@@ -34,7 +34,7 @@ import { GET_QUESTIONS_BY_MAKER_ID, GET_QUESTION_BY_ID } from '@/graphql/queries
 import { UPDATE_QUESTION_BY_ID } from '@/graphql/mutations';
 import { usePagination } from '@/hooks/index';
 import { ErrorPage, LoadingPage, PaginationButtons, EmptyResults } from '@/components/common';
-import { Layout } from '@/components/mybusiness';
+import { Layout } from '@/components/myBusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 
 interface FormValues {
