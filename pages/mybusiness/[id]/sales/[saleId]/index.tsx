@@ -100,7 +100,7 @@ const Sale = ({ quotation }: Props): JSX.Element => {
               <FormLabel color="brandBlue" htmlFor="price">
                 Precio:
               </FormLabel>
-              <Input bg="white" color="black" id="price" type="number" readOnly defaultValue={quotation.price} />
+              <Input color="black" bg="gray.100" id="price" type="number" readOnly defaultValue={quotation.price} />
               <FormLabel color="brandBlue" htmlFor="estimated_date">
                 Fecha estimada:
               </FormLabel>
@@ -112,21 +112,17 @@ const Sale = ({ quotation }: Props): JSX.Element => {
                   borderRadius: '5px',
                   width: '100%',
                   padding: '6px',
+                  backgroundColor: '#EDF2F7',
                 }}
                 id="estimated_date"
                 type="date"
                 readOnly
+                value={quotation.estimated_date}
               />
               <FormLabel color="brandBlue" htmlFor="information">
                 Informacion adicional:
               </FormLabel>
-              <Textarea
-                color="black"
-                id="information"
-                placeholder="Esta es la informacion adicional que le proporsionaste al cliente al momento de la cotizacion"
-                readOnly
-                rows={5}
-              />
+              <Textarea color="black" bg="gray.100" id="information" readOnly rows={5} />
             </Stack>
           </Flex>
         </ModalBody>
