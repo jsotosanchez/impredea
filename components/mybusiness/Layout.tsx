@@ -67,16 +67,6 @@ const MyBusinessLayout = ({ children, activeHeader }: Props): JSX.Element => {
               Mis Datos
             </Heading>
           </Link>
-          <Link href={`/myBusiness/${id}/agenda`} passHref>
-            <Heading
-              as="h3"
-              size="md"
-              color={activeHeader === MY_BUSINESS_SECTIONS.AGENDA ? 'brandBlue' : 'gray.300'}
-              cursor="pointer"
-            >
-              Agenda
-            </Heading>
-          </Link>
         </HStack>
         {children}
       </Box>

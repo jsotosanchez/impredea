@@ -307,25 +307,26 @@ export const GET_SALES_BY_CLIENT_ID = gql`
 `;
 
 export const GET_SALES_BY_MAKER_ID = gql`
-  query getSalesByMakerId($id: Int!, $limit: Int = 10, $offset: Int = 0) {
-    sales(where: { maker_id: { _eq: $id } }, offset: $offset, limit: $limit) {
-      id
-      quotation {
-        price
-        quantity
-        estimated_date
-        product {
-          name
-        }
-        client {
-          fullname
-        }
-        conversation {
-          id
-        }
+  query getSalesByMakerId($id: Int!, $productFilter: String, $clientFilter: String, $startDate: date, $endDate: date, $limit: Int = 10, $offset: Int = 0 ) {
+  sales(where: {maker_id: {_eq: $id}, quotation: {product: {name: {_ilike: $productFilter}}, client: {fullname: {_ilike: $clientFilter}}, estimated_date: {_gte: $startDate, _lte: $endDate}}}, offset: $offset, limit: $limit) {
+    id
+    quotation {
+      price
+      quantity
+      estimated_date
+      product {
+        name
+      }
+      client {
+        fullname
+      }
+      conversation {
+        id
       }
     }
   }
+}
+
 `;
 
 export const GET_MAKERS = gql`
