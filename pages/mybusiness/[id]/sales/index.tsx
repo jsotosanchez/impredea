@@ -1,15 +1,15 @@
 import { useRouter } from 'next/router';
-import { Center, Table, Tbody, Td, Th, Thead, Tooltip, Tr, useDisclosure, useToast, Flex, Input, FormLabel } from '@chakra-ui/react';
+import { Center, Table, Tbody, Td, Th, Thead, Tooltip, Tr, useDisclosure, useToast, Flex, Input, FormLabel, Box, Modal, ModalOverlay, ModalHeader, ModalCloseButton, ModalBody, ModalContent, Spinner, VStack, Text } from '@chakra-ui/react';
 import { ChatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
-import { useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import { useContext, useEffect, useState } from 'react';
-import { GET_SALES_BY_MAKER_ID } from '@/graphql/queries';
+import { GET_CLIENT_INFO, GET_SALES_BY_MAKER_ID } from '@/graphql/queries';
 import { ErrorPage, ReportProblemModal, LoadingPage, PaginationButtons, EmptyResults } from '@/components/common';
 import { usePagination } from '@/hooks/index';
 import { REPORT_PROBLEM } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
-import { Layout } from '@/components/myBusiness';
+import { Layout, ClientModal } from '@/components/myBusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 import { IMPREDEA_EMAIL } from '@/utils/constants';
 import { sendEmail } from '@/utils/miscellaneous';
@@ -24,7 +24,7 @@ interface ProblemFormValues {
 interface Quotation {
   product: { name: string };
   estimated_date: string;
-  client: { fullname: string };
+  client: { fullname: string, id: number };
   price: number;
   conversation: { id: string };
 }
@@ -51,6 +51,11 @@ const SalesAdmin = ({ }) => {
   const [endFilterDate, setEndFilterDate] = useState(nextMonth);
   const { data, loading, refetch, error } = useQuery(GET_SALES_BY_MAKER_ID, { variables: { id, productFilter: formatToStartsWith(productNameFilter), clientFilter: formatToStartsWith(clientNameFilter), startDate: startFilterDate, endDate: endFilterDate } });
   const { currentPage, setCurrentPage } = usePagination(data, refetch);
+
+  const [clientId, setClientId] = useState<number | undefined>();
+  const [getClient, { loading: loadingClient, data: currentClient }] = useLazyQuery(GET_CLIENT_INFO, {
+    variables: { clientId },
+  });
   const {
     handleSubmit: handleReportProblemSubmit,
     register: registerReportProblem,
@@ -60,6 +65,7 @@ const SalesAdmin = ({ }) => {
 
   const salesHasResults = data ? data.sales.length > 0 : false;
   const { isOpen: reportProblemIsOpen, onOpen: reportProblemOnOpen, onClose: reportProblemOnClose } = useDisclosure();
+  const { isOpen: clientIsOpen, onOpen: clientOnOpen, onClose: clientOnClose } = useDisclosure();
 
   const handleReportProblemClose = () => {
     resetReportProblem();
@@ -100,6 +106,15 @@ const SalesAdmin = ({ }) => {
     },
   });
 
+  const handleOpenClientModal = (id: number) => {
+    setClientId(id)
+    clientOnOpen()
+  }
+
+  useEffect(() => {
+    getClient()
+  }, [clientId])
+
   if (error) return <ErrorPage route={`/`} />;
 
   return (
@@ -112,7 +127,8 @@ const SalesAdmin = ({ }) => {
           errors={reportProblemErrors}
           register={registerReportProblem}
         />
-        <Flex>
+        {currentClient && <ClientModal isOpen={clientIsOpen} loading={loadingClient} handleOnClose={clientOnClose} client={currentClient} />}
+        <Flex mt="15px" mb="15px">
           <FormLabel color="brandBlue" pt="5px">
             Producto
           </FormLabel>
@@ -176,7 +192,11 @@ const SalesAdmin = ({ }) => {
                 <Tr key={sale.id}>
                   <Td>{sale.quotation.product.name}</Td>
                   <Td>{sale.quotation.estimated_date.slice(0, 10)}</Td>
-                  <Td>{sale.quotation.client.fullname}</Td>
+                  <Td>
+                    <Box cursor={"pointer"} onClick={() => handleOpenClientModal(sale.quotation.client.id)}>
+                      {sale.quotation.client.fullname}
+                    </Box>
+                  </Td>
                   <Td>{sale.quotation.price}</Td>
                   <Td>
                     <Center>

@@ -319,6 +319,7 @@ export const GET_SALES_BY_MAKER_ID = gql`
       }
       client {
         fullname
+        id
       }
       conversation {
         id
@@ -399,4 +400,17 @@ export const GET_SALE_BY_PK = gql`
       }
     }
   }
+`;
+
+
+export const GET_CLIENT_INFO = gql`
+query GetClientByPk($clientId: Int!) {
+  user_by_pk(id: $clientId) {
+    fullname
+    location
+    zip_code
+    province
+    street
+  }
+}
 `;
