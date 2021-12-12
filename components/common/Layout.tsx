@@ -12,6 +12,9 @@ export default function Layout({ children }: Props) {
   const router = useRouter();
   const context = useContext(SessionContext);
   const currentUser = context.getUser();
+
+  console.log(currentUser)
+  console.log('context', context)
   return (
     <>
       <Flex

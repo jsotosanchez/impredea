@@ -40,7 +40,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_QUOTATIONS_BY_MAKER_ID, GET_QUOTATION_BY_PK, GET_QUOTATIONS_STATUSES } from '@/graphql/queries';
 import { SEND_QUOTATION } from '@/graphql/mutations';
 import { usePagination } from '@/hooks/index';
-import { ErrorPage, LoadingPage, PaginationButtons, EmptyResults } from '@/components/common';
+import { ErrorPage, LoadingPage, PaginationButtons, EmptyResults, Authorization } from '@/components/common';
 import { Layout } from '@/components/myBusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 import { BUCKET_FILES_URL } from '@/utils/constants';
@@ -165,220 +165,222 @@ const Quotations = ({ statuses }: Props) => {
     );
 
   return (
-    <Layout activeHeader={MY_BUSINESS_SECTIONS.QUOTATIONS}>
-      <Box>
-        <Modal isOpen={isOpen} onClose={handleOnClose} size="4xl">
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Enviar Cotización</ModalHeader>
-            {loadingQuotation ? (
-              <Center>
-                <Spinner />
-              </Center>
-            ) : (
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <ModalCloseButton />
-                <ModalBody>
-                  <Flex w="100%">
-                    <Stack w="40%" mr="5%">
-                      <Center>
-                        {quotation && (
-                          <Image
-                            src={`${BUCKET_FILES_URL}products/${quotation.quotations_by_pk.product.id}`}
-                            width="300px"
-                            height="250px"
-                            alt=""
-                          />
-                        )}
-                      </Center>
-                      <FormLabel color="brandBlue" htmlFor="quantity">
-                        Cantidad:
-                      </FormLabel>
-                      <Input
-                        color="black"
-                        bg="gray.100"
-                        id="quantity"
-                        type="number"
-                        defaultValue={quotation?.quotations_by_pk?.quantity}
-                        readOnly
-                      />
-                      <FormLabel color="brandBlue" htmlFor="quality">
-                        Calidad:
-                      </FormLabel>
-                      <Input
-                        color="black"
-                        bg="gray.100"
-                        id="quality"
-                        defaultValue={quotation?.quotations_by_pk.product_quality.label}
-                        readOnly
-                      />
-                      <FormLabel color="brandBlue" htmlFor="material">
-                        Material:
-                      </FormLabel>
-                      <Input
-                        color="black"
-                        bg="gray.100"
-                        id="material"
-                        defaultValue={quotation?.quotations_by_pk.material.label}
-                        readOnly
-                      />
-                    </Stack>
-                    <Stack w="45%">
-                      <Text size="md">{`${quotation?.quotations_by_pk.product.name} para ${quotation?.quotations_by_pk.client.fullname}`}</Text>
-                      <FormLabel color="brandBlue" htmlFor="material">
-                        Indicaciones del cliente:
-                      </FormLabel>
-                      <Textarea
-                        color="black"
-                        bg="gray.100"
-                        id="material"
-                        defaultValue={quotation?.quotations_by_pk.client_instructions}
-                        readOnly
-                      />
-                      <FormControl isInvalid={errors.price != undefined}>
-                        <FormLabel color="brandBlue" htmlFor="price">
-                          Indica el precio:
+    <Authorization>
+      <Layout activeHeader={MY_BUSINESS_SECTIONS.QUOTATIONS}>
+        <Box>
+          <Modal isOpen={isOpen} onClose={handleOnClose} size="4xl">
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Enviar Cotización</ModalHeader>
+              {loadingQuotation ? (
+                <Center>
+                  <Spinner />
+                </Center>
+              ) : (
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <Flex w="100%">
+                      <Stack w="40%" mr="5%">
+                        <Center>
+                          {quotation && (
+                            <Image
+                              src={`${BUCKET_FILES_URL}products/${quotation.quotations_by_pk.product.id}`}
+                              width="300px"
+                              height="250px"
+                              alt=""
+                            />
+                          )}
+                        </Center>
+                        <FormLabel color="brandBlue" htmlFor="quantity">
+                          Cantidad:
                         </FormLabel>
                         <Input
-                          bg="white"
                           color="black"
-                          id="price"
+                          bg="gray.100"
+                          id="quantity"
                           type="number"
-                          {...register('price', {
-                            required: 'Este campo es requerido',
-                          })}
+                          defaultValue={quotation?.quotations_by_pk?.quantity}
+                          readOnly
                         />
-                        <FormErrorMessage>{errors.price && errors.price.message}</FormErrorMessage>
-                      </FormControl>
-                      <FormControl isInvalid={errors.estimated_date != undefined}>
-                        <FormLabel color="brandBlue" htmlFor="estimated_date">
-                          Indica la fecha estimada:
+                        <FormLabel color="brandBlue" htmlFor="quality">
+                          Calidad:
                         </FormLabel>
-                        <input
-                          style={{
-                            color: 'black',
-                            border: '1px solid',
-                            borderColor: 'inherit',
-                            borderRadius: '5px',
-                            width: '100%',
-                            padding: '6px',
-                          }}
-                          id="estimated_date"
-                          type="date"
-                          {...register('estimated_date', {
-                            required: 'Este campo es requerido',
-                          })}
+                        <Input
+                          color="black"
+                          bg="gray.100"
+                          id="quality"
+                          defaultValue={quotation?.quotations_by_pk.product_quality.label}
+                          readOnly
                         />
-                        <FormErrorMessage>{errors.estimated_date && errors.estimated_date.message}</FormErrorMessage>
-                      </FormControl>
-                      <FormControl isInvalid={errors.price != undefined}>
-                        <FormLabel color="brandBlue" htmlFor="information">
-                          Informacion adicional:
+                        <FormLabel color="brandBlue" htmlFor="material">
+                          Material:
+                        </FormLabel>
+                        <Input
+                          color="black"
+                          bg="gray.100"
+                          id="material"
+                          defaultValue={quotation?.quotations_by_pk.material.label}
+                          readOnly
+                        />
+                      </Stack>
+                      <Stack w="45%">
+                        <Text size="md">{`${quotation?.quotations_by_pk.product.name} para ${quotation?.quotations_by_pk.client.fullname}`}</Text>
+                        <FormLabel color="brandBlue" htmlFor="material">
+                          Indicaciones del cliente:
                         </FormLabel>
                         <Textarea
                           color="black"
-                          id="information"
-                          placeholder="Hay algo que tu cliente necesite saber? Escribelo aqui."
-                          {...register('information', {
-                            required: 'Este campo es requerido',
-                          })}
+                          bg="gray.100"
+                          id="material"
+                          defaultValue={quotation?.quotations_by_pk.client_instructions}
+                          readOnly
                         />
-                        <FormErrorMessage>{errors.information && errors.information.message}</FormErrorMessage>
-                      </FormControl>
-                    </Stack>
-                  </Flex>
-                </ModalBody>
-                <ModalFooter>
-                  <Button type="submit" colorScheme="facebook">
-                    Enviar
-                  </Button>
-                </ModalFooter>
-              </form>
-            )}
-          </ModalContent>
-        </Modal>
-        <>
-          <HStack pl={6} mt={1} spacing={1}>
-            <Checkbox
-              isChecked={allChecked}
-              isIndeterminate={isIndeterminate}
-              onChange={(e) => setCheckedStatuses(statuses.map(() => e.target.checked))}
-            >
-              Todos
-            </Checkbox>
-            {statuses.map(({ id, label }, index) => (
+                        <FormControl isInvalid={errors.price != undefined}>
+                          <FormLabel color="brandBlue" htmlFor="price">
+                            Indica el precio:
+                          </FormLabel>
+                          <Input
+                            bg="white"
+                            color="black"
+                            id="price"
+                            type="number"
+                            {...register('price', {
+                              required: 'Este campo es requerido',
+                            })}
+                          />
+                          <FormErrorMessage>{errors.price && errors.price.message}</FormErrorMessage>
+                        </FormControl>
+                        <FormControl isInvalid={errors.estimated_date != undefined}>
+                          <FormLabel color="brandBlue" htmlFor="estimated_date">
+                            Indica la fecha estimada:
+                          </FormLabel>
+                          <input
+                            style={{
+                              color: 'black',
+                              border: '1px solid',
+                              borderColor: 'inherit',
+                              borderRadius: '5px',
+                              width: '100%',
+                              padding: '6px',
+                            }}
+                            id="estimated_date"
+                            type="date"
+                            {...register('estimated_date', {
+                              required: 'Este campo es requerido',
+                            })}
+                          />
+                          <FormErrorMessage>{errors.estimated_date && errors.estimated_date.message}</FormErrorMessage>
+                        </FormControl>
+                        <FormControl isInvalid={errors.price != undefined}>
+                          <FormLabel color="brandBlue" htmlFor="information">
+                            Informacion adicional:
+                          </FormLabel>
+                          <Textarea
+                            color="black"
+                            id="information"
+                            placeholder="Hay algo que tu cliente necesite saber? Escribelo aqui."
+                            {...register('information', {
+                              required: 'Este campo es requerido',
+                            })}
+                          />
+                          <FormErrorMessage>{errors.information && errors.information.message}</FormErrorMessage>
+                        </FormControl>
+                      </Stack>
+                    </Flex>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button type="submit" colorScheme="facebook">
+                      Enviar
+                    </Button>
+                  </ModalFooter>
+                </form>
+              )}
+            </ModalContent>
+          </Modal>
+          <>
+            <HStack pl={6} mt={1} spacing={1}>
               <Checkbox
-                isChecked={checkedStatuses[index]}
-                onChange={(e) => {
-                  setCheckedStatuses((prev) => {
-                    const newValues = [...prev];
-                    newValues[index] = e.target.checked;
-                    return newValues;
-                  });
-                }}
-                key={id}
+                isChecked={allChecked}
+                isIndeterminate={isIndeterminate}
+                onChange={(e) => setCheckedStatuses(statuses.map(() => e.target.checked))}
               >
-                {label}
+                Todos
               </Checkbox>
-            ))}
-          </HStack>
-        </>
-        {quotationsHasResults ? (
-          <Table variant="striped" colorScheme="gray">
-            <Thead>
-              <Tr>
-                <Th>Producto</Th>
-                <Th>Fecha de Pedido</Th>
-                <Th>Estado</Th>
-                <Th>Acciones</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {data.quotations.map((quotation: Quotation) => (
-                <Tr key={quotation.id}>
-                  <Td>{quotation.product.name}</Td>
-                  <Td>{quotation.updated_at.slice(0, 10)}</Td>
-                  <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
-                  <Td>
-                    <Center>
-                      {quotation.status_id === 1 && (
-                        <Tooltip hasArrow label="Responder">
-                          <EditIcon
+              {statuses.map(({ id, label }, index) => (
+                <Checkbox
+                  isChecked={checkedStatuses[index]}
+                  onChange={(e) => {
+                    setCheckedStatuses((prev) => {
+                      const newValues = [...prev];
+                      newValues[index] = e.target.checked;
+                      return newValues;
+                    });
+                  }}
+                  key={id}
+                >
+                  {label}
+                </Checkbox>
+              ))}
+            </HStack>
+          </>
+          {quotationsHasResults ? (
+            <Table variant="striped" colorScheme="gray">
+              <Thead>
+                <Tr>
+                  <Th>Producto</Th>
+                  <Th>Fecha de Pedido</Th>
+                  <Th>Estado</Th>
+                  <Th>Acciones</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {data.quotations.map((quotation: Quotation) => (
+                  <Tr key={quotation.id}>
+                    <Td>{quotation.product.name}</Td>
+                    <Td>{quotation.updated_at.slice(0, 10)}</Td>
+                    <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
+                    <Td>
+                      <Center>
+                        {quotation.status_id === 1 && (
+                          <Tooltip hasArrow label="Responder">
+                            <EditIcon
+                              color="facebook"
+                              mr="20px"
+                              cursor="pointer"
+                              onClick={() => {
+                                handleOnEdit(quotation.id);
+                              }}
+                            />
+                          </Tooltip>
+                        )}
+                        <Tooltip hasArrow label="Ver conversacion">
+                          <ChatIcon
                             color="facebook"
                             mr="20px"
                             cursor="pointer"
                             onClick={() => {
-                              handleOnEdit(quotation.id);
+                              router.push(`/conversation/${quotation.conversation.id}/name/${quotation.client.fullname}`);
                             }}
                           />
                         </Tooltip>
-                      )}
-                      <Tooltip hasArrow label="Ver conversacion">
-                        <ChatIcon
-                          color="facebook"
-                          mr="20px"
-                          cursor="pointer"
-                          onClick={() => {
-                            router.push(`/conversation/${quotation.conversation.id}/name/${quotation.client.fullname}`);
-                          }}
-                        />
-                      </Tooltip>
-                    </Center>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        ) : (
-          <EmptyResults />
-        )}
-        <PaginationButtons
-          currentPage={currentPage}
-          hasResults={quotationsHasResults}
-          setCurrentPage={setCurrentPage}
-        />
-      </Box>
-    </Layout>
+                      </Center>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          ) : (
+            <EmptyResults />
+          )}
+          <PaginationButtons
+            currentPage={currentPage}
+            hasResults={quotationsHasResults}
+            setCurrentPage={setCurrentPage}
+          />
+        </Box>
+      </Layout>
+    </Authorization>
   );
 };
 

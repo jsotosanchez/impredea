@@ -24,7 +24,7 @@ import { DELETE_PRODUCT_BY_ID, EDIT_PRODUCT_BY_ID, INSERT_PRODUCT } from '@/grap
 import { GET_PRODUCTS_BY_MAKER_ID, GET_PRODUCT_BY_ID } from '@/graphql/queries';
 import { formatToStartsWith } from '@/graphql/utils';
 import { usePagination } from '@/hooks/index';
-import { EmptyResults, ErrorPage, LoadingPage, ManageProductModal, PaginationButtons } from '@/components/common';
+import { Authorization, EmptyResults, ErrorPage, LoadingPage, ManageProductModal, PaginationButtons } from '@/components/common';
 import { Layout } from '@/components/myBusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 import { ManageProductForm } from '@/types/product';
@@ -38,7 +38,7 @@ interface Product {
   updated_at: string;
 }
 
-const Catalog = ({}) => {
+const Catalog = ({ }) => {
   const router = useRouter();
   const { id } = router.query;
   const [currentProductId, setCurrentProductId] = useState<number>();
@@ -219,88 +219,91 @@ const Catalog = ({}) => {
   if (error) return <ErrorPage route={`/`} />;
 
   return (
-    <Layout activeHeader={MY_BUSINESS_SECTIONS.PRODUCTS}>
-      <Box>
-        <>
-          <ManageProductModal
-            isOpen={addModalIsOpen}
-            handleOnClose={handleAddOnClose}
-            onSubmit={handleAddModalSubmit(onAddSubmit)}
-            errors={addModalErrors}
-            register={registerAddModal}
-            setPicture={setPicture}
-          />
-          <ManageProductModal
-            isOpen={editModalIsOpen}
-            handleOnClose={handleEditOnClose}
-            product={currentProduct && currentProduct.product_by_pk}
-            loading={loadingGetProduct}
-            onSubmit={handleEditModalSubmit(onEditSubmit)}
-            errors={editModalErrors}
-            register={registerEditModal}
-            setPicture={setPicture}
-          />
-          <Flex mt="20px">
-            <FormLabel color="brandBlue" pt="5px">
-              Buscar por nombre
-            </FormLabel>
-            <Input
-              w="20%"
-              value={filter}
-              onChange={(e) => handleFilterChange(e.target.value)}
-              onBlur={debouncedSearch}
+
+    <Authorization>
+      <Layout activeHeader={MY_BUSINESS_SECTIONS.PRODUCTS}>
+        <Box>
+          <>
+            <ManageProductModal
+              isOpen={addModalIsOpen}
+              handleOnClose={handleAddOnClose}
+              onSubmit={handleAddModalSubmit(onAddSubmit)}
+              errors={addModalErrors}
+              register={registerAddModal}
+              setPicture={setPicture}
             />
-            <Spacer />
-            <Button variant="solid" colorScheme="facebook" onClick={addModalOnOpen}>
-              Agregar Producto
-            </Button>
-          </Flex>
-        </>
-        <>
-          {loadingProducts ? (
-            <LoadingPage />
-          ) : (
-            <>
-              {productsHasResults ? (
-                <Table variant="striped" colorScheme="gray" mt="2%">
-                  <Thead>
-                    <Tr>
-                      <Th>Nombre del Producto</Th>
-                      <Th>Fecha de Actualizacion</Th>
-                      <Th>Acciones</Th>
-                    </Tr>
-                  </Thead>
-                  <Tbody>
-                    {data.product.map((product: Product) => (
-                      <Tr key={product.id}>
-                        <Td>{product.name}</Td>
-                        <Td>{product.updated_at}</Td>
-                        <Td>
-                          <EditIcon
-                            color="facebook"
-                            mr="20px"
-                            cursor="pointer"
-                            onClick={() => handleEdit(product.id)}
-                          />
-                          <CloseIcon color="red" cursor="pointer" onClick={() => handleDelete(product.id)} />
-                        </Td>
-                      </Tr>
-                    ))}
-                  </Tbody>
-                </Table>
-              ) : (
-                <EmptyResults />
-              )}
-              <PaginationButtons
-                currentPage={currentPage}
-                hasResults={productsHasResults}
-                setCurrentPage={setCurrentPage}
+            <ManageProductModal
+              isOpen={editModalIsOpen}
+              handleOnClose={handleEditOnClose}
+              product={currentProduct && currentProduct.product_by_pk}
+              loading={loadingGetProduct}
+              onSubmit={handleEditModalSubmit(onEditSubmit)}
+              errors={editModalErrors}
+              register={registerEditModal}
+              setPicture={setPicture}
+            />
+            <Flex mt="20px">
+              <FormLabel color="brandBlue" pt="5px">
+                Buscar por nombre
+              </FormLabel>
+              <Input
+                w="20%"
+                value={filter}
+                onChange={(e) => handleFilterChange(e.target.value)}
+                onBlur={debouncedSearch}
               />
-            </>
-          )}
-        </>
-      </Box>
-    </Layout>
+              <Spacer />
+              <Button variant="solid" colorScheme="facebook" onClick={addModalOnOpen}>
+                Agregar Producto
+              </Button>
+            </Flex>
+          </>
+          <>
+            {loadingProducts ? (
+              <LoadingPage />
+            ) : (
+              <>
+                {productsHasResults ? (
+                  <Table variant="striped" colorScheme="gray" mt="2%">
+                    <Thead>
+                      <Tr>
+                        <Th>Nombre del Producto</Th>
+                        <Th>Fecha de Actualizacion</Th>
+                        <Th>Acciones</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {data.product.map((product: Product) => (
+                        <Tr key={product.id}>
+                          <Td>{product.name}</Td>
+                          <Td>{product.updated_at}</Td>
+                          <Td>
+                            <EditIcon
+                              color="facebook"
+                              mr="20px"
+                              cursor="pointer"
+                              onClick={() => handleEdit(product.id)}
+                            />
+                            <CloseIcon color="red" cursor="pointer" onClick={() => handleDelete(product.id)} />
+                          </Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </Table>
+                ) : (
+                  <EmptyResults />
+                )}
+                <PaginationButtons
+                  currentPage={currentPage}
+                  hasResults={productsHasResults}
+                  setCurrentPage={setCurrentPage}
+                />
+              </>
+            )}
+          </>
+        </Box>
+      </Layout>
+    </Authorization>
   );
 };
 

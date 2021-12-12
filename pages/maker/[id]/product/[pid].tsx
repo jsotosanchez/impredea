@@ -30,6 +30,7 @@ import { SessionContext } from '@/context/sessionContext';
 import { GET_PRODUCT_BY_ID } from '@/graphql/queries';
 import { sendEmail } from '@/utils/miscellaneous';
 import { BUCKET_FILES_URL, IMPREDEA_EMAIL, logInToastId } from '@/utils/constants';
+import { Authorization } from '@/components/common';
 
 interface Material {
   id: string;
@@ -48,9 +49,9 @@ interface Form {
   clientInstructions: string;
 }
 
-interface Props {}
+interface Props { }
 
-const Product = ({}: Props): JSX.Element => {
+const Product = ({ }: Props): JSX.Element => {
   const router = useRouter();
   const { id: makerId, pid } = router.query;
   const toast = useToast();
@@ -144,112 +145,114 @@ const Product = ({}: Props): JSX.Element => {
   }, [mutationResultData, createConversation]);
 
   return (
-    <Modal isOpen={true} onClose={handleOnClose} size="4xl">
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>{data && data.product_by_pk.name}</ModalHeader>
-        <ModalCloseButton />
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <ModalBody>
-            {loading ? (
-              <Center>
-                <Spinner />
-              </Center>
-            ) : (
-              <Flex w="100%">
-                <Stack w="40%" mr="5%">
-                  <Center>
-                    <Image src={`${BUCKET_FILES_URL}products/${pid}`} width="280px" height="250px" alt="" />
-                  </Center>
-                  <FormControl isInvalid={errors.quantity != undefined}>
-                    <FormLabel color="brandBlue" htmlFor="quantity">
-                      Cantidad
-                    </FormLabel>
-                    <Input
-                      bg="white"
-                      color="black"
-                      id="quantity"
-                      type="number"
-                      defaultValue={1}
-                      {...register('quantity', {
-                        required: 'Este campo es requerido',
-                      })}
-                    />
-                    <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
-                  </FormControl>
-                  <FormControl isInvalid={errors.qualityId != undefined}>
-                    <FormLabel color="brandBlue">Calidad</FormLabel>
-                    <Select
-                      bg="white"
-                      color="black"
-                      id="qualityId"
-                      {...register('qualityId', {
-                        required: 'Este campo es requerido',
-                      })}
-                    >
-                      {qualities.map((option) => (
-                        <option value={option.id} key={option.id}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </Select>
-                    <FormErrorMessage>{errors.qualityId && errors.qualityId.message}</FormErrorMessage>
-                  </FormControl>
-                  <FormControl isInvalid={errors.materialId != undefined}>
-                    <FormLabel color="brandBlue">Material</FormLabel>
-                    <Select
-                      bg="white"
-                      color="black"
-                      id="materialId"
-                      {...register('materialId', {
-                        required: 'Este campo es requerido',
-                      })}
-                    >
-                      {materials.map((material) => (
-                        <option value={material.id} key={material.id}>
-                          {material.label}
-                        </option>
-                      ))}
-                    </Select>
-                    <FormErrorMessage>{errors.materialId && errors.materialId.message}</FormErrorMessage>
-                  </FormControl>
-                </Stack>
-                <Stack w="45%">
-                  <Text fontWeight="semibold">Descripcion del producto:</Text>
-                  <Text>{data && data.product_by_pk.description}</Text>
-                  <Text fontWeight="semibold" pt="10px">
-                    Indicaciones:
-                  </Text>
-                  <Text>{data && data.product_by_pk.instructions}</Text>
-                  <FormControl isInvalid={errors.clientInstructions != undefined}>
-                    <FormLabel color="brandBlue" htmlFor="clientInstructions">
-                      Informacion para el Maker:
-                    </FormLabel>
-                    <Textarea
-                      bg="white"
-                      color="black"
-                      id="clientInstructions"
-                      placeholder="Por favor ingresa lo indicado por el Maker para tener un producto acorde a tus necesidades"
-                      {...register('clientInstructions', {
-                        required: 'Este campo es requerido',
-                      })}
-                    />
-                    <FormErrorMessage>
-                      {errors.clientInstructions && errors.clientInstructions.message}
-                    </FormErrorMessage>
-                  </FormControl>
-                </Stack>
-              </Flex>
-            )}
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="facebook" type="submit">
-              Pedir Cotizacion
-            </Button>
-          </ModalFooter>
-        </form>
-      </ModalContent>
-    </Modal>
+    <Authorization>
+      <Modal isOpen={true} onClose={handleOnClose} size="4xl">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>{data && data.product_by_pk.name}</ModalHeader>
+          <ModalCloseButton />
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <ModalBody>
+              {loading ? (
+                <Center>
+                  <Spinner />
+                </Center>
+              ) : (
+                <Flex w="100%">
+                  <Stack w="40%" mr="5%">
+                    <Center>
+                      <Image src={`${BUCKET_FILES_URL}products/${pid}`} width="280px" height="250px" alt="" />
+                    </Center>
+                    <FormControl isInvalid={errors.quantity != undefined}>
+                      <FormLabel color="brandBlue" htmlFor="quantity">
+                        Cantidad
+                      </FormLabel>
+                      <Input
+                        bg="white"
+                        color="black"
+                        id="quantity"
+                        type="number"
+                        defaultValue={1}
+                        {...register('quantity', {
+                          required: 'Este campo es requerido',
+                        })}
+                      />
+                      <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
+                    </FormControl>
+                    <FormControl isInvalid={errors.qualityId != undefined}>
+                      <FormLabel color="brandBlue">Calidad</FormLabel>
+                      <Select
+                        bg="white"
+                        color="black"
+                        id="qualityId"
+                        {...register('qualityId', {
+                          required: 'Este campo es requerido',
+                        })}
+                      >
+                        {qualities.map((option) => (
+                          <option value={option.id} key={option.id}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </Select>
+                      <FormErrorMessage>{errors.qualityId && errors.qualityId.message}</FormErrorMessage>
+                    </FormControl>
+                    <FormControl isInvalid={errors.materialId != undefined}>
+                      <FormLabel color="brandBlue">Material</FormLabel>
+                      <Select
+                        bg="white"
+                        color="black"
+                        id="materialId"
+                        {...register('materialId', {
+                          required: 'Este campo es requerido',
+                        })}
+                      >
+                        {materials.map((material) => (
+                          <option value={material.id} key={material.id}>
+                            {material.label}
+                          </option>
+                        ))}
+                      </Select>
+                      <FormErrorMessage>{errors.materialId && errors.materialId.message}</FormErrorMessage>
+                    </FormControl>
+                  </Stack>
+                  <Stack w="45%">
+                    <Text fontWeight="semibold">Descripcion del producto:</Text>
+                    <Text>{data && data.product_by_pk.description}</Text>
+                    <Text fontWeight="semibold" pt="10px">
+                      Indicaciones:
+                    </Text>
+                    <Text>{data && data.product_by_pk.instructions}</Text>
+                    <FormControl isInvalid={errors.clientInstructions != undefined}>
+                      <FormLabel color="brandBlue" htmlFor="clientInstructions">
+                        Informacion para el Maker:
+                      </FormLabel>
+                      <Textarea
+                        bg="white"
+                        color="black"
+                        id="clientInstructions"
+                        placeholder="Por favor ingresa lo indicado por el Maker para tener un producto acorde a tus necesidades"
+                        {...register('clientInstructions', {
+                          required: 'Este campo es requerido',
+                        })}
+                      />
+                      <FormErrorMessage>
+                        {errors.clientInstructions && errors.clientInstructions.message}
+                      </FormErrorMessage>
+                    </FormControl>
+                  </Stack>
+                </Flex>
+              )}
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="facebook" type="submit">
+                Pedir Cotizacion
+              </Button>
+            </ModalFooter>
+          </form>
+        </ModalContent>
+      </Modal>
+    </Authorization>
   );
 };
 

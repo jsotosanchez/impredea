@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { UnorderedList } from '@chakra-ui/react';
-import { LoadingPage, PaginationButtons } from '@/components/common';
+import { Authorization, LoadingPage, PaginationButtons } from '@/components/common';
 import { ReviewCard, Layout } from '@/components/makerPage';
 import { GET_MAKER_REVIEWS } from '@/graphql/queries';
 import { useQuery } from '@apollo/client';
@@ -37,15 +37,17 @@ export default function Reviews(): JSX.Element {
     );
 
   return (
-    <Layout activeHeader={MAKER_SECTIONS.REVIEWS}>
-      <>
-        <UnorderedList>
-          {data.reviews.map((review: Review) => (
-            <ReviewCard key={review.id} client={review.client} rating={review.rating} text={review.text} />
-          ))}
-        </UnorderedList>
-        <PaginationButtons currentPage={currentPage} hasResults={questionsHasResults} setCurrentPage={setCurrentPage} />
-      </>
-    </Layout>
+    <Authorization>
+      <Layout activeHeader={MAKER_SECTIONS.REVIEWS}>
+        <>
+          <UnorderedList>
+            {data.reviews.map((review: Review) => (
+              <ReviewCard key={review.id} client={review.client} rating={review.rating} text={review.text} />
+            ))}
+          </UnorderedList>
+          <PaginationButtons currentPage={currentPage} hasResults={questionsHasResults} setCurrentPage={setCurrentPage} />
+        </>
+      </Layout>
+    </Authorization>
   );
 }

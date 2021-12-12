@@ -15,7 +15,7 @@ import { useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import client from '@/graphql/apollo-client';
 import { GET_PRODUCTS, GET_SEARCH_PRODUCT_DATA } from '@/graphql/queries';
-import { SideBarLayout, ProductSearchCard, ErrorPage, Layout, LoadingPage } from '@/components/common';
+import { SideBarLayout, ProductSearchCard, ErrorPage, Layout, LoadingPage, Authorization } from '@/components/common';
 import { formatToContains } from '@/graphql/utils';
 import { removeEmptyFields } from '@/utils/miscellaneous';
 
@@ -82,89 +82,91 @@ const Search = ({ quantities, categories }: Props) => {
   if (error) return <ErrorPage />;
 
   return (
-    <Layout>
-      <SideBarLayout
-        sideBarChildren={
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl isInvalid={errors.productName != undefined} pb="5px">
-              <FormLabel color="brandBlue" htmlFor="productName">
-                Que buscas?
-              </FormLabel>
-              <Input
-                bg="white"
-                color="black"
-                id="productName"
-                defaultValue={productName}
-                {...register('productName', {
-                  required: 'Este campo es requerido',
-                })}
-              />
-              <FormErrorMessage>{errors.productName && errors.productName.message}</FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={errors.quantity != undefined}>
-              <FormLabel color="brandBlue">Que Cantidad?</FormLabel>
-              <Select
-                bg="white"
-                color="black"
-                id="quantity"
-                {...register('quantity', {
-                  required: 'Este campo es requerido',
-                })}
-              >
-                {quantities.map((option) => (
-                  <option value={option.id} key={option.id}>
-                    {option.label}
-                  </option>
-                ))}
-              </Select>
-              <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={errors.category != undefined}>
-              <FormLabel color="brandBlue">Selecciona una categoria</FormLabel>
-              <Select bg="white" color="black" id="category" {...register('category')} defaultValue={category}>
-                <option value={''}>Todos</option>
-                {categories.map((category) => (
-                  <option value={category.id} key={category.id}>
-                    {category.label}
-                  </option>
-                ))}
-              </Select>
-              <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
-            </FormControl>
-            <Box pt="27px">
-              <Button variant="solid" bg="brandBlue" colorScheme="brandBlue" color="white" type="submit">
-                Buscar
-              </Button>
-            </Box>
-          </form>
-        }
-        contentChildren={
-          data.product.length ? (
-            <>
-              <UnorderedList m="3rem">
-                {data.product.map(({ id, description, maker: { maker_name, id: makerId }, name }: Product) => (
-                  <ProductSearchCard
-                    key={id}
-                    main_photo={id}
-                    description={description}
-                    makerName={maker_name}
-                    productName={name}
-                    handleOnClick={() => router.push(`/maker/${makerId}/product/${id}`)}
-                  />
-                ))}
-              </UnorderedList>
-              <Box>
-                <Button variant="solid" colorScheme="facebook" ml="75%" onClick={handleLoadMore} isLoading={loading}>
-                  Cargar mas
+    <Authorization>
+      <Layout>
+        <SideBarLayout
+          sideBarChildren={
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <FormControl isInvalid={errors.productName != undefined} pb="5px">
+                <FormLabel color="brandBlue" htmlFor="productName">
+                  Que buscas?
+                </FormLabel>
+                <Input
+                  bg="white"
+                  color="black"
+                  id="productName"
+                  defaultValue={productName}
+                  {...register('productName', {
+                    required: 'Este campo es requerido',
+                  })}
+                />
+                <FormErrorMessage>{errors.productName && errors.productName.message}</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={errors.quantity != undefined}>
+                <FormLabel color="brandBlue">Que Cantidad?</FormLabel>
+                <Select
+                  bg="white"
+                  color="black"
+                  id="quantity"
+                  {...register('quantity', {
+                    required: 'Este campo es requerido',
+                  })}
+                >
+                  {quantities.map((option) => (
+                    <option value={option.id} key={option.id}>
+                      {option.label}
+                    </option>
+                  ))}
+                </Select>
+                <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={errors.category != undefined}>
+                <FormLabel color="brandBlue">Selecciona una categoria</FormLabel>
+                <Select bg="white" color="black" id="category" {...register('category')} defaultValue={category}>
+                  <option value={''}>Todos</option>
+                  {categories.map((category) => (
+                    <option value={category.id} key={category.id}>
+                      {category.label}
+                    </option>
+                  ))}
+                </Select>
+                <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
+              </FormControl>
+              <Box pt="27px">
+                <Button variant="solid" bg="brandBlue" colorScheme="brandBlue" color="white" type="submit">
+                  Buscar
                 </Button>
               </Box>
-            </>
-          ) : (
-            <EmptyResults />
-          )
-        }
-      />
-    </Layout>
+            </form>
+          }
+          contentChildren={
+            data.product.length ? (
+              <>
+                <UnorderedList m="3rem">
+                  {data.product.map(({ id, description, maker: { maker_name, id: makerId }, name }: Product) => (
+                    <ProductSearchCard
+                      key={id}
+                      main_photo={id}
+                      description={description}
+                      makerName={maker_name}
+                      productName={name}
+                      handleOnClick={() => router.push(`/maker/${makerId}/product/${id}`)}
+                    />
+                  ))}
+                </UnorderedList>
+                <Box>
+                  <Button variant="solid" colorScheme="facebook" ml="75%" onClick={handleLoadMore} isLoading={loading}>
+                    Cargar mas
+                  </Button>
+                </Box>
+              </>
+            ) : (
+              <EmptyResults />
+            )
+          }
+        />
+      </Layout>
+    </Authorization>
   );
 };
 

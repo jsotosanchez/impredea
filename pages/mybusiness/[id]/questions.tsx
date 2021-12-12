@@ -33,7 +33,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_QUESTIONS_BY_MAKER_ID, GET_QUESTION_BY_ID } from '@/graphql/queries';
 import { UPDATE_QUESTION_BY_ID } from '@/graphql/mutations';
 import { usePagination } from '@/hooks/index';
-import { ErrorPage, LoadingPage, PaginationButtons, EmptyResults } from '@/components/common';
+import { ErrorPage, LoadingPage, PaginationButtons, EmptyResults, Authorization } from '@/components/common';
 import { Layout } from '@/components/myBusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 
@@ -51,7 +51,7 @@ interface Question {
   created_at: string;
 }
 
-const Questions = ({}) => {
+const Questions = ({ }) => {
   const router = useRouter();
   const { id } = router.query;
   const { data, loading, refetch, error } = useQuery(GET_QUESTIONS_BY_MAKER_ID, { variables: { id } });
@@ -125,81 +125,82 @@ const Questions = ({}) => {
     );
 
   return (
-    <Layout activeHeader={MY_BUSINESS_SECTIONS.QUESTIONS}>
-      <Box>
-        <Modal isOpen={isOpen} onClose={handleOnClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>
-              {loadingQuestion ? '' : `${question?.questions_by_pk?.client?.fullname} pregunta:`}
-            </ModalHeader>
-            {loadingQuestion ? (
-              <Center>
-                <Spinner />
-              </Center>
-            ) : (
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <ModalCloseButton />
-                <ModalBody>
-                  <Text>{question?.questions_by_pk.question}</Text>
-                  <FormControl isInvalid={errors.response != undefined}>
-                    <FormLabel color="brandBlue" htmlFor="response">
-                      Responde a la pregunta aqui:
-                    </FormLabel>
-                    <Textarea
-                      id="response"
-                      placeholder="Recuerda! cada pregunta es de un posible cliente, se lo mas detallado posible"
-                      {...register('response', {
-                        required: 'Este campo es requerido',
-                      })}
-                    />
-                    <FormErrorMessage>{errors.response && errors.response.message}</FormErrorMessage>
-                  </FormControl>
-                </ModalBody>
-                <ModalFooter>
-                  <Button type="submit" colorScheme="facebook">
-                    Responder
-                  </Button>
-                </ModalFooter>
-              </form>
-            )}
-          </ModalContent>
-        </Modal>
-        {questionsHasResults ? (
-          <Table variant="striped" colorScheme="gray">
-            <Thead>
-              <Tr>
-                <Th>Cliente</Th>
-                <Th>Realizada el:</Th>
-                <Th>Acciones</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {data.questions.map((question: Question) => (
-                <Tr key={question.id}>
-                  <Td>{question.client.fullname}</Td>
-                  <Td>{question.created_at}</Td>
-                  <Td>
-                    <Tooltip hasArrow label="Responder">
-                      <ViewIcon
-                        color="facebook"
-                        mr="20px"
-                        cursor="pointer"
-                        onClick={() => handleViewQuestion(question.id)}
+    <Authorization>
+      <Layout activeHeader={MY_BUSINESS_SECTIONS.QUESTIONS}>
+        <Box>
+          <Modal isOpen={isOpen} onClose={handleOnClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>
+                {loadingQuestion ? '' : `${question?.questions_by_pk?.client?.fullname} pregunta:`}
+              </ModalHeader>
+              {loadingQuestion ? (
+                <Center>
+                  <Spinner />
+                </Center>
+              ) : (
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <Text>{question?.questions_by_pk.question}</Text>
+                    <FormControl isInvalid={errors.response != undefined}>
+                      <FormLabel color="brandBlue" htmlFor="response">
+                        Responde a la pregunta aqui:
+                      </FormLabel>
+                      <Textarea
+                        id="response"
+                        placeholder="Recuerda! cada pregunta es de un posible cliente, se lo mas detallado posible"
+                        {...register('response', {
+                          required: 'Este campo es requerido',
+                        })}
                       />
-                    </Tooltip>
-                    {/* <CloseIcon color="red" cursor="pointer" onClick={() => handleOnDelete(question.id)} /> */}
-                  </Td>
+                      <FormErrorMessage>{errors.response && errors.response.message}</FormErrorMessage>
+                    </FormControl>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button type="submit" colorScheme="facebook">
+                      Responder
+                    </Button>
+                  </ModalFooter>
+                </form>
+              )}
+            </ModalContent>
+          </Modal>
+          {questionsHasResults ? (
+            <Table variant="striped" colorScheme="gray">
+              <Thead>
+                <Tr>
+                  <Th>Cliente</Th>
+                  <Th>Realizada el:</Th>
+                  <Th>Acciones</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        ) : (
-          <EmptyResults />
-        )}
-        <PaginationButtons currentPage={currentPage} hasResults={questionsHasResults} setCurrentPage={setCurrentPage} />
-      </Box>
-    </Layout>
+              </Thead>
+              <Tbody>
+                {data.questions.map((question: Question) => (
+                  <Tr key={question.id}>
+                    <Td>{question.client.fullname}</Td>
+                    <Td>{question.created_at}</Td>
+                    <Td>
+                      <Tooltip hasArrow label="Responder">
+                        <ViewIcon
+                          color="facebook"
+                          mr="20px"
+                          cursor="pointer"
+                          onClick={() => handleViewQuestion(question.id)}
+                        />
+                      </Tooltip>
+                      {/* <CloseIcon color="red" cursor="pointer" onClick={() => handleOnDelete(question.id)} /> */}
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          ) : (
+            <EmptyResults />
+          )}
+          <PaginationButtons currentPage={currentPage} hasResults={questionsHasResults} setCurrentPage={setCurrentPage} />
+        </Box>
+      </Layout></Authorization>
   );
 };
 export default Questions;

@@ -30,7 +30,7 @@ import { ChatIcon, RepeatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { BUCKET_FILES_URL, IMPREDEA_EMAIL, MY_PURCHASES_SECTIONS } from '@/utils/constants';
 import { Layout } from '@/components/myPurchases';
-import { LoadingPage, ErrorPage, PaginationButtons, ReportProblemModal, EmptyResults } from '@/components/common';
+import { LoadingPage, ErrorPage, PaginationButtons, ReportProblemModal, EmptyResults, Authorization } from '@/components/common';
 import { GET_SALES_BY_CLIENT_ID, GET_SALE_BY_PK } from '@/graphql/queries';
 import { usePagination } from '@/hooks/index';
 import { Quotation } from 'types';
@@ -44,13 +44,13 @@ interface FormValues {
   description: string;
 }
 
-interface Props {}
+interface Props { }
 interface Sale {
   quotation: Quotation;
   id: string;
 }
 
-const Purchases = ({}: Props) => {
+const Purchases = ({ }: Props) => {
   const router = useRouter();
   const { id } = router.query;
   const [currentPurchaseId, setCurrentPurchaseId] = useState();
@@ -134,206 +134,208 @@ const Purchases = ({}: Props) => {
   if (error) return <ErrorPage />;
 
   return (
-    <Layout activeTab={MY_PURCHASES_SECTIONS.PURCHASES}>
-      <>
-        <ReportProblemModal
-          isOpen={reportProblemIsOpen}
-          handleOnClose={handleReportProblemClose}
-          onSubmit={handleReportProblemSubmit(submitReportProblem)}
-          errors={reportProblemErrors}
-          register={registerReportProblem}
-        />
-        {currentPurchase && (
-          <Modal isOpen={purchaseIsOpen} onClose={purchaseOnClose} size="4xl">
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Compra de {currentPurchase.sales_by_pk.quotation.product.name}</ModalHeader>
-              {loadingGetPurchase ? (
-                <Center>
-                  <Spinner />
-                </Center>
-              ) : (
-                <>
-                  <ModalCloseButton />
-                  <ModalBody>
-                    <Flex w="100%">
-                      <Stack w="40%" mr="5%">
-                        <Center>
-                          {currentPurchase.sales_by_pk.quotation.product && (
-                            <Image
-                              src={`${BUCKET_FILES_URL}products/${currentPurchase.sales_by_pk.quotation.product.id}`}
-                              width="400px"
-                              height="300px"
-                              alt=""
-                            />
-                          )}
-                        </Center>
-                        <FormLabel color="brandBlue" htmlFor="quantity">
-                          Cantidad:
-                        </FormLabel>
-                        <Input
-                          color="black"
-                          bg="gray.100"
-                          id="quantity"
-                          type="number"
-                          defaultValue={currentPurchase.sales_by_pk.quotation.quantity}
-                          readOnly
-                        />
-                        <FormLabel color="brandBlue" htmlFor="quality">
-                          Calidad:
-                        </FormLabel>
-                        <Input
-                          color="black"
-                          bg="gray.100"
-                          id="quality"
-                          defaultValue={currentPurchase.sales_by_pk.quotation.product_quality.label}
-                          readOnly
-                        />
-                        <FormLabel color="brandBlue" htmlFor="material">
-                          Material:
-                        </FormLabel>
-                        <Input
-                          color="black"
-                          bg="gray.100"
-                          id="material"
-                          defaultValue={currentPurchase.sales_by_pk.quotation.material.label}
-                          readOnly
-                        />
-                      </Stack>
-                      <Stack w="45%">
-                        <Text size="md">{`${currentPurchase.sales_by_pk.quotation.product.name} para ${currentPurchase.sales_by_pk.quotation.client.fullname}`}</Text>
-                        <FormLabel color="brandBlue" htmlFor="material">
-                          Tus indicaciones:
-                        </FormLabel>
-                        <Textarea
-                          color="black"
-                          bg="gray.100"
-                          id="material"
-                          defaultValue={currentPurchase.sales_by_pk.quotation.client_instructions}
-                          readOnly
-                        />
-                        <FormLabel color="brandBlue" htmlFor="price">
-                          Precio:
-                        </FormLabel>
-                        <Input
-                          bg="gray.100"
-                          color="black"
-                          id="price"
-                          type="number"
-                          readOnly
-                          defaultValue={currentPurchase.sales_by_pk.quotation.price}
-                        />
-                        <FormLabel color="brandBlue" htmlFor="estimated_date">
-                          Fecha Estimada:
-                        </FormLabel>
-                        <input
-                          style={{
-                            color: 'black',
-                            border: '1px solid',
-                            borderColor: 'inherit',
-                            borderRadius: '5px',
-                            width: '100%',
-                            padding: '6px',
-                            background: '#EDF2F7',
-                          }}
-                          id="estimated_date"
-                          type="date"
-                          readOnly
-                          defaultValue={currentPurchase.sales_by_pk.quotation.estimated_date}
-                        />
-                        <FormLabel color="brandBlue" htmlFor="information">
-                          Informacion adicional:
-                        </FormLabel>
-                        <Textarea
-                          color="black"
-                          bg="gray.100"
-                          id="information"
-                          readOnly
-                          defaultValue={currentPurchase.sales_by_pk.quotation.information}
-                        />
-                      </Stack>
-                    </Flex>
-                  </ModalBody>
-                </>
-              )}
-            </ModalContent>
-          </Modal>
-        )}
-        {salesHasResults ? (
-          <Table variant="striped" colorScheme="gray">
-            <Thead>
-              <Tr>
-                <Th>Producto</Th>
-                <Th>Fecha de Entrega</Th>
-                <Th>Maker</Th>
-                <Th>Precio</Th>
-                <Th>Acciones</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {data?.sales.map((sale: Sale) => (
-                <Tr key={sale.id}>
-                  <Td>{sale.quotation.product.name}</Td>
-                  <Td>{sale.quotation.estimated_date.slice(0, 10)}</Td>
-                  <Td>{sale.quotation.maker.maker_name}</Td>
-                  <Td>{sale.quotation.price}</Td>
-                  <Td>
-                    <Center>
-                      <Tooltip hasArrow label="Ver Conversación">
-                        <ChatIcon
-                          color="facebook"
-                          mr="20px"
-                          cursor="pointer"
-                          onClick={() => {
-                            router.push(
-                              `/conversation/${sale.quotation.conversation.id}/name/${sale.quotation.maker.maker_name}`
-                            );
-                          }}
-                        />
-                      </Tooltip>
-                      <Tooltip hasArrow label="Ver Compra">
-                        <ViewIcon
-                          color="facebook"
-                          mr="20px"
-                          cursor="pointer"
-                          onClick={() => {
-                            handleViewPurchase(sale.id);
-                          }}
-                        />
-                      </Tooltip>
-                      <Tooltip hasArrow label="Repetir Compra">
-                        <RepeatIcon
-                          color="facebook"
-                          mr="20px"
-                          cursor="pointer"
-                          onClick={() => {
-                            console.log(sale);
-                          }}
-                        />
-                      </Tooltip>
-                      <Tooltip hasArrow label="Reportar un problema">
-                        <WarningIcon
-                          color="red"
-                          mr="20px"
-                          cursor="pointer"
-                          onClick={() => {
-                            setSelectedSale(sale.id);
-                            reportProblemOnOpen();
-                          }}
-                        />
-                      </Tooltip>
-                    </Center>
-                  </Td>
+    <Authorization>
+      <Layout activeTab={MY_PURCHASES_SECTIONS.PURCHASES}>
+        <>
+          <ReportProblemModal
+            isOpen={reportProblemIsOpen}
+            handleOnClose={handleReportProblemClose}
+            onSubmit={handleReportProblemSubmit(submitReportProblem)}
+            errors={reportProblemErrors}
+            register={registerReportProblem}
+          />
+          {currentPurchase && (
+            <Modal isOpen={purchaseIsOpen} onClose={purchaseOnClose} size="4xl">
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Compra de {currentPurchase.sales_by_pk.quotation.product.name}</ModalHeader>
+                {loadingGetPurchase ? (
+                  <Center>
+                    <Spinner />
+                  </Center>
+                ) : (
+                  <>
+                    <ModalCloseButton />
+                    <ModalBody>
+                      <Flex w="100%">
+                        <Stack w="40%" mr="5%">
+                          <Center>
+                            {currentPurchase.sales_by_pk.quotation.product && (
+                              <Image
+                                src={`${BUCKET_FILES_URL}products/${currentPurchase.sales_by_pk.quotation.product.id}`}
+                                width="400px"
+                                height="300px"
+                                alt=""
+                              />
+                            )}
+                          </Center>
+                          <FormLabel color="brandBlue" htmlFor="quantity">
+                            Cantidad:
+                          </FormLabel>
+                          <Input
+                            color="black"
+                            bg="gray.100"
+                            id="quantity"
+                            type="number"
+                            defaultValue={currentPurchase.sales_by_pk.quotation.quantity}
+                            readOnly
+                          />
+                          <FormLabel color="brandBlue" htmlFor="quality">
+                            Calidad:
+                          </FormLabel>
+                          <Input
+                            color="black"
+                            bg="gray.100"
+                            id="quality"
+                            defaultValue={currentPurchase.sales_by_pk.quotation.product_quality.label}
+                            readOnly
+                          />
+                          <FormLabel color="brandBlue" htmlFor="material">
+                            Material:
+                          </FormLabel>
+                          <Input
+                            color="black"
+                            bg="gray.100"
+                            id="material"
+                            defaultValue={currentPurchase.sales_by_pk.quotation.material.label}
+                            readOnly
+                          />
+                        </Stack>
+                        <Stack w="45%">
+                          <Text size="md">{`${currentPurchase.sales_by_pk.quotation.product.name} para ${currentPurchase.sales_by_pk.quotation.client.fullname}`}</Text>
+                          <FormLabel color="brandBlue" htmlFor="material">
+                            Tus indicaciones:
+                          </FormLabel>
+                          <Textarea
+                            color="black"
+                            bg="gray.100"
+                            id="material"
+                            defaultValue={currentPurchase.sales_by_pk.quotation.client_instructions}
+                            readOnly
+                          />
+                          <FormLabel color="brandBlue" htmlFor="price">
+                            Precio:
+                          </FormLabel>
+                          <Input
+                            bg="gray.100"
+                            color="black"
+                            id="price"
+                            type="number"
+                            readOnly
+                            defaultValue={currentPurchase.sales_by_pk.quotation.price}
+                          />
+                          <FormLabel color="brandBlue" htmlFor="estimated_date">
+                            Fecha Estimada:
+                          </FormLabel>
+                          <input
+                            style={{
+                              color: 'black',
+                              border: '1px solid',
+                              borderColor: 'inherit',
+                              borderRadius: '5px',
+                              width: '100%',
+                              padding: '6px',
+                              background: '#EDF2F7',
+                            }}
+                            id="estimated_date"
+                            type="date"
+                            readOnly
+                            defaultValue={currentPurchase.sales_by_pk.quotation.estimated_date}
+                          />
+                          <FormLabel color="brandBlue" htmlFor="information">
+                            Informacion adicional:
+                          </FormLabel>
+                          <Textarea
+                            color="black"
+                            bg="gray.100"
+                            id="information"
+                            readOnly
+                            defaultValue={currentPurchase.sales_by_pk.quotation.information}
+                          />
+                        </Stack>
+                      </Flex>
+                    </ModalBody>
+                  </>
+                )}
+              </ModalContent>
+            </Modal>
+          )}
+          {salesHasResults ? (
+            <Table variant="striped" colorScheme="gray">
+              <Thead>
+                <Tr>
+                  <Th>Producto</Th>
+                  <Th>Fecha de Entrega</Th>
+                  <Th>Maker</Th>
+                  <Th>Precio</Th>
+                  <Th>Acciones</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        ) : (
-          <EmptyResults />
-        )}
-        <PaginationButtons currentPage={currentPage} hasResults={salesHasResults} setCurrentPage={setCurrentPage} />
-      </>
-    </Layout>
+              </Thead>
+              <Tbody>
+                {data?.sales.map((sale: Sale) => (
+                  <Tr key={sale.id}>
+                    <Td>{sale.quotation.product.name}</Td>
+                    <Td>{sale.quotation.estimated_date.slice(0, 10)}</Td>
+                    <Td>{sale.quotation.maker.maker_name}</Td>
+                    <Td>{sale.quotation.price}</Td>
+                    <Td>
+                      <Center>
+                        <Tooltip hasArrow label="Ver Conversación">
+                          <ChatIcon
+                            color="facebook"
+                            mr="20px"
+                            cursor="pointer"
+                            onClick={() => {
+                              router.push(
+                                `/conversation/${sale.quotation.conversation.id}/name/${sale.quotation.maker.maker_name}`
+                              );
+                            }}
+                          />
+                        </Tooltip>
+                        <Tooltip hasArrow label="Ver Compra">
+                          <ViewIcon
+                            color="facebook"
+                            mr="20px"
+                            cursor="pointer"
+                            onClick={() => {
+                              handleViewPurchase(sale.id);
+                            }}
+                          />
+                        </Tooltip>
+                        <Tooltip hasArrow label="Repetir Compra">
+                          <RepeatIcon
+                            color="facebook"
+                            mr="20px"
+                            cursor="pointer"
+                            onClick={() => {
+                              console.log(sale);
+                            }}
+                          />
+                        </Tooltip>
+                        <Tooltip hasArrow label="Reportar un problema">
+                          <WarningIcon
+                            color="red"
+                            mr="20px"
+                            cursor="pointer"
+                            onClick={() => {
+                              setSelectedSale(sale.id);
+                              reportProblemOnOpen();
+                            }}
+                          />
+                        </Tooltip>
+                      </Center>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          ) : (
+            <EmptyResults />
+          )}
+          <PaginationButtons currentPage={currentPage} hasResults={salesHasResults} setCurrentPage={setCurrentPage} />
+        </>
+      </Layout>
+    </Authorization>
   );
 };
 

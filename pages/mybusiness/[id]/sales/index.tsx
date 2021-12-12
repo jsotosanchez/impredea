@@ -5,7 +5,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
 import { useContext, useEffect, useState } from 'react';
 import { GET_CLIENT_INFO, GET_SALES_BY_MAKER_ID } from '@/graphql/queries';
-import { ErrorPage, ReportProblemModal, LoadingPage, PaginationButtons, EmptyResults } from '@/components/common';
+import { ErrorPage, ReportProblemModal, LoadingPage, PaginationButtons, EmptyResults, Authorization } from '@/components/common';
 import { usePagination } from '@/hooks/index';
 import { REPORT_PROBLEM } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
@@ -118,133 +118,135 @@ const SalesAdmin = ({ }) => {
   if (error) return <ErrorPage route={`/`} />;
 
   return (
-    <Layout activeHeader={MY_BUSINESS_SECTIONS.SALES}>
-      <>
-        <ReportProblemModal
-          isOpen={reportProblemIsOpen}
-          handleOnClose={handleReportProblemClose}
-          onSubmit={handleReportProblemSubmit(submitReportProblem)}
-          errors={reportProblemErrors}
-          register={registerReportProblem}
-        />
-        {currentClient && <ClientModal isOpen={clientIsOpen} loading={loadingClient} handleOnClose={clientOnClose} client={currentClient} />}
-        <Flex mt="15px" mb="15px">
-          <FormLabel color="brandBlue" pt="5px">
-            Producto
-          </FormLabel>
-          <Input
-            w="15%"
-            value={productNameFilter}
-            onChange={(e) => setProductNameFilter(e.target.value)}
+    <Authorization>
+      <Layout activeHeader={MY_BUSINESS_SECTIONS.SALES}>
+        <>
+          <ReportProblemModal
+            isOpen={reportProblemIsOpen}
+            handleOnClose={handleReportProblemClose}
+            onSubmit={handleReportProblemSubmit(submitReportProblem)}
+            errors={reportProblemErrors}
+            register={registerReportProblem}
           />
-          <FormLabel color="brandBlue" pt="5px" ml="15px">
-            Cliente
-          </FormLabel>
-          <Input
-            w="15%"
-            value={clientNameFilter}
-            onChange={(e) => setClientNameFilter(e.target.value)}
-          />
-          <FormLabel color="brandBlue" htmlFor="estimated_date" ml="15px" pt="7px">
-            Fecha Inicio:
-          </FormLabel>
-          <input
-            style={{
-              color: 'black',
-              border: '1px solid',
-              borderColor: 'inherit',
-              borderRadius: '5px',
-              padding: '6px',
-            }}
-            type="date"
-            value={startFilterDate}
-            onChange={e => setStartFilterDate(e.target.value)}
-          />
-          <FormLabel color="brandBlue" htmlFor="estimated_date" ml="15px" pt="7px">
-            Fecha Fin:
-          </FormLabel>
-          <input
-            style={{
-              color: 'black',
-              border: '1px solid',
-              borderColor: 'inherit',
-              borderRadius: '5px',
-              padding: '6px',
-            }}
-            type="date"
-            value={endFilterDate}
-            onChange={e => setEndFilterDate(e.target.value)}
-          />
-        </Flex>
-        {loading ? <LoadingPage /> : salesHasResults ? (
-          <Table variant="striped" colorScheme="gray">
-            <Thead>
-              <Tr>
-                <Th>Producto</Th>
-                <Th>Fecha de Entrega</Th>
-                <Th>Cliente</Th>
-                <Th>Precio</Th>
-                <Th>Acciones</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {data?.sales.map((sale: Sale) => (
-                <Tr key={sale.id}>
-                  <Td>{sale.quotation.product.name}</Td>
-                  <Td>{sale.quotation.estimated_date.slice(0, 10)}</Td>
-                  <Td>
-                    <Box cursor={"pointer"} onClick={() => handleOpenClientModal(sale.quotation.client.id)}>
-                      {sale.quotation.client.fullname}
-                    </Box>
-                  </Td>
-                  <Td>{sale.quotation.price}</Td>
-                  <Td>
-                    <Center>
-                      <Tooltip hasArrow label="Ver conversacion">
-                        <ChatIcon
-                          color="facebook"
-                          mr="20px"
-                          cursor="pointer"
-                          onClick={() => {
-                            router.push(
-                              `/conversation/${sale.quotation.conversation.id}/name/${sale.quotation.client.fullname}`
-                            );
-                          }}
-                        />
-                      </Tooltip>
-                      <Tooltip hasArrow label="Ver Venta">
-                        <ViewIcon
-                          color="facebook"
-                          mr="20px"
-                          cursor="pointer"
-                          onClick={() => {
-                            router.push(`/myBusiness/${currentUser}/sales/${sale.id}`);
-                          }}
-                        />
-                      </Tooltip>
-                      <Tooltip hasArrow label="Reportar Problema">
-                        <WarningIcon
-                          color="red"
-                          mr="20px"
-                          cursor="pointer"
-                          onClick={() => {
-                            setSelectedSale(sale.id);
-                            reportProblemOnOpen();
-                          }}
-                        />
-                      </Tooltip>
-                    </Center>
-                  </Td>
+          {currentClient && <ClientModal isOpen={clientIsOpen} loading={loadingClient} handleOnClose={clientOnClose} client={currentClient} />}
+          <Flex mt="15px" mb="15px">
+            <FormLabel color="brandBlue" pt="5px">
+              Producto
+            </FormLabel>
+            <Input
+              w="15%"
+              value={productNameFilter}
+              onChange={(e) => setProductNameFilter(e.target.value)}
+            />
+            <FormLabel color="brandBlue" pt="5px" ml="15px">
+              Cliente
+            </FormLabel>
+            <Input
+              w="15%"
+              value={clientNameFilter}
+              onChange={(e) => setClientNameFilter(e.target.value)}
+            />
+            <FormLabel color="brandBlue" htmlFor="estimated_date" ml="15px" pt="7px">
+              Fecha Inicio:
+            </FormLabel>
+            <input
+              style={{
+                color: 'black',
+                border: '1px solid',
+                borderColor: 'inherit',
+                borderRadius: '5px',
+                padding: '6px',
+              }}
+              type="date"
+              value={startFilterDate}
+              onChange={e => setStartFilterDate(e.target.value)}
+            />
+            <FormLabel color="brandBlue" htmlFor="estimated_date" ml="15px" pt="7px">
+              Fecha Fin:
+            </FormLabel>
+            <input
+              style={{
+                color: 'black',
+                border: '1px solid',
+                borderColor: 'inherit',
+                borderRadius: '5px',
+                padding: '6px',
+              }}
+              type="date"
+              value={endFilterDate}
+              onChange={e => setEndFilterDate(e.target.value)}
+            />
+          </Flex>
+          {loading ? <LoadingPage /> : salesHasResults ? (
+            <Table variant="striped" colorScheme="gray">
+              <Thead>
+                <Tr>
+                  <Th>Producto</Th>
+                  <Th>Fecha de Entrega</Th>
+                  <Th>Cliente</Th>
+                  <Th>Precio</Th>
+                  <Th>Acciones</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        ) : (
-          <EmptyResults />
-        )}
-        <PaginationButtons currentPage={currentPage} hasResults={salesHasResults} setCurrentPage={setCurrentPage} />
-      </>
-    </Layout>
+              </Thead>
+              <Tbody>
+                {data?.sales.map((sale: Sale) => (
+                  <Tr key={sale.id}>
+                    <Td>{sale.quotation.product.name}</Td>
+                    <Td>{sale.quotation.estimated_date.slice(0, 10)}</Td>
+                    <Td>
+                      <Box cursor={"pointer"} onClick={() => handleOpenClientModal(sale.quotation.client.id)}>
+                        {sale.quotation.client.fullname}
+                      </Box>
+                    </Td>
+                    <Td>{sale.quotation.price}</Td>
+                    <Td>
+                      <Center>
+                        <Tooltip hasArrow label="Ver conversacion">
+                          <ChatIcon
+                            color="facebook"
+                            mr="20px"
+                            cursor="pointer"
+                            onClick={() => {
+                              router.push(
+                                `/conversation/${sale.quotation.conversation.id}/name/${sale.quotation.client.fullname}`
+                              );
+                            }}
+                          />
+                        </Tooltip>
+                        <Tooltip hasArrow label="Ver Venta">
+                          <ViewIcon
+                            color="facebook"
+                            mr="20px"
+                            cursor="pointer"
+                            onClick={() => {
+                              router.push(`/myBusiness/${currentUser}/sales/${sale.id}`);
+                            }}
+                          />
+                        </Tooltip>
+                        <Tooltip hasArrow label="Reportar Problema">
+                          <WarningIcon
+                            color="red"
+                            mr="20px"
+                            cursor="pointer"
+                            onClick={() => {
+                              setSelectedSale(sale.id);
+                              reportProblemOnOpen();
+                            }}
+                          />
+                        </Tooltip>
+                      </Center>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          ) : (
+            <EmptyResults />
+          )}
+          <PaginationButtons currentPage={currentPage} hasResults={salesHasResults} setCurrentPage={setCurrentPage} />
+        </>
+      </Layout>
+    </Authorization>
   );
 };
 

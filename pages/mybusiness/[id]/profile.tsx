@@ -16,7 +16,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import { ErrorPage, LoadingPage } from '@/components/common';
+import { Authorization, ErrorPage, LoadingPage } from '@/components/common';
 import { useGetMakerAdmin } from '@/graphql/hooks';
 import { useMutation } from '@apollo/client';
 import { UPDATE_MAKER_INFO } from '@/graphql/mutations';
@@ -30,7 +30,7 @@ interface ProfileForm {
   description: string;
 }
 
-const Profile = ({}) => {
+const Profile = ({ }) => {
   const router = useRouter();
   const [picture, setPicture] = useState<DetailedHTMLProps<
     InputHTMLAttributes<HTMLInputElement>,
@@ -97,81 +97,83 @@ const Profile = ({}) => {
     );
 
   return (
-    <Layout activeHeader={MY_BUSINESS_SECTIONS.INFO}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Flex>
-          <Stack w="40%">
-            <HStack spacing="24px">
-              <FormControl>
-                <FormLabel color="brandBlue" htmlFor="rating">
-                  Rating:
-                </FormLabel>
-                <Input readOnly id="rating" bg="gray.100" value={data.user?.maker_rating} />
-              </FormControl>
-              <FormControl>
-                <FormLabel color="brandBlue" htmlFor="Sales">
-                  Ventas Realizadas:
-                </FormLabel>
-                <Input readOnly id="Sales" bg="gray.100" value={data.user?.maker_sales} />
-              </FormControl>
-            </HStack>
-            <FormLabel color="brandBlue" htmlFor="logo">
-              Logo:
-            </FormLabel>
-            <Box mb="30px">
-              <input type="file" onChange={setPicture}></input>
-            </Box>
-            <Image
-              src={
-                data.user?.maker_picture_key
-                  ? `${BUCKET_FILES_URL}${data.user?.maker_picture_key}`
-                  : '/empty-avatar.webp'
-              }
-              width="300px"
-              height="300px"
-              alt="error en la imagen"
-            />
-          </Stack>
-          <Spacer />
-          <Stack w="40%">
-            <FormControl isInvalid={errors.name != undefined}>
-              <FormLabel color="brandBlue" htmlFor="name">
-                Nombre:
+    <Authorization>
+      <Layout activeHeader={MY_BUSINESS_SECTIONS.INFO}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Flex>
+            <Stack w="40%">
+              <HStack spacing="24px">
+                <FormControl>
+                  <FormLabel color="brandBlue" htmlFor="rating">
+                    Rating:
+                  </FormLabel>
+                  <Input readOnly id="rating" bg="gray.100" value={data.user?.maker_rating} />
+                </FormControl>
+                <FormControl>
+                  <FormLabel color="brandBlue" htmlFor="Sales">
+                    Ventas Realizadas:
+                  </FormLabel>
+                  <Input readOnly id="Sales" bg="gray.100" value={data.user?.maker_sales} />
+                </FormControl>
+              </HStack>
+              <FormLabel color="brandBlue" htmlFor="logo">
+                Logo:
               </FormLabel>
-              <Input
-                id="name"
-                placeholder="Impresiones 3D"
-                defaultValue={data.user?.maker_name}
-                {...register('name', {
-                  required: 'Este campo es requerido',
-                })}
+              <Box mb="30px">
+                <input type="file" onChange={setPicture}></input>
+              </Box>
+              <Image
+                src={
+                  data.user?.maker_picture_key
+                    ? `${BUCKET_FILES_URL}${data.user?.maker_picture_key}`
+                    : '/empty-avatar.webp'
+                }
+                width="300px"
+                height="300px"
+                alt="error en la imagen"
               />
-              <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={errors.description != undefined}>
-              <FormLabel color="brandBlue" htmlFor="description">
-                Descripcion de mi empresa:
-              </FormLabel>
-              <Textarea
-                id="description"
-                defaultValue={data.user?.maker_description}
-                placeholder="Imprimiendo desde..."
-                {...register('description', {
-                  required: 'Este campo es requerido',
-                })}
-                rows={10}
-              />
-              <FormErrorMessage>{errors.description && errors.description.message}</FormErrorMessage>
-            </FormControl>
-            <Flex direction="row-reverse">
-              <Button w="30%" colorScheme="facebook" variant="solid" type="submit" isLoading={loadingUpdateInfo}>
-                Guardar
-              </Button>
-            </Flex>
-          </Stack>
-        </Flex>
-      </form>
-    </Layout>
+            </Stack>
+            <Spacer />
+            <Stack w="40%">
+              <FormControl isInvalid={errors.name != undefined}>
+                <FormLabel color="brandBlue" htmlFor="name">
+                  Nombre:
+                </FormLabel>
+                <Input
+                  id="name"
+                  placeholder="Impresiones 3D"
+                  defaultValue={data.user?.maker_name}
+                  {...register('name', {
+                    required: 'Este campo es requerido',
+                  })}
+                />
+                <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={errors.description != undefined}>
+                <FormLabel color="brandBlue" htmlFor="description">
+                  Descripcion de mi empresa:
+                </FormLabel>
+                <Textarea
+                  id="description"
+                  defaultValue={data.user?.maker_description}
+                  placeholder="Imprimiendo desde..."
+                  {...register('description', {
+                    required: 'Este campo es requerido',
+                  })}
+                  rows={10}
+                />
+                <FormErrorMessage>{errors.description && errors.description.message}</FormErrorMessage>
+              </FormControl>
+              <Flex direction="row-reverse">
+                <Button w="30%" colorScheme="facebook" variant="solid" type="submit" isLoading={loadingUpdateInfo}>
+                  Guardar
+                </Button>
+              </Flex>
+            </Stack>
+          </Flex>
+        </form>
+      </Layout>
+    </Authorization>
   );
 };
 

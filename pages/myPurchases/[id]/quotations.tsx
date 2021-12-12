@@ -31,16 +31,16 @@ import {
 import { ChatIcon, ViewIcon } from '@chakra-ui/icons';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { BUCKET_FILES_URL, MY_PURCHASES_SECTIONS } from '@/utils/constants';
-import { EmptyResults, LoadingPage, PaginationButtons } from '@/components/common';
+import { Authorization, EmptyResults, LoadingPage, PaginationButtons } from '@/components/common';
 import { Layout } from '@/components/myPurchases';
 import { GET_QUOTATIONS_BY_CLIENT_ID, GET_QUOTATION_BY_PK } from '@/graphql/queries';
 import { ACCEPT_QUOTATION, CREATE_SALE, DECLINE_QUOTATION } from '@/graphql/mutations';
 import { usePagination } from '@/hooks/index';
 import { Quotation } from 'types';
 import { createMercadoPagoLink } from '@/utils/miscellaneous';
-interface Props {}
+interface Props { }
 
-const Quotations = ({}: Props) => {
+const Quotations = ({ }: Props) => {
   const router = useRouter();
   const { id } = router.query;
   const [mpResponse, setMPResponse] = useState<any>();
@@ -133,191 +133,195 @@ const Quotations = ({}: Props) => {
 
   if (loading)
     return (
-      <Layout activeTab={MY_PURCHASES_SECTIONS.QUOTATIONS}>
-        <LoadingPage />
-      </Layout>
+      <Authorization>
+        <Layout activeTab={MY_PURCHASES_SECTIONS.QUOTATIONS}>
+          <LoadingPage />
+        </Layout>
+      </Authorization>
     );
 
   return (
-    <Layout activeTab={MY_PURCHASES_SECTIONS.QUOTATIONS}>
-      <Box>
-        <Modal isOpen={isOpen} onClose={handleOnClose} size="4xl">
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Cotización{quotationHasBeenResponded ? `` : `- Pendiente a respuesta`}</ModalHeader>
-            {loadingQuotation ? (
-              <Center>
-                <Spinner />
-              </Center>
-            ) : (
-              <>
-                <ModalCloseButton />
-                <ModalBody>
-                  <Flex w="100%">
-                    <Stack w="40%" mr="5%">
-                      <Center>
-                        {quotation && (
-                          <Image
-                            src={`${BUCKET_FILES_URL}products/${quotation.quotations_by_pk.product.id}`}
-                            width="300px"
-                            height="250px"
-                            alt=""
-                          />
-                        )}
-                      </Center>
-                      <FormLabel color="brandBlue" htmlFor="quantity">
-                        Cantidad:
-                      </FormLabel>
-                      <Input
-                        color="black"
-                        bg="gray.100"
-                        id="quantity"
-                        type="number"
-                        defaultValue={quotation?.quotations_by_pk?.quantity}
-                        readOnly
-                      />
-                      <FormLabel color="brandBlue" htmlFor="quality">
-                        Calidad:
-                      </FormLabel>
-                      <Input
-                        color="black"
-                        bg="gray.100"
-                        id="quality"
-                        defaultValue={quotation?.quotations_by_pk.product_quality.label}
-                        readOnly
-                      />
-                      <FormLabel color="brandBlue" htmlFor="material">
-                        Material:
-                      </FormLabel>
-                      <Input
-                        color="black"
-                        bg="gray.100"
-                        id="material"
-                        defaultValue={quotation?.quotations_by_pk.material.label}
-                        readOnly
-                      />
-                    </Stack>
-                    <Stack w="45%">
-                      <Text size="md">{`${quotation?.quotations_by_pk.product.name} para ${quotation?.quotations_by_pk.client.fullname}`}</Text>
-                      <FormLabel color="brandBlue" htmlFor="material">
-                        Tus indicaciones:
-                      </FormLabel>
-                      <Textarea
-                        color="black"
-                        bg="gray.100"
-                        id="material"
-                        defaultValue={quotation?.quotations_by_pk.client_instructions}
-                        readOnly
-                      />
-                      <FormLabel color="brandBlue" htmlFor="price">
-                        Precio:
-                      </FormLabel>
-                      <Input
-                        bg="gray.100"
-                        color="black"
-                        id="price"
-                        type="number"
-                        readOnly
-                        defaultValue={quotation?.quotations_by_pk.price}
-                      />
-                      <FormLabel color="brandBlue" htmlFor="estimated_date">
-                        Fecha Estimada:
-                      </FormLabel>
-                      <input
-                        style={{
-                          color: 'black',
-                          border: '1px solid',
-                          borderColor: 'inherit',
-                          borderRadius: '5px',
-                          width: '100%',
-                          padding: '6px',
-                          background: '#EDF2F7',
-                        }}
-                        id="estimated_date"
-                        type="date"
-                        readOnly
-                        defaultValue={quotation?.quotations_by_pk.estimated_date}
-                      />
-                      <FormLabel color="brandBlue" htmlFor="information">
-                        Informacion adicional:
-                      </FormLabel>
-                      <Textarea
-                        color="black"
-                        bg="gray.100"
-                        id="information"
-                        readOnly
-                        defaultValue={quotation?.quotations_by_pk.information}
-                      />
-                    </Stack>
-                  </Flex>
-                </ModalBody>
-                <ModalFooter>
-                  {quotationHasBeenResponded && (
-                    <>
-                      {/* <Button colorScheme="facebook" mr={3} onClick={handleComprar}>
+    <Authorization>
+      <Layout activeTab={MY_PURCHASES_SECTIONS.QUOTATIONS}>
+        <Box>
+          <Modal isOpen={isOpen} onClose={handleOnClose} size="4xl">
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Cotización{quotationHasBeenResponded ? `` : `- Pendiente a respuesta`}</ModalHeader>
+              {loadingQuotation ? (
+                <Center>
+                  <Spinner />
+                </Center>
+              ) : (
+                <>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <Flex w="100%">
+                      <Stack w="40%" mr="5%">
+                        <Center>
+                          {quotation && (
+                            <Image
+                              src={`${BUCKET_FILES_URL}products/${quotation.quotations_by_pk.product.id}`}
+                              width="300px"
+                              height="250px"
+                              alt=""
+                            />
+                          )}
+                        </Center>
+                        <FormLabel color="brandBlue" htmlFor="quantity">
+                          Cantidad:
+                        </FormLabel>
+                        <Input
+                          color="black"
+                          bg="gray.100"
+                          id="quantity"
+                          type="number"
+                          defaultValue={quotation?.quotations_by_pk?.quantity}
+                          readOnly
+                        />
+                        <FormLabel color="brandBlue" htmlFor="quality">
+                          Calidad:
+                        </FormLabel>
+                        <Input
+                          color="black"
+                          bg="gray.100"
+                          id="quality"
+                          defaultValue={quotation?.quotations_by_pk.product_quality.label}
+                          readOnly
+                        />
+                        <FormLabel color="brandBlue" htmlFor="material">
+                          Material:
+                        </FormLabel>
+                        <Input
+                          color="black"
+                          bg="gray.100"
+                          id="material"
+                          defaultValue={quotation?.quotations_by_pk.material.label}
+                          readOnly
+                        />
+                      </Stack>
+                      <Stack w="45%">
+                        <Text size="md">{`${quotation?.quotations_by_pk.product.name} para ${quotation?.quotations_by_pk.client.fullname}`}</Text>
+                        <FormLabel color="brandBlue" htmlFor="material">
+                          Tus indicaciones:
+                        </FormLabel>
+                        <Textarea
+                          color="black"
+                          bg="gray.100"
+                          id="material"
+                          defaultValue={quotation?.quotations_by_pk.client_instructions}
+                          readOnly
+                        />
+                        <FormLabel color="brandBlue" htmlFor="price">
+                          Precio:
+                        </FormLabel>
+                        <Input
+                          bg="gray.100"
+                          color="black"
+                          id="price"
+                          type="number"
+                          readOnly
+                          defaultValue={quotation?.quotations_by_pk.price}
+                        />
+                        <FormLabel color="brandBlue" htmlFor="estimated_date">
+                          Fecha Estimada:
+                        </FormLabel>
+                        <input
+                          style={{
+                            color: 'black',
+                            border: '1px solid',
+                            borderColor: 'inherit',
+                            borderRadius: '5px',
+                            width: '100%',
+                            padding: '6px',
+                            background: '#EDF2F7',
+                          }}
+                          id="estimated_date"
+                          type="date"
+                          readOnly
+                          defaultValue={quotation?.quotations_by_pk.estimated_date}
+                        />
+                        <FormLabel color="brandBlue" htmlFor="information">
+                          Informacion adicional:
+                        </FormLabel>
+                        <Textarea
+                          color="black"
+                          bg="gray.100"
+                          id="information"
+                          readOnly
+                          defaultValue={quotation?.quotations_by_pk.information}
+                        />
+                      </Stack>
+                    </Flex>
+                  </ModalBody>
+                  <ModalFooter>
+                    {quotationHasBeenResponded && (
+                      <>
+                        {/* <Button colorScheme="facebook" mr={3} onClick={handleComprar}>
                         Comprar
                       </Button> */}
-                      <div className="cho-container"></div>
-                      <Button variant="ghost" colorScheme="red" onClick={handleRechazar}>
-                        Rechazar
-                      </Button>
-                    </>
-                  )}
-                </ModalFooter>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
-        {quotationsHasResults ? (
-          <Table variant="striped" colorScheme="gray">
-            <Thead>
-              <Tr>
-                <Th>Producto</Th>
-                <Th>Fecha de Pedido</Th>
-                <Th>Maker</Th>
-                <Th>Estado</Th>
-                <Th>Acciones</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {data.quotations.map((quotation: Quotation) => (
-                <Tr key={quotation.id}>
-                  <Td>{quotation.product.name}</Td>
-                  <Td>{quotation.updated_at.slice(0, 10)}</Td>
-                  <Td>{quotation.maker.maker_name}</Td>
-                  <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
-                  <Td>
-                    <ChatIcon
-                      color="facebook"
-                      mr="20px"
-                      cursor="pointer"
-                      onClick={() => {
-                        router.push(`/conversation/${quotation.conversation.id}/name/${quotation.maker.maker_name}`);
-                      }}
-                    />
-                    <ViewIcon
-                      color="facebook"
-                      mr="20px"
-                      cursor="pointer"
-                      onClick={() => {
-                        handleOnEdit(quotation.id);
-                      }}
-                    />
-                  </Td>
+                        <div className="cho-container"></div>
+                        <Button variant="ghost" colorScheme="red" onClick={handleRechazar}>
+                          Rechazar
+                        </Button>
+                      </>
+                    )}
+                  </ModalFooter>
+                </>
+              )}
+            </ModalContent>
+          </Modal>
+          {quotationsHasResults ? (
+            <Table variant="striped" colorScheme="gray">
+              <Thead>
+                <Tr>
+                  <Th>Producto</Th>
+                  <Th>Fecha de Pedido</Th>
+                  <Th>Maker</Th>
+                  <Th>Estado</Th>
+                  <Th>Acciones</Th>
                 </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        ) : (
-          <EmptyResults />
-        )}
-        <PaginationButtons
-          currentPage={currentPage}
-          hasResults={quotationsHasResults}
-          setCurrentPage={setCurrentPage}
-        />
-      </Box>
-    </Layout>
+              </Thead>
+              <Tbody>
+                {data.quotations.map((quotation: Quotation) => (
+                  <Tr key={quotation.id}>
+                    <Td>{quotation.product.name}</Td>
+                    <Td>{quotation.updated_at.slice(0, 10)}</Td>
+                    <Td>{quotation.maker.maker_name}</Td>
+                    <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
+                    <Td>
+                      <ChatIcon
+                        color="facebook"
+                        mr="20px"
+                        cursor="pointer"
+                        onClick={() => {
+                          router.push(`/conversation/${quotation.conversation.id}/name/${quotation.maker.maker_name}`);
+                        }}
+                      />
+                      <ViewIcon
+                        color="facebook"
+                        mr="20px"
+                        cursor="pointer"
+                        onClick={() => {
+                          handleOnEdit(quotation.id);
+                        }}
+                      />
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          ) : (
+            <EmptyResults />
+          )}
+          <PaginationButtons
+            currentPage={currentPage}
+            hasResults={quotationsHasResults}
+            setCurrentPage={setCurrentPage}
+          />
+        </Box>
+      </Layout>
+    </Authorization>
   );
 };
 

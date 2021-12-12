@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { UnorderedList, useDisclosure, useToast } from '@chakra-ui/react';
-import { EmptyResults, LoadingPage, PaginationButtons } from '@/components/common';
+import { Authorization, EmptyResults, LoadingPage, PaginationButtons } from '@/components/common';
 import { MakeQuestionModal, Layout, QuestionCard } from '@/components/makerPage';
 import { useMutation, useQuery } from '@apollo/client';
 import { MAKE_QUESTION_TO_MAKER } from '@/graphql/mutations';
@@ -82,31 +82,33 @@ export default function Questions(): JSX.Element {
     );
 
   return (
-    <Layout activeHeader={MAKER_SECTIONS.QUESTIONS} onButtonClick={onOpen}>
-      <>
-        <MakeQuestionModal
-          isOpen={isOpen}
-          onClose={onClose}
-          questionText={questionText}
-          setQuestionText={setQuestionText}
-          onSubmit={handleSubmit}
-        />
-        {questionsHasResults ? (
-          <UnorderedList>
-            {data.questions.map((question: Question) => (
-              <QuestionCard
-                key={question.id}
-                question={question.question}
-                client={question.client}
-                response={question.response}
-              />
-            ))}
-          </UnorderedList>
-        ) : (
-          <EmptyResults />
-        )}
-        <PaginationButtons currentPage={currentPage} hasResults={questionsHasResults} setCurrentPage={setCurrentPage} />
-      </>
-    </Layout>
+    <Authorization>
+      <Layout activeHeader={MAKER_SECTIONS.QUESTIONS} onButtonClick={onOpen}>
+        <>
+          <MakeQuestionModal
+            isOpen={isOpen}
+            onClose={onClose}
+            questionText={questionText}
+            setQuestionText={setQuestionText}
+            onSubmit={handleSubmit}
+          />
+          {questionsHasResults ? (
+            <UnorderedList>
+              {data.questions.map((question: Question) => (
+                <QuestionCard
+                  key={question.id}
+                  question={question.question}
+                  client={question.client}
+                  response={question.response}
+                />
+              ))}
+            </UnorderedList>
+          ) : (
+            <EmptyResults />
+          )}
+          <PaginationButtons currentPage={currentPage} hasResults={questionsHasResults} setCurrentPage={setCurrentPage} />
+        </>
+      </Layout>
+    </Authorization>
   );
 }

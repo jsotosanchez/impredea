@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { gql, useQuery } from '@apollo/client';
-import { Layout, LoadingPage, MakerCard, ErrorPage, SideBarLayout, EmptyResults } from '@/components/common';
+import { Layout, LoadingPage, MakerCard, ErrorPage, SideBarLayout, EmptyResults, Authorization } from '@/components/common';
 import client from '@/graphql/apollo-client';
 import { GET_MAKERS } from '@/graphql/queries';
 import { formatToContains } from '@/graphql/utils';
@@ -74,117 +74,118 @@ const Search = ({ quantities, categories, provinces }: Props) => {
   };
   if (loading) return <LoadingPage />;
   if (error) {
-    console.log(error);
     return <ErrorPage />;
   }
   return (
-    <Layout>
-      <SideBarLayout
-        sideBarChildren={
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl isInvalid={errors.makerName != undefined} pb="5px">
-              <FormLabel color="brandBlue" htmlFor="makerName">
-                Nombre del Maker:
-              </FormLabel>
-              <Input bg="white" color="black" id="makerName" defaultValue={makerName} {...register('makerName')} />
-              <FormErrorMessage>{errors.makerName && errors.makerName.message}</FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={errors.quantity != undefined}>
-              <FormLabel color="brandBlue">Que Cantidad?</FormLabel>
-              <Select
-                bg="white"
-                color="black"
-                id="quantity"
-                {...register('quantity', {
-                  required: 'Este campo es requerido',
-                })}
+    <Authorization>
+      <Layout>
+        <SideBarLayout
+          sideBarChildren={
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <FormControl isInvalid={errors.makerName != undefined} pb="5px">
+                <FormLabel color="brandBlue" htmlFor="makerName">
+                  Nombre del Maker:
+                </FormLabel>
+                <Input bg="white" color="black" id="makerName" defaultValue={makerName} {...register('makerName')} />
+                <FormErrorMessage>{errors.makerName && errors.makerName.message}</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={errors.quantity != undefined}>
+                <FormLabel color="brandBlue">Que Cantidad?</FormLabel>
+                <Select
+                  bg="white"
+                  color="black"
+                  id="quantity"
+                  {...register('quantity', {
+                    required: 'Este campo es requerido',
+                  })}
+                >
+                  {quantities.map((option: { id: number; label: string }) => (
+                    <option value={option.id} key={option.id}>
+                      {option.label}
+                    </option>
+                  ))}
+                </Select>
+                <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={errors.category != undefined}>
+                <FormLabel color="brandBlue">Selecciona una categoria</FormLabel>
+                <Select bg="white" color="black" defaultValue={category} id="category" {...register('category')}>
+                  <option value={''}>Todos</option>
+                  {categories.map((category: { id: number; label: string }) => (
+                    <option value={category.id} key={category.id}>
+                      {category.label}
+                    </option>
+                  ))}
+                </Select>
+                <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={errors.makerLocation != undefined}>
+                <FormLabel color="brandBlue">Selecciona una localidad:</FormLabel>
+                <Select
+                  bg="white"
+                  color="black"
+                  defaultValue={location}
+                  id="makerLocation"
+                  {...register('makerLocation')}
+                >
+                  <option value={''}>Todos</option>
+                  {provinces.map((province: { id: number; name: string }) => (
+                    <option value={province.id} key={province.id}>
+                      {province.name}
+                    </option>
+                  ))}
+                </Select>
+                <FormErrorMessage>{errors.makerLocation && errors.makerLocation.message}</FormErrorMessage>
+              </FormControl>
+              <FormLabel color="brandBlue">Reputacion minima: {minRep}</FormLabel>
+              <Slider
+                min={1}
+                max={5}
+                aria-label="slider-ex-1"
+                defaultValue={minRep}
+                name="reputacion"
+                onChange={(v) => setMinRep(v)}
               >
-                {quantities.map((option: { id: number; label: string }) => (
-                  <option value={option.id} key={option.id}>
-                    {option.label}
-                  </option>
-                ))}
-              </Select>
-              <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={errors.category != undefined}>
-              <FormLabel color="brandBlue">Selecciona una categoria</FormLabel>
-              <Select bg="white" color="black" defaultValue={category} id="category" {...register('category')}>
-                <option value={''}>Todos</option>
-                {categories.map((category: { id: number; label: string }) => (
-                  <option value={category.id} key={category.id}>
-                    {category.label}
-                  </option>
-                ))}
-              </Select>
-              <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={errors.makerLocation != undefined}>
-              <FormLabel color="brandBlue">Selecciona una localidad:</FormLabel>
-              <Select
-                bg="white"
-                color="black"
-                defaultValue={location}
-                id="makerLocation"
-                {...register('makerLocation')}
-              >
-                <option value={''}>Todos</option>
-                {provinces.map((province: { id: number; name: string }) => (
-                  <option value={province.id} key={province.id}>
-                    {province.name}
-                  </option>
-                ))}
-              </Select>
-              <FormErrorMessage>{errors.makerLocation && errors.makerLocation.message}</FormErrorMessage>
-            </FormControl>
-            <FormLabel color="brandBlue">Reputacion minima: {minRep}</FormLabel>
-            <Slider
-              min={1}
-              max={5}
-              aria-label="slider-ex-1"
-              defaultValue={minRep}
-              name="reputacion"
-              onChange={(v) => setMinRep(v)}
-            >
-              <SliderTrack bg="white">
-                <SliderFilledTrack />
-              </SliderTrack>
-              <SliderThumb />
-            </Slider>
-            <Box pt="27px">
-              <Button variant="solid" bg="brandBlue" colorScheme="brandBlue" color="white" type="submit">
-                Buscar
-              </Button>
-            </Box>
-          </form>
-        }
-        contentChildren={
-          data.user.length ? (
-            <>
-              <UnorderedList m="3rem">
-                {data.user.map(({ maker_name, maker_description, maker_rating, id, maker_picture_key }: User) => (
-                  <MakerCard
-                    name={maker_name}
-                    description={maker_description}
-                    rating={maker_rating}
-                    handleOnClick={() => handleOnClick(id)}
-                    key={id}
-                    picKey={maker_picture_key}
-                  />
-                ))}
-              </UnorderedList>
-              <Box>
-                <Button variant="solid" colorScheme="facebook" ml="75%" onClick={handleLoadMore} isLoading={loading}>
-                  Cargar mas
+                <SliderTrack bg="white">
+                  <SliderFilledTrack />
+                </SliderTrack>
+                <SliderThumb />
+              </Slider>
+              <Box pt="27px">
+                <Button variant="solid" bg="brandBlue" colorScheme="brandBlue" color="white" type="submit">
+                  Buscar
                 </Button>
               </Box>
-            </>
-          ) : (
-            <EmptyResults />
-          )
-        }
-      />
-    </Layout>
+            </form>
+          }
+          contentChildren={
+            data.user.length ? (
+              <>
+                <UnorderedList m="3rem">
+                  {data.user.map(({ maker_name, maker_description, maker_rating, id, maker_picture_key }: User) => (
+                    <MakerCard
+                      name={maker_name}
+                      description={maker_description}
+                      rating={maker_rating}
+                      handleOnClick={() => handleOnClick(id)}
+                      key={id}
+                      picKey={maker_picture_key}
+                    />
+                  ))}
+                </UnorderedList>
+                <Box>
+                  <Button variant="solid" colorScheme="facebook" ml="75%" onClick={handleLoadMore} isLoading={loading}>
+                    Cargar mas
+                  </Button>
+                </Box>
+              </>
+            ) : (
+              <EmptyResults />
+            )
+          }
+        />
+      </Layout>
+    </Authorization>
   );
 };
 
