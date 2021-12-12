@@ -32,6 +32,7 @@ interface Props {
     client: { fullname: string };
     price: number;
     client_instructions: string;
+    information: string;
   };
 }
 
@@ -55,7 +56,7 @@ const Sale = ({ quotation }: Props): JSX.Element => {
           <ModalBody>
             <Flex w="100%">
               <Stack w="40%" mr="5%">
-                <Center>
+                {quotation && quotation.product && <Center>
                   {quotation && (
                     <Image
                       src={`${BUCKET_FILES_URL}products/${quotation.product.id}`}
@@ -64,7 +65,7 @@ const Sale = ({ quotation }: Props): JSX.Element => {
                       alt=""
                     />
                   )}
-                </Center>
+                </Center>}
                 <FormLabel color="brandBlue" htmlFor="quantity">
                   Cantidad:
                 </FormLabel>
@@ -86,7 +87,7 @@ const Sale = ({ quotation }: Props): JSX.Element => {
                 <Input color="black" bg="gray.100" id="material" defaultValue={quotation.material.label} readOnly />
               </Stack>
               <Stack w="45%">
-                <Text size="md">{`${quotation.product.name} para ${quotation.client.fullname}`}</Text>
+                {quotation && quotation.product && <Text size="md">{`${quotation.product.name} para ${quotation.client.fullname}`}</Text>}
                 <FormLabel color="brandBlue" htmlFor="material">
                   Indicaciones del cliente:
                 </FormLabel>
@@ -94,14 +95,13 @@ const Sale = ({ quotation }: Props): JSX.Element => {
                   color="black"
                   bg="gray.100"
                   id="material"
-                  defaultValue={quotation.client_instructions}
+                  value={quotation.client_instructions}
                   readOnly
                 />
-
                 <FormLabel color="brandBlue" htmlFor="price">
                   Precio:
                 </FormLabel>
-                <Input color="black" bg="gray.100" id="price" type="number" readOnly defaultValue={quotation.price} />
+                <Input color="black" bg="gray.100" id="price" type="number" readOnly value={quotation.price} />
                 <FormLabel color="brandBlue" htmlFor="estimated_date">
                   Fecha estimada:
                 </FormLabel>
@@ -121,9 +121,9 @@ const Sale = ({ quotation }: Props): JSX.Element => {
                   value={quotation.estimated_date}
                 />
                 <FormLabel color="brandBlue" htmlFor="information">
-                  Informacion adicional:
+                  Informacion adicional para el cliente:
                 </FormLabel>
-                <Textarea color="black" bg="gray.100" id="information" readOnly rows={5} />
+                <Textarea color="black" bg="gray.100" id="information" readOnly value={quotation.information} rows={5} />
               </Stack>
             </Flex>
           </ModalBody>

@@ -104,14 +104,16 @@ const Product = ({ }: Props): JSX.Element => {
   } = useForm<Form>();
 
   const onSubmit = (formData: Object) => {
-    if (!toast.isActive(logInToastId)) {
-      toast({
-        id: logInToastId,
-        title: 'Tienes que estar registrado para hacer una pregunta',
-        status: 'warning',
-        isClosable: true,
-        position: 'top-right',
-      });
+    if (!user) {
+      if (!toast.isActive(logInToastId)) {
+        toast({
+          id: logInToastId,
+          title: 'Tienes que estar registrado para hacer una pregunta',
+          status: 'warning',
+          isClosable: true,
+          position: 'top-right',
+        });
+      }
       return;
     }
 

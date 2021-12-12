@@ -113,8 +113,8 @@ const MakerProfileLayout = ({ children, activeHeader, onButtonClick }: Props): J
               </Button>
             )}
             {activeHeader === MAKER_SECTIONS.PRODUCTS && (
-              <Link href={`/maker/${id}/catalog`} passHref>
-                <Button colorScheme="facebook" onClick={handleQuestionClick}>
+              <Link href={`/maker/${id}/customProduct`} passHref>
+                <Button colorScheme="facebook">
                   Pedir Cotizacion
                 </Button>
               </Link>

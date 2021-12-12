@@ -32,8 +32,9 @@ import {
   Checkbox,
   HStack,
   Tooltip,
+  Link,
 } from '@chakra-ui/react';
-import { EditIcon, ChatIcon } from '@chakra-ui/icons';
+import { EditIcon, ChatIcon, ExternalLinkIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
 import client from '@/graphql/apollo-client';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
@@ -109,7 +110,6 @@ const Quotations = ({ statuses }: Props) => {
   } = useForm<FormValues>();
 
   const [queryQuotation, { loading: loadingQuotation, data: quotation }] = useLazyQuery(GET_QUOTATION_BY_PK);
-
   const handleOnEdit = (id: number) => {
     queryQuotation({ variables: { id } });
     onOpen();
@@ -155,6 +155,7 @@ const Quotations = ({ statuses }: Props) => {
     setCurrentPage(0);
   }, [checkedStatuses, refetchQuotations, setCurrentPage, id]);
 
+  console.log(quotation)
   if (error) return <ErrorPage route={`/`} />;
 
   if (loading)
@@ -180,18 +181,28 @@ const Quotations = ({ statuses }: Props) => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <ModalCloseButton />
                   <ModalBody>
-                    <Flex w="100%">
+                    {quotation && <Flex w="100%">
                       <Stack w="40%" mr="5%">
-                        <Center>
-                          {quotation && (
-                            <Image
-                              src={`${BUCKET_FILES_URL}products/${quotation.quotations_by_pk.product.id}`}
-                              width="300px"
-                              height="250px"
-                              alt=""
-                            />
-                          )}
-                        </Center>
+                        {
+                          quotation.quotations_by_pk.is_custom_product ? <>{
+                            quotation.quotations_by_pk.file_url && <>
+                              <Link href={quotation.quotations_by_pk.file_url} isExternal>
+                                Link al modelo <ExternalLinkIcon mx='2px' />
+                              </Link>
+                            </>
+                          }</>
+                            :
+                            <Center>
+                              {quotation && quotation.quotations_by_pk.product && (
+                                <Image
+                                  src={`${BUCKET_FILES_URL}products/${quotation.quotations_by_pk.product.id}`}
+                                  width="300px"
+                                  height="250px"
+                                  alt=""
+                                />
+                              )}
+                            </Center>
+                        }
                         <FormLabel color="brandBlue" htmlFor="quantity">
                           Cantidad:
                         </FormLabel>
@@ -225,14 +236,14 @@ const Quotations = ({ statuses }: Props) => {
                         />
                       </Stack>
                       <Stack w="45%">
-                        <Text size="md">{`${quotation?.quotations_by_pk.product.name} para ${quotation?.quotations_by_pk.client.fullname}`}</Text>
-                        <FormLabel color="brandBlue" htmlFor="material">
+                        {quotation.quotations_by_pk.product && <Text size="md">{`${quotation?.quotations_by_pk.product.name} para ${quotation?.quotations_by_pk.client.fullname}`}</Text>}
+                        <FormLabel color="brandBlue" htmlFor="indicaciones">
                           Indicaciones del cliente:
                         </FormLabel>
                         <Textarea
                           color="black"
                           bg="gray.100"
-                          id="material"
+                          id="indicaciones"
                           defaultValue={quotation?.quotations_by_pk.client_instructions}
                           readOnly
                         />
@@ -287,7 +298,7 @@ const Quotations = ({ statuses }: Props) => {
                           <FormErrorMessage>{errors.information && errors.information.message}</FormErrorMessage>
                         </FormControl>
                       </Stack>
-                    </Flex>
+                    </Flex>}
                   </ModalBody>
                   <ModalFooter>
                     <Button type="submit" colorScheme="facebook">

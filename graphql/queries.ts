@@ -282,6 +282,8 @@ export const GET_QUOTATION_BY_PK = gql`
       quotation_status {
         label
       }
+      is_custom_product
+      file_url
     }
   }
 `;
@@ -380,6 +382,7 @@ export const GET_SALE_BY_PK = gql`
         price
         information
         quantity
+        is_custom_product
         product {
           id
           name
