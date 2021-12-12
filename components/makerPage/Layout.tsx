@@ -25,7 +25,7 @@ const MakerProfileLayout = ({ children, activeHeader, onButtonClick }: Props): J
   const context = useContext(SessionContext);
   const currentUserId = context.getUser()?.id;
 
-  const handleOnButtonClick = () => {
+  const handleQuestionClick = () => {
     if (currentUserId) {
       onButtonClick && onButtonClick();
     } else {
@@ -74,7 +74,7 @@ const MakerProfileLayout = ({ children, activeHeader, onButtonClick }: Props): J
             <Text color="black">{data && data.user_by_pk.maker_description}</Text>
           </>
         </Stack>
-        <Box w="70%" pl="20px">
+        <Box w="70%" pl="5%">
           <HStack spacing="20px" pb="20px">
             <Link href={`/maker/${id}/catalog`} passHref>
               <Heading
@@ -107,10 +107,17 @@ const MakerProfileLayout = ({ children, activeHeader, onButtonClick }: Props): J
               </Heading>
             </Link>
             <Spacer />
-            {activeHeader === MAKER_SECTIONS.QUESTIONS && handleOnButtonClick && (
-              <Button colorScheme="facebook" onClick={handleOnButtonClick}>
+            {activeHeader === MAKER_SECTIONS.QUESTIONS && (
+              <Button colorScheme="facebook" onClick={handleQuestionClick}>
                 Hacer Pregunta
               </Button>
+            )}
+            {activeHeader === MAKER_SECTIONS.PRODUCTS && (
+              <Link href={`/maker/${id}/catalog`} passHref>
+                <Button colorScheme="facebook" onClick={handleQuestionClick}>
+                  Pedir Cotizacion
+                </Button>
+              </Link>
             )}
           </HStack>
           {children}

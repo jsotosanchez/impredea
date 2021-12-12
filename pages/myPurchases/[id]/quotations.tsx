@@ -201,7 +201,7 @@ const Quotations = ({ }: Props) => {
                         />
                       </Stack>
                       <Stack w="45%">
-                        <Text size="md">{`${quotation?.quotations_by_pk.product.name} para ${quotation?.quotations_by_pk.client.fullname}`}</Text>
+                        <Text size="md">{`${quotation?.quotations_by_pk.product ? quotation?.quotations_by_pk.product.name : "Producto"} para ${quotation?.quotations_by_pk.client.fullname}`}</Text>
                         <FormLabel color="brandBlue" htmlFor="material">
                           Tus indicaciones:
                         </FormLabel>
@@ -285,7 +285,7 @@ const Quotations = ({ }: Props) => {
               <Tbody>
                 {data.quotations.map((quotation: Quotation) => (
                   <Tr key={quotation.id}>
-                    <Td>{quotation.product.name}</Td>
+                    <Td>{quotation.product ? quotation.product.name : ""}</Td>
                     <Td>{quotation.updated_at.slice(0, 10)}</Td>
                     <Td>{quotation.maker.maker_name}</Td>
                     <Td>{quotation.quotation_status.label.toUpperCase()}</Td>

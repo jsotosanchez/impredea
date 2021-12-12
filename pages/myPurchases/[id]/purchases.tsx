@@ -274,7 +274,7 @@ const Purchases = ({ }: Props) => {
               <Tbody>
                 {data?.sales.map((sale: Sale) => (
                   <Tr key={sale.id}>
-                    <Td>{sale.quotation.product.name}</Td>
+                    <Td>{sale.quotation.product ? sale.quotation.product.name : ""}</Td>
                     <Td>{sale.quotation.estimated_date.slice(0, 10)}</Td>
                     <Td>{sale.quotation.maker.maker_name}</Td>
                     <Td>{sale.quotation.price}</Td>

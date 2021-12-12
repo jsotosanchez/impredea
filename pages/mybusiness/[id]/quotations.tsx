@@ -65,7 +65,7 @@ interface Conversation {
 
 interface Quotation {
   id: number;
-  product: Product;
+  product?: Product;
   updated_at: string;
   status_id: number;
   quotation_status: QuotationStatus;
@@ -337,7 +337,7 @@ const Quotations = ({ statuses }: Props) => {
               <Tbody>
                 {data.quotations.map((quotation: Quotation) => (
                   <Tr key={quotation.id}>
-                    <Td>{quotation.product.name}</Td>
+                    <Td>{quotation.product ? quotation.product.name : ""}</Td>
                     <Td>{quotation.updated_at.slice(0, 10)}</Td>
                     <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
                     <Td>

@@ -202,7 +202,6 @@ export const GET_USER_IDENTITY_BY_EMAIL = gql`
     }
   }
 `;
-
 export const GET_QUOTATIONS_BY_MAKER_ID = gql`
   query getQuotationsByMakerId($id: Int!, $statuses: [Int!] = [1, 2, 3, 4], $limit: Int = 10, $offset: Int = 0) {
     quotations(
@@ -305,7 +304,7 @@ export const GET_SALES_BY_CLIENT_ID = gql`
     }
   }
 `;
-
+// WIP
 export const GET_SALES_BY_MAKER_ID = gql`
   query getSalesByMakerId($id: Int!, $productFilter: String, $clientFilter: String, $startDate: date, $endDate: date, $limit: Int = 10, $offset: Int = 0 ) {
   sales(where: {maker_id: {_eq: $id}, quotation: {product: {name: {_ilike: $productFilter}}, client: {fullname: {_ilike: $clientFilter}}, estimated_date: {_gte: $startDate, _lte: $endDate}}}, offset: $offset, limit: $limit) {
@@ -371,7 +370,7 @@ export const GET_QUOTATIONS_STATUSES = gql`
     }
   }
 `;
-
+// WIP
 export const GET_SALE_BY_PK = gql`
   query MyQuery($id: uuid!) {
     sales_by_pk(id: $id) {
