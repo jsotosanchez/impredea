@@ -182,3 +182,14 @@ export const CREATE_CONVERSATION = gql`
     }
   }
 `;
+
+
+export const CREATE_PRODUCTS_PICTURES_ID = gql`
+  mutation MyMutation($objects: [product_pictures_insert_input!]!) {
+    insert_product_pictures(objects: $objects) {
+      returning {
+        id
+      }
+    }
+  }
+`;
