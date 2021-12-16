@@ -38,9 +38,8 @@ interface Props {
 
 const Sale = ({ quotation }: Props): JSX.Element => {
   const router = useRouter();
-  const { id: makerId, saleId } = router.query;
   const context = useContext(SessionContext);
-  const user = context.getUser();
+
 
   const handleOnClose = () => {
     router.back();
