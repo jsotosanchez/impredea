@@ -38,8 +38,6 @@ interface Props {
 
 const Sale = ({ quotation }: Props): JSX.Element => {
   const router = useRouter();
-  const context = useContext(SessionContext);
-
 
   const handleOnClose = () => {
     router.back();
