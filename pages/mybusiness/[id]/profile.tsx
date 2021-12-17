@@ -123,6 +123,7 @@ const Profile = ({ }) => {
                 <input type="file" onChange={setPicture}></input>
               </Box>
               <Image
+                priority={true}
                 src={
                   data.user?.maker_picture_key
                     ? `${BUCKET_FILES_URL}${data.user?.maker_picture_key}`

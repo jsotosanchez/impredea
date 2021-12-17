@@ -168,10 +168,9 @@ const Product = ({ }: Props): JSX.Element => {
                   <Stack w="40%" mr="5%">
                     <Center>
                       <Carousel showThumbs={false}>
-                        <Image src={`${BUCKET_FILES_URL}products/${pid}`} width="370px" height="240px" alt="" priority={true} />
+                        <Image priority={true} src={`${BUCKET_FILES_URL}products/${pid}`} width="370px" height="240px" alt="" />
                         {prodPics.map((id: any) => <Image priority={true} src={`${BUCKET_FILES_URL}product${pid}/${id}`} width="370px" height="240px" alt="" key={id} />)}
                       </Carousel>
-
                     </Center>
                     <FormControl isInvalid={errors.quantity != undefined}>
                       <FormLabel color="brandBlue" htmlFor="quantity">

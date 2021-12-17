@@ -90,7 +90,7 @@ const ManageProductModal = ({
                     {product && (
                       <Image priority={true} src={getProductPicUrl(product.id)} width="400px" height="300px" alt="" />
                     )}
-                    {!product && <Image src="/empty.jpeg" width="400px" height="300px" alt="" />}
+                    {!product && <Image priority={true} src="/empty.jpeg" width="400px" height="300px" alt="" />}
                   </Center>
                   <FormControl>
                     <FormLabel color="brandBlue" htmlFor="logo">
@@ -100,7 +100,7 @@ const ManageProductModal = ({
                   </FormControl>
                   <Center w="100%">
                     {product && <Carousel showThumbs={false}>{prodPics.map((id: any) => <Image priority={true} src={`${BUCKET_FILES_URL}product${product.id}/${id}`} width="150px" height="150px" alt="" key={id} />)}</Carousel>}
-                    {!product && <Image src="/empty.jpeg" width="400px" height="300px" alt="" />}
+                    {!product && <Image priority={true} src="/empty.jpeg" width="400px" height="300px" alt="" />}
                   </Center>
                 </Stack>
                 <Stack w="60%" pl="5%">

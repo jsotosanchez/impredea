@@ -195,6 +195,7 @@ const Quotations = ({ statuses }: Props) => {
                             <Center>
                               {quotation && quotation.quotations_by_pk.product && (
                                 <Image
+                                  priority={true}
                                   src={`${BUCKET_FILES_URL}products/${quotation.quotations_by_pk.product.id}`}
                                   width="300px"
                                   height="250px"

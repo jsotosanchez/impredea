@@ -56,6 +56,7 @@ const Sale = ({ quotation }: Props): JSX.Element => {
                 {quotation && quotation.product && <Center>
                   {quotation && (
                     <Image
+                      priority={true}
                       src={`${BUCKET_FILES_URL}products/${quotation.product.id}`}
                       width="300px"
                       height="250px"

@@ -162,6 +162,7 @@ const Purchases = ({ }: Props) => {
                           <Center>
                             {currentPurchase.sales_by_pk.quotation.product && (
                               <Image
+                                priority={true}
                                 src={`${BUCKET_FILES_URL}products/${currentPurchase.sales_by_pk.quotation.product.id}`}
                                 width="400px"
                                 height="300px"

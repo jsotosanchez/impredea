@@ -24,7 +24,7 @@ const ProductSearchCard = ({ main_photo, description, makerName, productName, ha
       onClick={handleOnClick}
     >
       <Box mr="15px">
-        <Image src={`${BUCKET_FILES_URL}products/${main_photo}`} width="300px" height="200px" alt="" />
+        <Image priority={true} src={`${BUCKET_FILES_URL}products/${main_photo}`} width="300px" height="200px" alt="" />
       </Box>
       <Stack w="80%">
         <Flex mr="10%">

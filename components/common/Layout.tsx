@@ -30,7 +30,7 @@ export default function Layout({ children }: Props) {
         paddingRight="20"
       >
         <Flex p="4" color="black">
-          <Image src="/logo.png" width="30" height="50" alt="" />
+          <Image priority={true} src="/logo.png" width="30" height="50" alt="" />
           <Heading as="h1" size="md" color="white" onClick={() => router.push('/')} cursor="pointer" pt="3px">
             Impredea
           </Heading>

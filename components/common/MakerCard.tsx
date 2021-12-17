@@ -25,7 +25,7 @@ const MakerCard = ({ name, description, rating, handleOnClick, picKey }: Props):
       onClick={handleOnClick}
     >
       <Box mr="15px">
-        <Image src={`${BUCKET_FILES_URL}${picKey}`} width="200px" height="140px" alt="" />
+        <Image priority={true} src={`${BUCKET_FILES_URL}${picKey}`} width="200px" height="140px" alt="" />
       </Box>
       <Stack w="50%">
         <Heading as="h2" color="brandBlue" size="md" fontWeight="black">

@@ -57,7 +57,7 @@ const MakerProfileLayout = ({ children, activeHeader, onButtonClick }: Props): J
                 Volver
               </Text>
             </Flex>
-            <Image
+            <Image priority={true}
               src={`${BUCKET_FILES_URL}${data.user_by_pk.maker_picture_key}`}
               width="200px"
               height="250px"

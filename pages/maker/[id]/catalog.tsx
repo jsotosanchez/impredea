@@ -39,7 +39,7 @@ export default function Catalog(): JSX.Element {
               {data.product.map(({ name, id: pid }: Product) => (
                 <Link key={pid} href={`/maker/${id}/product/${pid}`} passHref>
                   <Box cursor="pointer">
-                    <Image src={`${BUCKET_FILES_URL}products/${pid}`} width="370px" height="240px" alt="" />
+                    <Image priority={true} src={`${BUCKET_FILES_URL}products/${pid}`} width="370px" height="240px" alt="" />
                     <Text noOfLines={1} align="center">
                       {name}
                     </Text>
