@@ -20,15 +20,15 @@ import _ from 'lodash';
 import { CloseIcon, EditIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { DELETE_PRODUCT_BY_ID, EDIT_PRODUCT_BY_ID, INSERT_PRODUCT } from '@/graphql/mutations';
+import { CREATE_PRODUCTS_PICTURES_ID, DELETE_PRODUCT_BY_ID, EDIT_PRODUCT_BY_ID, INSERT_PRODUCT } from '@/graphql/mutations';
 import { GET_PRODUCTS_BY_MAKER_ID, GET_PRODUCT_BY_ID } from '@/graphql/queries';
-import { formatToStartsWith } from '@/graphql/utils';
+import { formatToStartsWith, generateInsertProductsObject } from '@/graphql/utils';
 import { usePagination } from '@/hooks/index';
 import { Authorization, EmptyResults, ErrorPage, LoadingPage, ManageProductModal, PaginationButtons } from '@/components/common';
 import { Layout } from '@/components/myBusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 import { ManageProductForm } from '@/types/product';
-import { uploadPhoto } from '@/utils/miscellaneous';
+import { uploadFile, uploadPhoto } from '@/utils/miscellaneous';
 
 const generateFileName = (productId: string) => `products/${productId}`;
 
@@ -47,6 +47,7 @@ const Catalog = ({ }) => {
     InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   > | null>(null);
+  const [catalogPictures, setCatalogPictures] = useState<any>();
   const {
     data,
     loading: loadingProducts,
@@ -145,6 +146,18 @@ const Catalog = ({ }) => {
     },
   });
 
+  const [generatePicsIds, { data: picsIdData, error: picIdsErr }] = useMutation(CREATE_PRODUCTS_PICTURES_ID, {
+    onError: (e) => {
+      toast({
+        title: 'Hubo un error',
+        description: 'Por favor intenta mas tarde.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    },
+  });
+
   const debouncedSearch = _.debounce(() => refetch({ id, filter: formatToStartsWith(filter) }), 250);
 
   const onAddSubmit = (formData: ManageProductForm) => {
@@ -184,17 +197,60 @@ const Catalog = ({ }) => {
   const handleAddOnClose = useCallback(() => {
     resetAddModal();
     addModalOnClose();
-  }, [addModalOnClose, resetAddModal]);
+    setCatalogPictures(null)
+  }, [addModalOnClose, resetAddModal, setCatalogPictures]);
 
   const handleEditOnClose = () => {
     resetEditModal();
     editModalOnClose();
+    setCatalogPictures(null)
   };
 
   const handleDelete = (id: number) => {
     deleteProduct({ variables: { id } });
     refetch();
   };
+
+  const handleCatalogPics = (files: any) => {
+    if (!files) return;
+    setCatalogPictures(files)
+  }
+
+  useEffect(() => {
+    if (!catalogPictures || !currentProductId) return
+
+    const a = generateInsertProductsObject(catalogPictures.target.files.length, currentProductId);
+    generatePicsIds({ variables: { objects: a } })
+  }, [catalogPictures])
+
+  useEffect(() => {
+    if (picIdsErr || !picsIdData || !catalogPictures) return
+
+    const picIds = picsIdData.insert_product_pictures.returning.map((p: any) => p.id)
+    let errorWithUploads = false;
+    picIds.forEach((id: string, idx: number) => {
+      uploadFile(catalogPictures.target.files[idx], `product${currentProductId}/${id}`).then((r) => {
+        if (r.error) {
+          errorWithUploads = true
+        }
+      })
+    })
+    if (errorWithUploads) {
+      toast({
+        title: 'Ocurrio un problema, intenta mas tarde',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      return
+    }
+    toast({
+      title: 'Se han actualizado las fotos de tu producto.',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    });
+  }, [picsIdData])
 
   useEffect(() => {
     getProduct();
@@ -231,6 +287,7 @@ const Catalog = ({ }) => {
               errors={addModalErrors}
               register={registerAddModal}
               setPicture={setPicture}
+              setCatalogPictures={handleCatalogPics}
             />
             <ManageProductModal
               isOpen={editModalIsOpen}
@@ -241,6 +298,7 @@ const Catalog = ({ }) => {
               errors={editModalErrors}
               register={registerEditModal}
               setPicture={setPicture}
+              setCatalogPictures={handleCatalogPics}
             />
             <Flex mt="20px">
               <FormLabel color="brandBlue" pt="5px">

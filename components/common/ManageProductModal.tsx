@@ -1,5 +1,6 @@
+import { DetailedHTMLProps, Dispatch, InputHTMLAttributes, SetStateAction } from 'react';
 import Image from 'next/image';
-import { uploadPhoto } from '@/utils/miscellaneous';
+import { getProductPicUrl } from '@/utils/miscellaneous';
 import {
   Box,
   Button,
@@ -20,10 +21,13 @@ import {
   Center,
   Flex,
 } from '@chakra-ui/react';
-import { BUCKET_FILES_URL } from '@/utils/constants';
 import { DeepMap, FieldError, UseFormRegister, FieldValues } from 'react-hook-form';
 import { ManageProductForm } from '@/types/product';
-import { DetailedHTMLProps, Dispatch, InputHTMLAttributes, SetStateAction, useState } from 'react';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from 'react-responsive-carousel';
+import { useQuery } from '@apollo/client';
+import { GET_PRODUCT_PICTURESID } from '@/graphql/queries';
+import { BUCKET_FILES_URL } from '@/utils/constants';
 
 interface Product {
   id: number;
@@ -44,6 +48,7 @@ interface Props {
   setPicture?: Dispatch<
     SetStateAction<DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> | null>
   >;
+  setCatalogPictures?: (files: any) => void
 }
 
 const ManageProductModal = ({
@@ -55,7 +60,11 @@ const ManageProductModal = ({
   register,
   loading,
   setPicture,
+  setCatalogPictures
 }: Props) => {
+
+  const { data, loading: loadingPictures, error: picturesError } = useQuery(GET_PRODUCT_PICTURESID, { variables: { id: product ? product.id : 0 } });
+  const prodPics = data ? data.product_pictures.map((product: any) => product.id) : [];
   return (
     <Modal isOpen={isOpen} onClose={handleOnClose} size="4xl">
       <ModalOverlay />
@@ -70,12 +79,30 @@ const ManageProductModal = ({
           <form onSubmit={onSubmit}>
             <ModalBody>
               <Flex>
-                <Center w="40%">
-                  {product && (
-                    <Image src={`${BUCKET_FILES_URL}products/${product.id}`} width="400px" height="300px" alt="" />
-                  )}
-                  {!product && <Image src="/empty.jpeg" width="400px" height="300px" alt="" />}
-                </Center>
+                <Stack w="40%">
+                  <FormControl>
+                    <FormLabel color="brandBlue" htmlFor="logo">
+                      Imagen principal del producto:
+                    </FormLabel>
+                    <input onChange={setPicture} type="file" accept="image/png, image/jpeg"></input>
+                  </FormControl>
+                  <Center w="100%">
+                    {product && (
+                      <Image priority={true} src={getProductPicUrl(product.id)} width="400px" height="300px" alt="" />
+                    )}
+                    {!product && <Image src="/empty.jpeg" width="400px" height="300px" alt="" />}
+                  </Center>
+                  <FormControl>
+                    <FormLabel color="brandBlue" htmlFor="logo">
+                      Imagenes de catalogo
+                    </FormLabel>
+                    <input onChange={setCatalogPictures} type="file" accept="image/png, image/jpeg" multiple></input>
+                  </FormControl>
+                  <Center w="100%">
+                    {product && <Carousel showThumbs={false}>{prodPics.map((id: any) => <Image priority={true} src={`${BUCKET_FILES_URL}product${product.id}/${id}`} width="150px" height="150px" alt="" key={id} />)}</Carousel>}
+                    {!product && <Image src="/empty.jpeg" width="400px" height="300px" alt="" />}
+                  </Center>
+                </Stack>
                 <Stack w="60%" pl="5%">
                   <FormControl isInvalid={errors.name}>
                     <FormLabel color="brandBlue" htmlFor="name">
@@ -123,12 +150,6 @@ const ManageProductModal = ({
                       })}
                     />
                     <FormErrorMessage>{errors.instructions && errors.instructions.message}</FormErrorMessage>
-                  </FormControl>
-                  <FormControl>
-                    <FormLabel color="brandBlue" htmlFor="logo">
-                      Imagen del producto:
-                    </FormLabel>
-                    <input onChange={setPicture} type="file" accept="image/png, image/jpeg"></input>
                   </FormControl>
                 </Stack>
               </Flex>

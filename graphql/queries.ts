@@ -416,3 +416,10 @@ query GetClientByPk($clientId: Int!) {
   }
 }
 `;
+export const GET_PRODUCT_PICTURESID = gql`
+query MyQuery($id: Int) {
+  product_pictures(where: {productId: {_eq: $id}}) {
+    id
+  }
+}
+`

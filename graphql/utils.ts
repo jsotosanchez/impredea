@@ -7,10 +7,10 @@ export const formatToStartsWith = (string: string) => {
 };
 
 
-export const generateInsertProductsObjecct = (num: number, pid: number) => {
+export const generateInsertProductsObject = (num: number, pid: number) => {
   let arr = [];
   for (let index = 0; index < num; index++) {
-    arr.push({ productsId: pid })
+    arr.push({ productId: pid })
   }
   return arr
 }
