@@ -111,13 +111,16 @@ export const GET_MAKER_REVIEWS = gql`
 
 export const GET_PRODUCT_BY_ID = gql`
   query getProductById($id: Int!) {
-    product_by_pk(id: $id) {
-      description
-      instructions
-      name
-      id
-    }
+  product_by_pk(id: $id) {
+    description
+    instructions
+    name
+    id
   }
+  product_pictures(where: {active: {_eq: true}, productId: {_eq: $id}}) {
+    id
+  }
+}
 `;
 
 export const GET_USER_BY_ID = gql`

@@ -31,6 +31,8 @@ import { GET_PRODUCT_BY_ID } from '@/graphql/queries';
 import { sendEmail } from '@/utils/miscellaneous';
 import { BUCKET_FILES_URL, IMPREDEA_EMAIL, logInToastId } from '@/utils/constants';
 import { Authorization } from '@/components/common';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from 'react-responsive-carousel';
 
 interface Material {
   id: string;
@@ -58,6 +60,8 @@ const Product = ({ }: Props): JSX.Element => {
   const { data, loading, refetch } = useQuery(GET_PRODUCT_BY_ID, { variables: { id: pid } });
   const context = useContext(SessionContext);
   const user = context.getUser()!;
+
+  const prodPics = data ? data.product_pictures.map((p: any) => p.id) : []
 
   const [requestQuotation, { data: mutationResultData }] = useMutation(REQUEST_QUOTATION, {
     onCompleted: () => {
@@ -163,7 +167,11 @@ const Product = ({ }: Props): JSX.Element => {
                 <Flex w="100%">
                   <Stack w="40%" mr="5%">
                     <Center>
-                      <Image src={`${BUCKET_FILES_URL}products/${pid}`} width="280px" height="250px" alt="" />
+                      <Carousel showThumbs={false}>
+                        <Image src={`${BUCKET_FILES_URL}products/${pid}`} width="370px" height="240px" alt="" priority={true} />
+                        {prodPics.map((id: any) => <Image priority={true} src={`${BUCKET_FILES_URL}product${pid}/${id}`} width="370px" height="240px" alt="" key={id} />)}
+                      </Carousel>
+
                     </Center>
                     <FormControl isInvalid={errors.quantity != undefined}>
                       <FormLabel color="brandBlue" htmlFor="quantity">

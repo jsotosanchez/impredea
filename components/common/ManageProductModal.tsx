@@ -132,6 +132,7 @@ const ManageProductModal = ({
                       {...register('description', {
                         required: 'Este campo es requerido',
                       })}
+                      rows={8}
                     />
                     <FormErrorMessage>{errors.description && errors.description.message}</FormErrorMessage>
                   </FormControl>
@@ -148,6 +149,7 @@ const ManageProductModal = ({
                       {...register('instructions', {
                         required: 'Este campo es requerido',
                       })}
+                      rows={8}
                     />
                     <FormErrorMessage>{errors.instructions && errors.instructions.message}</FormErrorMessage>
                   </FormControl>
