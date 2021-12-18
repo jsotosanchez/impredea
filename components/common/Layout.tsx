@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import Image from 'next/image';
+import Link from 'next/link'
 import { Box, Spacer, Flex, Button, Heading } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { SessionContext } from '@/context/sessionContext';
@@ -47,6 +48,18 @@ export default function Layout({ children }: Props) {
             >
               Mi negocio
             </Button>
+          )}
+          {currentUser && currentUser.maker_active && (
+            <Link href={`/marketplace`} passHref>
+              <Button
+                variant="link"
+                colorScheme="white"
+                color="white"
+                mr="5"
+              >
+                Marketplace
+              </Button>
+            </Link>
           )}
           {currentUser && currentUser.id && (
             <Button
