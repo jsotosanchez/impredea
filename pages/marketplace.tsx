@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Image from 'next/image'
 import {
-  Flex, Container, Text, Box, Stack, FormControl, FormLabel, Input, Textarea, Button, FormErrorMessage
+  Flex, Container, Text, Box, Stack, FormControl, FormLabel, Input, Textarea, Button, FormErrorMessage, Heading
 } from '@chakra-ui/react';
 import { Layout, Authorization } from '@/components/common';
 import { useForm } from 'react-hook-form';
@@ -48,8 +48,8 @@ export default function Home({ }) {
               </Flex>
             </Container>
             <Container border="1px" h="150px" borderRadius={"20px"} centerContent borderColor={"gray.300"}>
-              <Text fontSize={"2xl"} mt="50px">
-                Tu empresa! Contactanos!
+              <Text fontSize={"xl"} mt="30px">
+                Tu empresa facilita insumos de impresion? Contactanos para ser partners y alcanzar un mayor numero de ventas!
               </Text>
             </Container>
             <Container border="1px" h="auto" borderRadius={"20px"} borderColor={"gray.300"} pt="10px" pb="10px">
