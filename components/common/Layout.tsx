@@ -99,7 +99,7 @@ export default function Layout({ children }: Props) {
                 mr="5"
                 onClick={() => window.location.replace('/api/auth/login')}
               >
-                Contectarse
+                Ingresar
               </Button>
             </>
           )}
@@ -114,6 +114,16 @@ export default function Layout({ children }: Props) {
               Desconectarse
             </Button>
           )}
+          <Link href={`/contact`} passHref>
+            <Button
+              variant="link"
+              colorScheme="white"
+              color="white"
+              mr="5"
+            >
+              Contactanos
+            </Button>
+          </Link>
         </Box>
       </Flex>
       {children}

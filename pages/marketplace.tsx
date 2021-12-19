@@ -1,31 +1,18 @@
 import Head from 'next/head';
 import Image from 'next/image'
+import Link from 'next/link'
 import {
-  Flex, Container, Text, Box, Stack, FormControl, FormLabel, Input, Textarea, Button, FormErrorMessage, Heading
+  Flex, Container, Text, Box, Stack, Button, Heading, Tag, Select, Spacer
 } from '@chakra-ui/react';
 import { Layout, Authorization } from '@/components/common';
-import { useForm } from 'react-hook-form';
-import { sendEmail } from '@/utils/miscellaneous';
-import { IMPREDEA_EMAIL } from '@/utils/constants';
+import { MKT_TAGS } from '@/utils/constants';
+import { useState } from 'react';
 
-interface Form {
-  name: string;
-  email: string;
-  motive: string;
-  message: string;
-}
 
-export default function Home({ }) {
+export default function Marketplace({ }) {
 
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm<Form>();
+  const [filter, setFitler] = useState(MKT_TAGS.ALL)
 
-  const onSubmit = (formData: Form) => {
-    sendEmail({ to: IMPREDEA_EMAIL, from: IMPREDEA_EMAIL, subject: formData.motive, message: formData.message })
-  }
   return (
     <Authorization>
       <Layout>
@@ -34,68 +21,84 @@ export default function Home({ }) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Flex bg="white" h="100vh" mt="10%">
-          <Stack ml="35%">
-            <Container border="1px" h="150px" borderRadius={"20px"} borderColor={"gray.300"} mb="30px">
-              <Flex>
-                <Box mr="15px" mt="25px">
-                  <a target="_blank" href="https://store.che3d.com.ar/" rel="noopener noreferrer">
+          <Stack ml="10%" w="40%">
+            <Heading as="h2" size={"xl"} color="brandBlue">
+              Consigue todos los insumos <br />para tu emprendimiento
+            </Heading>
+            <Heading as="h2" size={"md"} color="brandBlue" fontWeight={"light"} pt="15px">
+              Que estas buscando?
+            </Heading>
+            <Select onChange={(e) => setFitler(e.target.value)} value={filter} w="40%">
+              <option value={MKT_TAGS.ALL}>Mostrar todo</option>
+              <option value={MKT_TAGS.PRINTERS}>Equipos de impresion</option>
+              <option value={MKT_TAGS.SUPPLIES}>Filamentos</option>
+              <option value={MKT_TAGS.MODELS}>Modelos</option>
+            </Select>
+            <Heading as="h3" size={"md"} color="brandBlue" fontWeight={"normal"} pt="70px" pb="10px"> Quieres publicitar tu empresa con nosotros?</Heading>
+            <Link href="/contact" passHref>
+              <Button colorScheme={"facebook"} w="160px" fontSize={"xl"}> Contactanos!</Button>
+            </Link>
+          </Stack>
+          <Stack w="40%" ml="15px">
+            <a target="_blank" href="https://store.che3d.com.ar/" rel="noopener noreferrer">
+              <Container border="1px" borderRadius={"10px"} borderColor={"gray.300"} mb="30px" ml="0">
+                <Flex pt="5px">
+                  <Heading as="h2" size={"md"} color="brandBlue">
+                    CHE 3D
+                  </Heading>
+                  <Spacer />
+                  <Tag mx={"5px"}>Equipos</Tag>
+                  <Tag mx={"5px"}>Insumos</Tag>
+                  <Tag mx={"5px"}>Modelos</Tag>
+                </Flex>
+                <Flex mt="15px" pb="15px">
+                  <Box mr="15px" >
                     <Image src="/che3d.png" width={"400"} height={"250"}></Image>
-                  </a>
+                  </Box>
+                  <Text fontSize={"md"} >
+                    Tenemos todos los insumos que necesites para hacer funcionar tu negocio. Desde filamento, hasta equipos de impresion. No dudes en contactarnos para empezar tu negocio!
+                  </Text>
+                </Flex>
+              </Container>
+            </a>
+            {
+              (filter == MKT_TAGS.ALL || filter == MKT_TAGS.PRINTERS) &&
+              <a target="_blank" href="https://www.3dimpresoras.com.ar/impresoras-3d.html" rel="noopener noreferrer">
+                <Container border="1px" borderRadius={"10px"} borderColor={"gray.300"} mb="30px" ml="0">
+                  <Flex pt="5px">
+                    <Heading as="h2" size={"md"} color="brandBlue">
+                      3D Impresoras
+                    </Heading>
+                    <Spacer />
+                    <Tag mx={"5px"}>Equipos</Tag>
+                  </Flex>
+                  <Flex mt="15px" pb="15px">
+                    <Box mr="15px" >
+                      <Image src="/impresoras3D.png" width={"400"} height={"250"}></Image>
+                    </Box>
+                    <Text fontSize={"md"} >
+                      Tenemos todos los insumos que necesites para hacer funcionar tu negocio. Desde filamento, hasta equipos de impresion. No dudes en contactarnos para empezar tu negocio!
+                    </Text>
+                  </Flex>
+                </Container>
+              </a>}
+            <Container border="1px" borderRadius={"10px"} borderColor={"gray.300"} mb="30px" ml="0">
+              <Flex pt="5px">
+                <Heading as="h2" size={"md"} color="brandBlue">
+                  Tu empresa!
+                </Heading>
+              </Flex>
+              <Flex mt="15px" pb="15px">
+                <Box mr="15px" >
                 </Box>
-                <Text fontSize={"md"} mt="25px">
-                  Tenemos todos los insumos que necesites para hacer funcionar tu negocio. Desde filamento, hasta equipos de impresion. No dudes en contactarnos para empezar tu negocio!
+                <Text fontSize={"md"} >
+                  Este espacio podria ser tuyo! Contactanos para publicitar tu empresa con nosotros.
                 </Text>
               </Flex>
-            </Container>
-            <Container border="1px" h="150px" borderRadius={"20px"} centerContent borderColor={"gray.300"}>
-              <Text fontSize={"xl"} mt="30px">
-                Tu empresa facilita insumos de impresion? Contactanos para ser partners y alcanzar un mayor numero de ventas!
-              </Text>
-            </Container>
-            <Container border="1px" h="auto" borderRadius={"20px"} borderColor={"gray.300"} pt="10px" pb="10px">
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <FormControl id='email' isInvalid={errors.email != undefined}>
-                  <FormLabel>Correo electronico</FormLabel>
-                  <Input type='email'
-                    {...register('email', {
-                      required: 'Este campo es requerido',
-                      pattern: {
-                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                        message: "correo invalido"
-                      }
-                    })} />
-                  <FormErrorMessage>{errors.email && errors.email.message}</FormErrorMessage>
-                </FormControl>
-                <FormControl id='email' isInvalid={errors.name != undefined}>
-                  <FormLabel>Nombre de tu empresa</FormLabel>
-                  <Input
-                    {...register('name', {
-                      required: 'Este campo es requerido',
-                    })} />
-                  <FormErrorMessage>{errors.name && errors.name.message}</FormErrorMessage>
-                </FormControl>
-                <FormControl id='email' isInvalid={errors.motive != undefined}>
-                  <FormLabel>Motivo del contacto</FormLabel>
-                  <Input
-                    {...register('motive', {
-                      required: 'Este campo es requerido',
-                    })} />
-                  <FormErrorMessage>{errors.motive && errors.motive.message}</FormErrorMessage>
-                </FormControl>
-                <FormControl id='email' isInvalid={errors.message != undefined}>
-                  <FormLabel>Mensaje</FormLabel>
-                  <Textarea
-                    {...register('message', {
-                      required: 'Este campo es requerido',
-                    })} />
-                  <FormErrorMessage>{errors.message && errors.message.message}</FormErrorMessage>
-                </FormControl>
-                <Button colorScheme={"facebook"} type="submit">Enviar mensaje</Button>
-              </form>
             </Container>
           </Stack>
         </Flex>
       </Layout>
-    </Authorization>
+    </Authorization >
   );
 }
