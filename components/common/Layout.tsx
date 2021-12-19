@@ -49,18 +49,16 @@ export default function Layout({ children }: Props) {
               Mi negocio
             </Button>
           )}
-          {currentUser && currentUser.maker_active && (
-            <Link href={`/marketplace`} passHref>
-              <Button
-                variant="link"
-                colorScheme="white"
-                color="white"
-                mr="5"
-              >
-                Marketplace
-              </Button>
-            </Link>
-          )}
+          <Link href={`/marketplace`} passHref>
+            <Button
+              variant="link"
+              colorScheme="white"
+              color="white"
+              mr="5"
+            >
+              Marketplace
+            </Button>
+          </Link>
           {currentUser && currentUser.id && (
             <Button
               variant="link"
