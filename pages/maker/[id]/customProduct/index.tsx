@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { useMutation } from '@apollo/client';
@@ -13,8 +13,6 @@ import {
     Button,
     Flex,
     Stack,
-    Spinner,
-    Center,
     FormControl,
     FormLabel,
     Input,
@@ -27,7 +25,7 @@ import {
 import { Authorization } from '@/components/common';
 import { CREATE_CONVERSATION, REQUEST_QUOTATION } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
-import { sendEmail } from '@/utils/miscellaneous';
+import { sendEmail, uploadFile } from '@/utils/miscellaneous';
 import { IMPREDEA_EMAIL, logInToastId } from '@/utils/constants';
 
 interface Material {
@@ -56,6 +54,7 @@ const Product = ({ }: Props): JSX.Element => {
     const toast = useToast();
     const context = useContext(SessionContext);
     const user = context.getUser();
+    const [file, setFile] = useState<ChangeEvent<HTMLInputElement>>()
 
     const [requestQuotation, { data: mutationResultData }] = useMutation(REQUEST_QUOTATION, {
         onCompleted: () => {
@@ -65,6 +64,7 @@ const Product = ({ }: Props): JSX.Element => {
                 duration: 3000,
                 isClosable: true,
             });
+            console.log(file)
         },
         onError: () => {
             toast({
@@ -115,7 +115,7 @@ const Product = ({ }: Props): JSX.Element => {
             return;
         }
 
-        requestQuotation({ variables: { ...formData, clientId: user.id, makerId, is_custom_product: true } });
+        requestQuotation({ variables: { ...formData, clientId: user.id, makerId, is_custom_product: true, has_file: file != undefined } });
         try {
             const emailBody = {
                 to: user.email,
@@ -123,7 +123,6 @@ const Product = ({ }: Props): JSX.Element => {
                 subject: `Te han solicitado una cotizacion!`,
                 message: `Un cliente te ha pedido una cotizacion. Recuerda responderle cuanto antes.`,
             };
-
             sendEmail(emailBody);
         } catch (error) {
             console.log(error);
@@ -136,8 +135,13 @@ const Product = ({ }: Props): JSX.Element => {
     };
 
     useEffect(() => {
-        if (mutationResultData)
+        if (mutationResultData) {
             createConversation({ variables: { quotationId: mutationResultData.insert_quotations_one.id } });
+            if (file) {
+                uploadFile(file.target.files![0], `customQuotation/${mutationResultData.insert_quotations_one.id}`)
+            }
+        }
+        setFile(undefined)
     }, [mutationResultData, createConversation]);
 
     return (
@@ -215,19 +219,17 @@ const Product = ({ }: Props): JSX.Element => {
                                             bg="white"
                                             color="black"
                                             id="file_url"
-                                            {...register('file_url', {
-                                                required: 'Este campo es requerido',
-                                            })}
+                                            {...register('file_url')}
                                             placeholder='https://free3d.com/'
                                         />
                                         <FormErrorMessage>{errors.file_url && errors.file_url.message}</FormErrorMessage>
                                     </FormControl>
-                                    {/* <FormControl>
+                                    <FormControl>
                                         <FormLabel color="brandBlue" htmlFor="logo">
-                                            Imagen del producto:
+                                            Archivo del modelo:
                                         </FormLabel>
-                                        <input onChange={()=>{}} type="file" accept="image/png, image/jpeg"></input>
-                                    </FormControl> */}
+                                        <input onChange={setFile} type="file" />
+                                    </FormControl>
                                     <FormControl isInvalid={errors.clientInstructions != undefined}>
                                         <FormLabel color="brandBlue" htmlFor="clientInstructions">
                                             Informacion para el Maker:

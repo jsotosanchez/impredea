@@ -33,8 +33,9 @@ import {
   HStack,
   Tooltip,
   Link,
+  IconButton,
 } from '@chakra-ui/react';
-import { EditIcon, ChatIcon, ExternalLinkIcon } from '@chakra-ui/icons';
+import { EditIcon, ChatIcon, ExternalLinkIcon, DownloadIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
 import client from '@/graphql/apollo-client';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
@@ -45,6 +46,7 @@ import { ErrorPage, LoadingPage, PaginationButtons, EmptyResults, Authorization 
 import { Layout } from '@/components/myBusiness';
 import { MY_BUSINESS_SECTIONS } from '@/utils/constants';
 import { BUCKET_FILES_URL } from '@/utils/constants';
+import { downloadFile } from '@/utils/miscellaneous';
 
 interface FormValues {
   price: number;
@@ -146,6 +148,11 @@ const Quotations = ({ statuses }: Props) => {
     updateQuotation({ variables: { ...formData, id: quotation?.quotations_by_pk.id } });
   };
 
+  const handleDownload = () => {
+    downloadFile(`customQuotation/${quotation?.quotations_by_pk.id}`)
+    console.log('downloading')
+  }
+
   useEffect(() => {
     const statuses = checkedStatuses.map((status, id) => {
       if (status) return id + 1;
@@ -155,7 +162,6 @@ const Quotations = ({ statuses }: Props) => {
     setCurrentPage(0);
   }, [checkedStatuses, refetchQuotations, setCurrentPage, id]);
 
-  console.log(quotation)
   if (error) return <ErrorPage route={`/`} />;
 
   if (loading)
@@ -190,7 +196,8 @@ const Quotations = ({ statuses }: Props) => {
                                 Link al modelo <ExternalLinkIcon mx='2px' />
                               </Link>
                             </>
-                          }</>
+                          }
+                            {quotation.quotations_by_pk.has_file && <Flex >Descargar archivo <IconButton aria-label='Search database' onClick={handleDownload} icon={<DownloadIcon mx="2px" />} /></Flex>}</>
                             :
                             <Center>
                               {quotation && quotation.quotations_by_pk.product && (
@@ -349,7 +356,7 @@ const Quotations = ({ statuses }: Props) => {
               <Tbody>
                 {data.quotations.map((quotation: Quotation) => (
                   <Tr key={quotation.id}>
-                    <Td>{quotation.product ? quotation.product.name : ""}</Td>
+                    <Td>{quotation.product ? quotation.product.name : "Enviado por cliente"}</Td>
                     <Td>{quotation.updated_at.slice(0, 10)}</Td>
                     <Td>{quotation.quotation_status.label.toUpperCase()}</Td>
                     <Td>

@@ -287,6 +287,7 @@ export const GET_QUOTATION_BY_PK = gql`
       }
       is_custom_product
       file_url
+      has_file
     }
   }
 `;
