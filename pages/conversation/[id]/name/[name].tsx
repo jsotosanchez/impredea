@@ -54,9 +54,9 @@ const Message = ({ message, authorIsMe }: MessageProps) => (
   </>
 );
 
-interface Props {}
+interface Props { }
 
-const Conversation = ({}: Props): JSX.Element => {
+const Conversation = ({ }: Props): JSX.Element => {
   const router = useRouter();
   const { id: conversationId, name } = router.query;
   const context = useContext(SessionContext);
@@ -77,8 +77,6 @@ const Conversation = ({}: Props): JSX.Element => {
   } = useForm<Form>();
 
   const onSubmit = (formData: Form) => {
-    console.log(formData);
-    console.log('sending message');
     reset();
   };
   return (

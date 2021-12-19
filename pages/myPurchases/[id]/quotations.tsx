@@ -98,7 +98,6 @@ const Quotations = ({ }: Props) => {
           label: 'Pagar',
         },
       });
-      console.log('creating mp button');
     });
   }, [mpResponse, loading, loadingQuotation, quotation]);
 

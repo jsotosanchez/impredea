@@ -98,6 +98,7 @@ export const REQUEST_QUOTATION = gql`
     $is_custom_product: Boolean = false
     $file_url: String
     $has_file: Boolean = false
+    $mime_type: String
   ) {
     insert_quotations_one(
       object: {
@@ -111,6 +112,7 @@ export const REQUEST_QUOTATION = gql`
         is_custom_product: $is_custom_product
         file_url: $file_url
         has_file: $has_file
+        mime_type: $mime_type
       }
     ) {
       id

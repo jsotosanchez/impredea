@@ -19,17 +19,14 @@ export default async function handler(req, res) {
   };
 
   const fileSize = await sizeOf(options, s3)
-
   res.writeHead(200, {
-    'Content-Type': 'application/octet-stream',
+    'Content-Type': req.headers['content-type'],
     'Content-Encoding': 'gzip',
     'Transfer-Encoding': 'chunked',
     'Content-Length': `${fileSize}`
   });
   var fileStream = s3.getObject(options).createReadStream();
   pipeline(fileStream, zlib.createGzip(), res, (err) => {
-    console.log(err)
-    console.log('pipelinecallback')
     res.end();
   })
 }

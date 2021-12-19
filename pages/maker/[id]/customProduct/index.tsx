@@ -54,7 +54,7 @@ const Product = ({ }: Props): JSX.Element => {
     const toast = useToast();
     const context = useContext(SessionContext);
     const user = context.getUser();
-    const [file, setFile] = useState<ChangeEvent<HTMLInputElement>>()
+    const [file, setFile] = useState<File>()
 
     const [requestQuotation, { data: mutationResultData }] = useMutation(REQUEST_QUOTATION, {
         onCompleted: () => {
@@ -64,7 +64,6 @@ const Product = ({ }: Props): JSX.Element => {
                 duration: 3000,
                 isClosable: true,
             });
-            console.log(file)
         },
         onError: () => {
             toast({
@@ -115,7 +114,7 @@ const Product = ({ }: Props): JSX.Element => {
             return;
         }
 
-        requestQuotation({ variables: { ...formData, clientId: user.id, makerId, is_custom_product: true, has_file: file != undefined } });
+        requestQuotation({ variables: { ...formData, clientId: user.id, makerId, is_custom_product: true, has_file: file != undefined, mime_type: file?.type } });
         try {
             const emailBody = {
                 to: user.email,
@@ -138,7 +137,7 @@ const Product = ({ }: Props): JSX.Element => {
         if (mutationResultData) {
             createConversation({ variables: { quotationId: mutationResultData.insert_quotations_one.id } });
             if (file) {
-                uploadFile(file.target.files![0], `customQuotation/${mutationResultData.insert_quotations_one.id}`)
+                uploadFile(file, `customQuotation/${mutationResultData.insert_quotations_one.id}`)
             }
         }
         setFile(undefined)
@@ -228,7 +227,7 @@ const Product = ({ }: Props): JSX.Element => {
                                         <FormLabel color="brandBlue" htmlFor="logo">
                                             Archivo del modelo:
                                         </FormLabel>
-                                        <input onChange={setFile} type="file" />
+                                        <input onChange={(e) => setFile(e.target.files![0])} type="file" />
                                     </FormControl>
                                     <FormControl isInvalid={errors.clientInstructions != undefined}>
                                         <FormLabel color="brandBlue" htmlFor="clientInstructions">

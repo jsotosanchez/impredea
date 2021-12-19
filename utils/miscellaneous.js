@@ -73,10 +73,10 @@ export const createMercadoPagoLink = async (requestBody) => {
   return await res.json();
 };
 
-export const downloadFile = async (fileName) => {
-  const res = await fetch(`/api/download-file?fileKey=${fileName}`, {
+export const downloadFile = async (fileName, mimeType = 'application/octet-stream') => {
+  await fetch(`/api/download-file?fileKey=${fileName}`, {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': mimeType,
     },
     method: 'POST',
   }).then(data => data.blob()).then(blobFile => {

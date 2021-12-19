@@ -149,8 +149,7 @@ const Quotations = ({ statuses }: Props) => {
   };
 
   const handleDownload = () => {
-    downloadFile(`customQuotation/${quotation?.quotations_by_pk.id}`)
-    console.log('downloading')
+    downloadFile(`customQuotation/${quotation?.quotations_by_pk.id}`, quotation?.quotations_by_pk.mime_type)
   }
 
   useEffect(() => {
