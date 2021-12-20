@@ -50,7 +50,7 @@ export const INSERT_PRODUCT = gql`
 
 export const DELETE_PRODUCT_BY_ID = gql`
   mutation deleteById($id: Int!) {
-    delete_product_by_pk(id: $id) {
+    update_product_by_pk(pk_columns: {id: $id}, _set: {active: false}) {
       id
     }
   }

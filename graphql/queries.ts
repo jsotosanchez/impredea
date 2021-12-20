@@ -71,7 +71,7 @@ export const GET_MAKER_BY_ID = gql`
 
 export const GET_MAKER_CATALOG = gql`
   query getMakerCatalog($id: Int!, $limit: Int = 10, $offset: Int = 0) {
-    product(where: { maker_id: { _eq: $id } }, limit: $limit, offset: $offset) {
+    product(where: { maker_id: { _eq: $id }, active: {_eq: true} }, limit: $limit, offset: $offset) {
       name
       id
     }
@@ -140,18 +140,14 @@ export const GET_USER_BY_ID = gql`
 `;
 
 export const GET_PRODUCTS_BY_MAKER_ID = gql`
-  query getProductsByMakerId($id: Int!, $filter: String, $limit: Int = 10, $offset: Int = 0) {
-    product(
-      where: { maker_id: { _eq: $id }, name: { _ilike: $filter } }
-      order_by: { updated_at: desc }
-      limit: $limit
-      offset: $offset
-    ) {
-      name
-      updated_at
-      id
-    }
+ query getProductsByMakerId($id: Int!, $filter: String, $limit: Int = 10, $offset: Int = 0) {
+  product(where: {maker_id: {_eq: $id}, name: {_ilike: $filter}, active: {_eq: true}}, order_by: {updated_at: desc}, limit: $limit, offset: $offset) {
+    name
+    updated_at
+    id
   }
+}
+
 `;
 
 export const GET_QUESTIONS_BY_MAKER_ID = gql`

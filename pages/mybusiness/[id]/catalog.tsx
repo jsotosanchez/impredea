@@ -131,7 +131,7 @@ const Catalog = ({ }) => {
         title: 'No se pudo borrar tu producto',
         description: 'Por favor intenta mas tarde.',
         status: 'error',
-        duration: 3000,
+        duration: 1500,
         isClosable: true,
       });
     },
@@ -139,7 +139,7 @@ const Catalog = ({ }) => {
       toast({
         title: 'Tu producto se borro con exito.',
         status: 'success',
-        duration: 3000,
+        duration: 1500,
         isClosable: true,
       });
       refetch();
@@ -149,10 +149,10 @@ const Catalog = ({ }) => {
   const [generatePicsIds, { data: picsIdData, error: picIdsErr }] = useMutation(CREATE_PRODUCTS_PICTURES_ID, {
     onError: (e) => {
       toast({
-        title: 'Hubo un error',
+        title: 'Hubo un error generando el catalogo',
         description: 'Por favor intenta mas tarde.',
         status: 'error',
-        duration: 3000,
+        duration: 1500,
         isClosable: true,
       });
     },
@@ -177,7 +177,7 @@ const Catalog = ({ }) => {
         toast({
           title: 'Se ha guardado tu producto de forma exitosa!',
           status: 'success',
-          duration: 3000,
+          duration: 1500,
           isClosable: true,
         });
       });
@@ -197,13 +197,15 @@ const Catalog = ({ }) => {
   const handleAddOnClose = useCallback(() => {
     resetAddModal();
     addModalOnClose();
-    setCatalogPictures(null)
+    setCatalogPictures(null);
+    setCurrentProductId(undefined)
   }, [addModalOnClose, resetAddModal, setCatalogPictures]);
 
   const handleEditOnClose = () => {
     resetEditModal();
     editModalOnClose();
     setCatalogPictures(null)
+    setCurrentProductId(undefined)
   };
 
   const handleDelete = (id: number) => {
@@ -227,9 +229,10 @@ const Catalog = ({ }) => {
     if (picIdsErr || !picsIdData || !catalogPictures) return
 
     const picIds = picsIdData.insert_product_pictures.returning.map((p: any) => p.id)
+    const pid = currentProductId || insertResult.insert_product_one.id;
     let errorWithUploads = false;
     picIds.forEach((id: string, idx: number) => {
-      uploadFile(catalogPictures.target.files[idx], `product${currentProductId}/${id}`).then((r) => {
+      uploadFile(catalogPictures.target.files[idx], `product${pid}/${id}`).then((r) => {
         if (r.error) {
           errorWithUploads = true
         }
@@ -272,10 +275,18 @@ const Catalog = ({ }) => {
     });
   }, [insertResult, picture, handleAddOnClose, toast, refetch]);
 
+
+  useEffect(() => {
+    if (!catalogPictures || !insertResult) return
+    const productId = insertResult.insert_product_one.id;
+    console.log(insertResult)
+    const a = generateInsertProductsObject(catalogPictures.target.files.length, productId);
+    generatePicsIds({ variables: { objects: a } })
+  }, [catalogPictures, insertResult])
+
   if (error) return <ErrorPage route={`/`} />;
 
   return (
-
     <Authorization>
       <Layout activeHeader={MY_BUSINESS_SECTIONS.PRODUCTS}>
         <Box>
