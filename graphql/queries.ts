@@ -41,6 +41,7 @@ export const GET_PRODUCTS = gql`
           maker_capacity: { _gte: $quantity }
           id: {_neq: $id}
         }
+          active: { _eq: true }
       }
       limit: 20
       offset: $offset
@@ -236,7 +237,7 @@ export const GET_QUOTATIONS_BY_CLIENT_ID = gql`
       where: { client_id: { _eq: $id }, status_id: { _in: [1, 2] } }
       limit: $limit
       offset: $offset
-      order_by: { created_at: asc, status_id: asc }
+      order_by: { created_at: asc }
     ) {
       id
       updated_at
@@ -304,6 +305,9 @@ export const GET_SALES_BY_CLIENT_ID = gql`
         maker {
           maker_name
         }
+        conversation{
+          id
+        }
       }
     }
   }
@@ -320,13 +324,13 @@ export const GET_SALES_BY_MAKER_ID = gql`
       product {
         name
       }
-      client {
-        fullname
-        id
-      }
       conversation {
         id
       }
+    }
+    client {
+      fullname
+      id
     }
   }
 }
