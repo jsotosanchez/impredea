@@ -45,13 +45,15 @@ export default function Catalog(): JSX.Element {
             <SimpleGrid columns={3} spacing={7}>
               {data.product.map(({ name, id: pid }: Product) => (
                 <Link key={pid} href={`/maker/${id}/product/${pid}`} passHref>
-                  {/* <Box cursor="pointer">
+                  <Box cursor="pointer">
                     <Image priority={true} src={`${BUCKET_FILES_URL}products/${pid}`} width="370px" height="240px" alt="" />
-                    <Text noOfLines={1} align="center">
-                      {name}
-                    </Text>
-                  </Box> */}
-                  <ProductSimple title={name} pid={pid} />
+                    <Stack pt={2} align={'center'}>
+                      <Text fontSize={'2xl'} fontFamily={'body'} fontWeight={500}>
+                        {name}
+                      </Text>
+                    </Stack>
+                  </Box>
+                  {/* <ProductSimple title={name} pid={pid} /> */}
                 </Link>
               ))}
             </SimpleGrid>
