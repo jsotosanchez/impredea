@@ -145,7 +145,7 @@ const Questions = ({ }) => {
                     <Text>{question?.questions_by_pk.question}</Text>
                     <FormControl isInvalid={errors.response != undefined}>
                       <FormLabel color="brandBlue" htmlFor="response">
-                        Responde a la pregunta aqui:
+                        Responde aqui:
                       </FormLabel>
                       <Textarea
                         id="response"

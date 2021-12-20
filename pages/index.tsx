@@ -501,7 +501,7 @@ function SimpleThreeColumns() {
           icon={<Icon as={FcLock} w={10} h={10} />}
           title={'Seguridad'}
           text={
-            'Tu dinero esta seguro hasta concretar la venta y que tengas tu producto.'
+            'Tu dinero esta seguro hasta concretar la venta y obtengas tu producto.'
           }
         />
         <Feature
