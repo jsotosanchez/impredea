@@ -24,7 +24,6 @@ export default function Layout({ children }: Props) {
         zIndex="banner"
         left="0"
         right="0"
-        borderBottomWidth="1px"
         width="full"
         height="4rem"
         paddingLeft="20"

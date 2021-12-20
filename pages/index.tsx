@@ -2,7 +2,6 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import {
   Box,
-  Center,
   Flex,
   Heading,
   Stack,
@@ -18,12 +17,27 @@ import {
   TabPanels,
   Tab,
   TabPanel,
+  chakra,
+  VisuallyHidden,
+  SimpleGrid,
+  StackDivider,
+  Icon,
+  Image,
+  useColorModeValue, Container
 } from '@chakra-ui/react';
+import { FaInstagram, FaTwitter, FaYoutube } from 'react-icons/fa';
+import { ReactNode, ReactElement } from 'react';
 import { useForm } from 'react-hook-form';
 import client from '@/graphql/apollo-client';
 import { Layout, Authorization } from '@/components/common';
 import { GET_SEARCHFORM_QUERY } from '@/graphql/queries';
 import { removeEmptyFields } from '@/utils/miscellaneous';
+import { FcAssistant, FcLock, FcApproval } from 'react-icons/fc';
+import {
+  IoAnalyticsSharp,
+  IoLogoBitcoin,
+  IoSearchSharp,
+} from 'react-icons/io5';
 
 interface Province {
   id: number;
@@ -221,40 +235,62 @@ export default function Home({ quantities, categories, provinces }: Props) {
           <title>Impredea</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <Flex bg="white" h="100vh">
-          <Center w="50%" ml="auto" mr="auto">
-            <Stack>
-              <Heading color="brandBlue" size="3xl">
-                Convertí tus <br />
-                ideas en realidad
+        <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
+          <Flex p={8} flex={1} align={'center'} justify={'center'}>
+            <Stack spacing={6} w={'full'} maxW={'lg'}>
+              <Heading fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }}>
+                <Text
+                  as={'span'}
+                  position={'relative'}>
+                  Imprime
+                </Text>
+                <br />{' '}
+                <Text color={'brandBlue'} as={'span'}>
+                  Tus ideas
+                </Text>{' '}
               </Heading>
-              <Text color="brandLightBlue" fontWeight="semibold">
-                Todo lo que buscas en un solo lugar
+              <Text fontSize={{ base: 'md', lg: 'lg' }} color={'gray.500'}>
+                Todo lo que necesitas para imprimir en 3D en un solo lugar.
               </Text>
+              <Stack direction={{ base: 'column', md: 'row' }} spacing={4}>
+                <Box
+                  bg={useColorModeValue('gray.50', 'gray.900')}
+                  color={useColorModeValue('gray.700', 'gray.200')}
+                  h="auto" w="100%" borderRadius="15px">
+                  <Heading color="brandBlue" size="md" p="15px" pl="38px">
+                    Qué quieres buscar?
+                  </Heading>
+                  <Tabs isFitted variant="line" defaultIndex={1}>
+                    <TabList mb="1em">
+                      <Tab>Productos</Tab>
+                      <Tab>Makers</Tab>
+                    </TabList>
+                    <TabPanels>
+                      <TabPanel>
+                        <SearchProductForm quantities={quantities} categories={categories} />
+                      </TabPanel>
+                      <TabPanel>
+                        <SearchMakerForm categories={categories} provinces={provinces} quantities={quantities} />
+                      </TabPanel>
+                    </TabPanels>
+                  </Tabs>
+                </Box>
+              </Stack>
             </Stack>
-          </Center>
-          <Center w="50%">
-            <Box bg="brandGray.100" h="auto" w="80%" borderRadius="15px">
-              <Heading color="brandBlue" size="md" p="15px" pl="38px">
-                Qué quieres buscar?
-              </Heading>
-              <Tabs isFitted variant="line" defaultIndex={1}>
-                <TabList mb="1em">
-                  <Tab>Productos</Tab>
-                  <Tab>Makers</Tab>
-                </TabList>
-                <TabPanels>
-                  <TabPanel>
-                    <SearchProductForm quantities={quantities} categories={categories} />
-                  </TabPanel>
-                  <TabPanel>
-                    <SearchMakerForm categories={categories} provinces={provinces} quantities={quantities} />
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            </Box>
-          </Center>
-        </Flex>
+          </Flex>
+          <Flex flex={1}>
+            <Image
+              alt={'Login Image'}
+              objectFit={'cover'}
+              src={
+                './landing.jpg'
+              }
+            />
+          </Flex>
+        </Stack>
+        <SimpleThreeColumns />
+        <SplitWithImage />
+        <SmallWithSocial />
       </Layout>
     </Authorization>
   );
@@ -272,4 +308,213 @@ export async function getStaticProps() {
       provinces: data.provinces,
     },
   };
+}
+
+
+const SocialButton = ({
+  children,
+  label,
+  href,
+}: {
+  children: ReactNode;
+  label: string;
+  href: string;
+}) => {
+  return (
+    <chakra.button
+      bg={useColorModeValue('blackAlpha.100', 'whiteAlpha.100')}
+      rounded={'full'}
+      w={8}
+      h={8}
+      cursor={'pointer'}
+      as={'a'}
+      href={href}
+      display={'inline-flex'}
+      alignItems={'center'}
+      justifyContent={'center'}
+      transition={'background 0.3s ease'}
+      _hover={{
+        bg: useColorModeValue('blackAlpha.200', 'whiteAlpha.200'),
+      }}>
+      <VisuallyHidden>{label}</VisuallyHidden>
+      {children}
+    </chakra.button>
+  );
+};
+
+function SmallWithSocial() {
+  return (
+    <Box
+      bg={useColorModeValue('gray.50', 'gray.900')}
+      color={useColorModeValue('gray.700', 'gray.200')}>
+      <Container
+        as={Stack}
+        maxW={'6xl'}
+        py={4}
+        direction={{ base: 'column', md: 'row' }}
+        spacing={4}
+        justify={{ base: 'center', md: 'space-between' }}
+        align={{ base: 'center', md: 'center' }}>
+        <Text>© 2020 Impredea. All rights reserved</Text>
+        <Stack direction={'row'} spacing={6}>
+          <SocialButton label={'Twitter'} href={'#'}>
+            <FaTwitter />
+          </SocialButton>
+          <SocialButton label={'YouTube'} href={'#'}>
+            <FaYoutube />
+          </SocialButton>
+          <SocialButton label={'Instagram'} href={'#'}>
+            <FaInstagram />
+          </SocialButton>
+        </Stack>
+      </Container>
+    </Box>
+  );
+}
+
+
+interface FeatureOneProps {
+  text: string;
+  iconBg: string;
+  icon?: ReactElement;
+}
+
+const FeatureOne = ({ text, icon, iconBg }: FeatureOneProps) => {
+  return (
+    <Stack direction={'row'} align={'center'}>
+      <Flex
+        w={8}
+        h={8}
+        align={'center'}
+        justify={'center'}
+        rounded={'full'}
+        bg={iconBg}>
+        {icon}
+      </Flex>
+      <Text fontWeight={600}>{text}</Text>
+    </Stack>
+  );
+};
+
+function SplitWithImage() {
+  return (
+    <Container maxW={'5xl'} py={12}>
+      <SimpleGrid columns={{ base: 1, md: 2 }} spacing={10}>
+        <Stack spacing={4}>
+          <Text
+            textTransform={'uppercase'}
+            color={'blue.400'}
+            fontWeight={600}
+            fontSize={'sm'}
+            bg={useColorModeValue('blue.50', 'blue.900')}
+            p={2}
+            alignSelf={'flex-start'}
+            rounded={'md'}>
+            Formar parte
+          </Text>
+          <Heading>Alcanza nuevos clientes</Heading>
+          <Text color={'gray.500'} fontSize={'lg'}>
+            Deja que nosotros nos encarguemos del marketing, forma parte de nuestra red de Makers
+          </Text>
+          <Stack
+            spacing={4}
+            divider={
+              <StackDivider
+                borderColor={useColorModeValue('gray.100', 'gray.700')}
+              />
+            }>
+            <FeatureOne
+              icon={
+                <Icon as={IoAnalyticsSharp} color={'yellow.500'} w={5} h={5} />
+              }
+              iconBg={useColorModeValue('yellow.100', 'yellow.900')}
+              text={'Logra mas ventas'}
+            />
+            <FeatureOne
+              icon={<Icon as={IoLogoBitcoin} color={'green.500'} w={5} h={5} />}
+              iconBg={useColorModeValue('green.100', 'green.900')}
+              text={'Incrementa tus ingresos'}
+            />
+            <FeatureOne
+              icon={
+                <Icon as={IoSearchSharp} color={'blue.500'} w={5} h={5} />
+              }
+              iconBg={useColorModeValue('blue.100', 'blue.900')}
+              text={'Obten mayor visibilidad'}
+            />
+          </Stack>
+        </Stack>
+        <Flex>
+          <Image
+            rounded={'md'}
+            alt={'feature image'}
+            src={
+              './network.jpg'
+            }
+            objectFit={'cover'}
+          />
+        </Flex>
+      </SimpleGrid>
+    </Container>
+  );
+}
+
+
+interface FeatureProps {
+  title: string;
+  text: string;
+  icon: ReactElement;
+}
+
+const Feature = ({ title, text, icon }: FeatureProps) => {
+  return (
+    <Stack>
+      <Flex
+        w={16}
+        h={16}
+        align={'center'}
+        justify={'center'}
+        color={'white'}
+        rounded={'full'}
+        bg={'gray.100'}
+        mb={1}>
+        {icon}
+      </Flex>
+      <Text fontWeight={600}>{title}</Text>
+      <Text color={'gray.600'}>{text}</Text>
+    </Stack>
+  );
+};
+
+function SimpleThreeColumns() {
+  return (
+    <Box p={4}
+      bg={useColorModeValue('gray.50', 'gray.900')}
+      color={useColorModeValue('gray.700', 'gray.200')}
+    >
+      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10} w={"80%"} marginX={"auto"}>
+        <Feature
+          icon={<Icon as={FcAssistant} w={10} h={10} />}
+          title={'Soporte'}
+          text={
+            'Nunca estaras solo en tu compra, vamos a ayudarte con cualquier incoveniente que pueda surgir.'
+          }
+        />
+        <Feature
+          icon={<Icon as={FcLock} w={10} h={10} />}
+          title={'Seguridad'}
+          text={
+            'Tu dinero esta seguro hasta concretar la venta y que tengas tu producto.'
+          }
+        />
+        <Feature
+          icon={<Icon as={FcApproval} w={10} h={10} />}
+          title={'Calidad'}
+          text={
+            'En nuestra amplia red de Makers vas a poder conseguir uno que se ajuste a tus necesidades.'
+          }
+        />
+      </SimpleGrid>
+    </Box>
+  );
 }
