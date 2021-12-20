@@ -36,7 +36,7 @@ export default function Marketplace({ }) {
             </Select>
             <Heading as="h3" size={"md"} color="brandBlue" fontWeight={"normal"} pt="70px" pb="10px"> Quieres publicitar tu empresa con nosotros?</Heading>
             <Link href="/contact" passHref>
-              <Button colorScheme={"facebook"} w="160px" fontSize={"xl"}> Contactanos!</Button>
+              <Button colorScheme={"facebook"} w="160px" fontSize={"xl"}> Contáctanos</Button>
             </Link>
           </Stack>
           <Stack w="40%" ml="15px">

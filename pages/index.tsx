@@ -360,9 +360,6 @@ function SmallWithSocial() {
           <SocialButton label={'Twitter'} href={'#'}>
             <FaTwitter />
           </SocialButton>
-          <SocialButton label={'YouTube'} href={'#'}>
-            <FaYoutube />
-          </SocialButton>
           <SocialButton label={'Instagram'} href={'#'}>
             <FaInstagram />
           </SocialButton>
@@ -410,11 +407,11 @@ function SplitWithImage() {
             p={2}
             alignSelf={'flex-start'}
             rounded={'md'}>
-            Formar parte
+            Quiero formar parte!
           </Text>
           <Heading>Alcanza nuevos clientes</Heading>
           <Text color={'gray.500'} fontSize={'lg'}>
-            Deja que nosotros nos encarguemos del marketing, forma parte de nuestra red de Makers
+            Deja que nosotros nos encarguemos de publicitarte y forma parte de nuestra red de Makers
           </Text>
           <Stack
             spacing={4}
