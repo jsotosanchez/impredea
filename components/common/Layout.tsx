@@ -48,7 +48,7 @@ export default function Layout({ children }: Props) {
               Mi negocio
             </Button>
           )}
-          <Link href={`/marketplace`} passHref>
+          {currentUser && currentUser.maker_active && <Link href={`/marketplace`} passHref>
             <Button
               variant="link"
               colorScheme="white"
@@ -57,7 +57,7 @@ export default function Layout({ children }: Props) {
             >
               Marketplace
             </Button>
-          </Link>
+          </Link>}
           {currentUser && currentUser.id && (
             <Button
               variant="link"
