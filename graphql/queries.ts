@@ -394,6 +394,9 @@ export const GET_SALE_BY_PK = gql`
         product {
           id
           name
+          product_pictures {
+            id
+          }
         }
         product_quality {
           label

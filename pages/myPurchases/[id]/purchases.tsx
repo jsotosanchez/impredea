@@ -38,6 +38,7 @@ import { useForm } from 'react-hook-form';
 import { REPORT_PROBLEM } from '@/graphql/mutations';
 import { SessionContext } from '@/context/sessionContext';
 import { sendEmail } from '@/utils/miscellaneous';
+import { Carousel } from 'react-responsive-carousel';
 
 interface FormValues {
   subject: string;
@@ -131,6 +132,7 @@ const Purchases = ({ }: Props) => {
       </Layout>
     );
 
+  console.log(currentPurchase)
   if (error) return <ErrorPage />;
 
   return (
@@ -161,13 +163,11 @@ const Purchases = ({ }: Props) => {
                         <Stack w="40%" mr="5%">
                           <Center>
                             {currentPurchase.sales_by_pk.quotation.product && (
-                              <Image
-                                priority={true}
-                                src={`${BUCKET_FILES_URL}products/${currentPurchase.sales_by_pk.quotation.product.id}`}
-                                width="400px"
-                                height="300px"
-                                alt=""
-                              />
+                              <Carousel showThumbs={false}>
+                                <Image priority={true} src={`${BUCKET_FILES_URL}products/${currentPurchase.sales_by_pk.quotation.product.id}`} width="370px" height="240px" alt="" />
+                                {currentPurchase.sales_by_pk.quotation.product.product_pictures.map((p: any) =>
+                                  <Image priority={true} src={`${BUCKET_FILES_URL}product${currentPurchase.sales_by_pk.quotation.product.id}/${p.id}`} width="370px" height="240px" alt={p.id} key={p.id} />)}
+                              </Carousel>
                             )}
                           </Center>
                           <FormLabel color="brandBlue" htmlFor="quantity">
