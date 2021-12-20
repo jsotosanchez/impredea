@@ -250,7 +250,7 @@ export default function Home({ quantities, categories, provinces }: Props) {
                 </Text>{' '}
               </Heading>
               <Text fontSize={{ base: 'md', lg: 'lg' }} color={'gray.500'}>
-                Todo lo que necesitas para imprimir en 3D en un solo lugar.
+                Todo lo que necesitas para imprimir 3D en un solo lugar.
               </Text>
               <Stack direction={{ base: 'column', md: 'row' }} spacing={4}>
                 <Box
