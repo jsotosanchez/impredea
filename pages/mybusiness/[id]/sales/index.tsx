@@ -24,7 +24,6 @@ interface ProblemFormValues {
 interface Quotation {
   product: { name: string };
   estimated_date: string;
-  client: { fullname: string, id: number };
   price: number;
   conversation: { id: string };
 }
@@ -32,10 +31,11 @@ interface Quotation {
 interface Sale {
   id: number;
   quotation: Quotation;
+  client: { fullname: string, id: number };
 }
 
 const now = new Date()
-const today = now.toISOString().split('T')[0]
+const today = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
 const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString().split('T')[0];
 
 const SalesAdmin = ({ }) => {
@@ -194,8 +194,8 @@ const SalesAdmin = ({ }) => {
                     <Td>{sale.quotation.product ? sale.quotation.product.name : ""}</Td>
                     <Td>{sale.quotation.estimated_date.slice(0, 10)}</Td>
                     <Td>
-                      <Box cursor={"pointer"} onClick={() => handleOpenClientModal(sale.quotation.client.id)}>
-                        {sale.quotation.client.fullname}
+                      <Box cursor={"pointer"} onClick={() => handleOpenClientModal(sale.client.id)}>
+                        {sale.client.fullname}
                       </Box>
                     </Td>
                     <Td>{sale.quotation.price}</Td>
@@ -208,7 +208,7 @@ const SalesAdmin = ({ }) => {
                             cursor="pointer"
                             onClick={() => {
                               router.push(
-                                `/conversation/${sale.quotation.conversation.id}/name/${sale.quotation.client.fullname}`
+                                `/conversation/${sale.quotation.conversation.id}/name/${sale.client.fullname}`
                               );
                             }}
                           />
