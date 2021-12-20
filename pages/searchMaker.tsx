@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import {
   Box,
@@ -21,6 +21,7 @@ import client from '@/graphql/apollo-client';
 import { GET_MAKERS } from '@/graphql/queries';
 import { formatToContains } from '@/graphql/utils';
 import { removeEmptyFields } from '@/utils/miscellaneous';
+import { SessionContext } from '@/context/sessionContext';
 
 interface User {
   maker_name: string;
@@ -44,6 +45,8 @@ interface Props {
 
 const Search = ({ quantities, categories, provinces }: Props) => {
   const router = useRouter();
+  const context = useContext(SessionContext);
+  const currentUser = context.getUser();
   const { makerName, quantity, category, location } = router.query;
   const {
     handleSubmit,
@@ -54,7 +57,7 @@ const Search = ({ quantities, categories, provinces }: Props) => {
   const [minRep, setMinRep] = useState(3);
 
   const { data, loading, error, refetch, fetchMore } = useQuery(GET_MAKERS, {
-    variables: { category, makerName: formatToContains(makerName as string), quantity, location, minRep },
+    variables: { category, makerName: formatToContains(makerName as string), quantity, location, minRep, id: currentUser?.id },
   });
   const onSubmit = (formData: FormValues) => {
     const { makerName, ...rest } = removeEmptyFields(formData);

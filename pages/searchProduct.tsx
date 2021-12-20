@@ -18,6 +18,8 @@ import { GET_PRODUCTS, GET_SEARCH_PRODUCT_DATA } from '@/graphql/queries';
 import { SideBarLayout, ProductSearchCard, ErrorPage, Layout, LoadingPage, Authorization } from '@/components/common';
 import { formatToContains } from '@/graphql/utils';
 import { removeEmptyFields } from '@/utils/miscellaneous';
+import { SessionContext } from '@/context/sessionContext';
+import { useContext } from 'react';
 
 interface Maker {
   maker_name: string;
@@ -55,9 +57,11 @@ const EmptyResults = () => (
 
 const Search = ({ quantities, categories }: Props) => {
   const router = useRouter();
+  const context = useContext(SessionContext);
+  const currentUser = context.getUser();
   const { productName, quantity, category } = router.query;
   const { data, loading, error, refetch, fetchMore } = useQuery(GET_PRODUCTS, {
-    variables: { category, productName: formatToContains(productName as string), quantity },
+    variables: { category, productName: formatToContains(productName as string), quantity, id: currentUser?.id },
   });
 
   const {

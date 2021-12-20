@@ -31,7 +31,7 @@ export const GET_SEARCH_PRODUCT_DATA = gql`
 `;
 
 export const GET_PRODUCTS = gql`
-  query getProducts($category: Int, $productName: String!, $quantity: Int!, $offset: Int = 0) {
+  query getProducts($category: Int, $productName: String!, $quantity: Int!, $offset: Int = 0, $id: Int) {
     product(
       where: {
         name: { _ilike: $productName }
@@ -39,6 +39,7 @@ export const GET_PRODUCTS = gql`
           maker_active: { _eq: true }
           maker_category_id: { _eq: $category }
           maker_capacity: { _gte: $quantity }
+          id: {_neq: $id}
         }
       }
       limit: 20
@@ -344,7 +345,8 @@ export const GET_MAKERS = gql`
     $makerName: String
     $minRep: numeric
     $limit: Int = 10
-    $offset: Int = 0
+    $offset: Int = 0,
+    $id: Int
   ) {
     user(
       where: {
@@ -354,6 +356,7 @@ export const GET_MAKERS = gql`
         maker_category_id: { _eq: $category }
         maker_name: { _ilike: $makerName }
         maker_rating: { _gte: $minRep }
+        id: {_neq: $id}
       }
       order_by: { maker_rating: desc }
       offset: $offset
