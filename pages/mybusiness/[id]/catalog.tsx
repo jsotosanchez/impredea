@@ -220,10 +220,16 @@ const Catalog = ({ }) => {
 
   useEffect(() => {
     if (!catalogPictures || !currentProductId) return
-
     const a = generateInsertProductsObject(catalogPictures.target.files.length, currentProductId);
     generatePicsIds({ variables: { objects: a } })
   }, [catalogPictures])
+
+  useEffect(() => {
+    if (!catalogPictures || !insertResult) return
+    const productId = insertResult.insert_product_one.id;
+    const a = generateInsertProductsObject(catalogPictures.target.files.length, productId);
+    generatePicsIds({ variables: { objects: a } })
+  }, [catalogPictures, insertResult])
 
   useEffect(() => {
     if (picIdsErr || !picsIdData || !catalogPictures) return
@@ -253,7 +259,7 @@ const Catalog = ({ }) => {
       duration: 3000,
       isClosable: true,
     });
-  }, [picsIdData])
+  }, [picsIdData, insertResult])
 
   useEffect(() => {
     getProduct();
@@ -275,14 +281,6 @@ const Catalog = ({ }) => {
     });
   }, [insertResult, picture, handleAddOnClose, toast, refetch]);
 
-
-  useEffect(() => {
-    if (!catalogPictures || !insertResult) return
-    const productId = insertResult.insert_product_one.id;
-    console.log(insertResult)
-    const a = generateInsertProductsObject(catalogPictures.target.files.length, productId);
-    generatePicsIds({ variables: { objects: a } })
-  }, [catalogPictures, insertResult])
 
   if (error) return <ErrorPage route={`/`} />;
 
