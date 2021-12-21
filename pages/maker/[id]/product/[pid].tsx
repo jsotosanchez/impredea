@@ -23,6 +23,7 @@ import {
   Select,
   Textarea,
   useToast,
+  Tooltip,
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { CREATE_CONVERSATION, REQUEST_QUOTATION } from '@/graphql/mutations';
@@ -189,7 +190,9 @@ const Product = ({ }: Props): JSX.Element => {
                       <FormErrorMessage>{errors.quantity && errors.quantity.message}</FormErrorMessage>
                     </FormControl>
                     <FormControl isInvalid={errors.qualityId != undefined}>
-                      <FormLabel color="brandBlue">Calidad</FormLabel>
+                      <Tooltip placement='top' label='La dureza depende de la calidad seleccionada'>
+                        <FormLabel color="brandBlue">Calidad</FormLabel>
+                      </Tooltip>
                       <Select
                         bg="white"
                         color="black"
@@ -207,7 +210,9 @@ const Product = ({ }: Props): JSX.Element => {
                       <FormErrorMessage>{errors.qualityId && errors.qualityId.message}</FormErrorMessage>
                     </FormControl>
                     <FormControl isInvalid={errors.materialId != undefined}>
-                      <FormLabel color="brandBlue">Material</FormLabel>
+                      <Tooltip placement='top' label='Si no estas seguro, te recomendamos PLA'>
+                        <FormLabel color="brandBlue">Material</FormLabel>
+                      </Tooltip>
                       <Select
                         bg="white"
                         color="black"
