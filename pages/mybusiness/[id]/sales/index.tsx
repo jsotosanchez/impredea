@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { Center, Table, Tbody, Td, Th, Thead, Tooltip, Tr, useDisclosure, useToast, Flex, Input, FormLabel, Box, Modal, ModalOverlay, ModalHeader, ModalCloseButton, ModalBody, ModalContent, Spinner, VStack, Text } from '@chakra-ui/react';
+import { Center, Table, Tbody, Td, Th, Thead, Tooltip, Tr, useDisclosure, useToast, Flex, Input, FormLabel, Box, Modal, ModalOverlay, ModalHeader, ModalCloseButton, ModalBody, ModalContent, Spinner, VStack, Text, Spacer } from '@chakra-ui/react';
 import { ChatIcon, ViewIcon, WarningIcon } from '@chakra-ui/icons';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useForm } from 'react-hook-form';
@@ -146,6 +146,7 @@ const SalesAdmin = ({ }) => {
               value={clientNameFilter}
               onChange={(e) => setClientNameFilter(e.target.value)}
             />
+            <Spacer />
             <FormLabel color="brandBlue" htmlFor="estimated_date" ml="15px" pt="7px">
               Fecha Inicio:
             </FormLabel>

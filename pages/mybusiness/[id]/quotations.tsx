@@ -34,6 +34,7 @@ import {
   Tooltip,
   Link,
   IconButton,
+  Spacer,
 } from '@chakra-ui/react';
 import { EditIcon, ChatIcon, ExternalLinkIcon, DownloadIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
@@ -85,15 +86,22 @@ interface Props {
   statuses: QuotationStatus[];
 }
 
+
+const now = new Date()
+const today = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString().split('T')[0];
+
 const Quotations = ({ statuses }: Props) => {
   const router = useRouter();
+  const [startFilterDate, setStartFilterDate] = useState<string>();
+  const [endFilterDate, setEndFilterDate] = useState(nextMonth);
   const { id } = router.query;
   const {
     data,
     loading,
     refetch: refetchQuotations,
     error,
-  } = useQuery(GET_QUOTATIONS_BY_MAKER_ID, { variables: { id, statuses: statuses.map((s) => s.id + 1) } });
+  } = useQuery(GET_QUOTATIONS_BY_MAKER_ID, { variables: { id, statuses: statuses.map((s) => s.id + 1), fechaHasta: endFilterDate } });
   const { currentPage, setCurrentPage } = usePagination(data, refetchQuotations);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -340,6 +348,37 @@ const Quotations = ({ statuses }: Props) => {
                   {label}
                 </Checkbox>
               ))}
+              <Spacer />
+              <FormLabel color="brandBlue" htmlFor="estimated_date" ml="15px" pt="7px">
+                Fecha Inicio:
+              </FormLabel>
+              <input
+                style={{
+                  color: 'black',
+                  border: '1px solid',
+                  borderColor: 'inherit',
+                  borderRadius: '5px',
+                  padding: '6px',
+                }}
+                type="date"
+                value={startFilterDate}
+                onChange={e => setStartFilterDate(e.target.value)}
+              />
+              <FormLabel color="brandBlue" htmlFor="estimated_date" ml="15px" pt="7px">
+                Fecha Fin:
+              </FormLabel>
+              <input
+                style={{
+                  color: 'black',
+                  border: '1px solid',
+                  borderColor: 'inherit',
+                  borderRadius: '5px',
+                  padding: '6px',
+                }}
+                type="date"
+                value={endFilterDate}
+                onChange={e => setEndFilterDate(e.target.value)}
+              />
             </HStack>
           </>
           {quotationsHasResults ? (
